@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <title>Qandolat Fabrikasi - Boshqaruv Tizimi</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0F172A">
@@ -202,6 +204,79 @@
   </style>
 </head>
 <body class="w-full h-full antialiased select-none m-0 p-0 overflow-hidden bg-[var(--bg-main)]">
+
+  <!-- ================= LICENSE ACTIVATION MODAL (HIMOYA VA QULF) ================= -->
+  <div id="licenseLockModal" class="fixed inset-0 z-[99999999] bg-[#0B0F19]/95 backdrop-blur-xl flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-sm rounded-[28px] bg-slate-900/90 border border-rose-500/30 p-5 space-y-4 shadow-2xl text-center relative overflow-hidden">
+      <!-- Glow element -->
+      <div class="absolute -top-12 -left-12 w-28 h-28 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -right-12 w-28 h-28 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Header Icon -->
+      <div class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-tr from-rose-500 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg ring-4 ring-rose-500/20">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+
+      <div class="space-y-1">
+        <h2 class="text-base font-black text-white">Dastur Faollashtirilmagan</h2>
+        <p class="text-[11px] text-stone-400">«Mening Qandolat Fabrikam» professional biznes tizimi litsenziya talab qiladi.</p>
+      </div>
+
+      <!-- Author Contact Card -->
+      <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-left space-y-2">
+        <div class="text-[10px] text-rose-400 font-bold uppercase tracking-wider flex items-center space-x-1.5">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Mualliflik va Litsenziya bo'limi</span>
+        </div>
+        <div class="text-xs font-bold text-white flex items-center justify-between">
+          <span>Dastur Muallifi:</span>
+          <span class="text-rose-300">Farrux Orziqulov</span>
+        </div>
+        <div class="text-xs font-bold text-white flex items-center justify-between">
+          <span>Bog'lanish:</span>
+          <a href="tel:+998957972797" class="text-emerald-400 hover:underline flex items-center space-x-1">
+            <i class="fa-solid fa-phone text-[10px]"></i>
+            <span>+998 95 797 27 97</span>
+          </a>
+        </div>
+        <div class="pt-1 flex space-x-2">
+          <a href="tel:+998957972797" class="flex-1 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold text-center hover:bg-emerald-500/25 transition">
+            <i class="fa-solid fa-phone mr-1"></i> Qo'ng'iroq
+          </a>
+          <a href="https://t.me/+998957972797" target="_blank" class="flex-1 py-1.5 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 text-[11px] font-bold text-center hover:bg-sky-500/25 transition">
+            <i class="fa-brands fa-telegram mr-1"></i> Telegram
+          </a>
+        </div>
+      </div>
+
+      <!-- Device ID box -->
+      <div class="p-3 rounded-2xl bg-black/30 border border-white/10 text-left space-y-1">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] text-stone-400 font-semibold">Ushbu telefon / qurilma ID si:</span>
+          <button onclick="copyDeviceId()" class="text-[10px] text-rose-400 font-bold hover:underline">
+            <i class="fa-solid fa-copy mr-0.5"></i> Nusxa olish
+          </button>
+        </div>
+        <div id="lockScreenDeviceId" class="font-mono text-sm font-black text-rose-300 tracking-wider">DEV-XXXXX</div>
+        <p class="text-[9px] text-stone-500">Muallifga qo'ng'iroq qilib yoki Telegramdan shu ID raqamni ayting.</p>
+      </div>
+
+      <!-- Activation Input -->
+      <div class="space-y-2">
+        <input type="text" id="lockScreenKeyInput" placeholder="Aktivatsiya kaliti: KEY-XXXXXX" class="w-full p-3 rounded-xl border border-white/15 bg-white/5 text-center font-mono font-bold text-sm text-white uppercase placeholder-stone-500 focus:outline-none focus:border-rose-500">
+        <button onclick="submitLicenseActivation()" class="w-full py-3 rounded-xl macaron-btn text-xs font-black shadow-lg">
+          <i class="fa-solid fa-key mr-1.5"></i> Dasturni Faollashtirish
+        </button>
+      </div>
+
+      <!-- Secret Admin Trigger -->
+      <div class="pt-1">
+        <button onclick="openMasterAdminUnlock()" class="text-[10px] text-stone-500 hover:text-stone-300 transition">
+          Muallif (Farrux) uchun maxsus kirish
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- App Interior Screen (100% Full Screen Edge-to-Edge) -->
   <div id="appContainer" class="app-screen w-full h-[100dvh] flex flex-col relative overflow-hidden">
@@ -694,6 +769,41 @@
               <i class="fa-solid fa-download text-xs text-rose-400"></i>
               <span>Zaxira yuklash (JSON)</span>
             </button>
+          </div>
+        </div>
+
+        <!-- FARUX ADMIN: Litsenziyalar Generatori -->
+        <div class="erp-card p-4 space-y-3 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid fa-key"></i>
+              </div>
+              <div>
+                <h3 class="text-xs font-bold text-[var(--text-main)]">Mijozlar uchun Kalit Generatori</h3>
+                <p class="text-[10px] text-[var(--text-muted)]">Faqat muallif (Farrux) uchun</p>
+              </div>
+            </div>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold">Farrux Admin</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div>
+              <label class="block text-[var(--text-muted)] text-[10px] mb-1">Mijoz telefonidagi Qurilma ID sini kiriting:</label>
+              <input type="text" id="adminGenDeviceIdInput" placeholder="Masalan: DEV-8392" class="w-full p-2.5 glass-input font-mono font-bold text-xs uppercase">
+            </div>
+            <button onclick="adminGenerateClientKey()" class="w-full py-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+              <span>Mijoz uchun Kalit Yaratish</span>
+            </button>
+            <div id="adminGenResultBox" class="hidden p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-1">
+              <div class="text-[10px] text-emerald-400 font-bold">Mijozga jo'natiladigan kalit:</div>
+              <div class="flex items-center justify-between">
+                <span id="adminGenResultKey" class="font-mono text-sm font-black text-white tracking-wider">KEY-XXXXXX</span>
+                <button onclick="copyGeneratedKey()" class="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-900 font-bold text-[10px]">
+                  Nusxa olish
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1596,6 +1706,147 @@
       }
     } catch (e) {
       console.warn("Supabase SDK yuklanmadi:", e);
+    }
+
+    // ==========================================
+    // LICENSING & DEVICE LOCK (FARRUX SECURITY)
+    // ==========================================
+    const LICENSE_SALT = "FARRUX_SWEET_FACTORY_SECRET_2026_KEY";
+    const MASTER_ADMIN_KEY = "FARRUX-2026-ADMIN";
+    const MASTER_ADMIN_PIN = "7777";
+
+    function getOrCreateDeviceId() {
+      let id = localStorage.getItem('app_device_id');
+      if (!id) {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let rand = '';
+        for (let i = 0; i < 5; i++) {
+          rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        id = 'DEV-' + rand;
+        localStorage.setItem('app_device_id', id);
+      }
+      return id;
+    }
+
+    function calculateKeyForDevice(devId) {
+      if (!devId) return '';
+      const clean = String(devId).toUpperCase().trim();
+      let hash = 0;
+      const str = clean + "_" + LICENSE_SALT;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      const raw = Math.abs(hash).toString(36).toUpperCase().padStart(6, '9');
+      return 'KEY-' + raw.slice(0, 6);
+    }
+
+    function isAppLicensed() {
+      if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return true;
+      }
+      const isLicensed = localStorage.getItem('app_is_licensed');
+      if (isLicensed === 'true') return true;
+
+      const savedKey = localStorage.getItem('app_license_key');
+      if (!savedKey) return false;
+
+      const devId = getOrCreateDeviceId();
+      const expectedKey = calculateKeyForDevice(devId);
+      return (savedKey === expectedKey || savedKey === MASTER_ADMIN_KEY);
+    }
+
+    function checkLicenseStatusOnBoot() {
+      const devId = getOrCreateDeviceId();
+      const lockModal = document.getElementById('licenseLockModal');
+      const devIdEl = document.getElementById('lockScreenDeviceId');
+      if (devIdEl) devIdEl.innerText = devId;
+
+      if (!isAppLicensed()) {
+        if (lockModal) lockModal.classList.remove('hidden');
+      } else {
+        if (lockModal) lockModal.classList.add('hidden');
+      }
+    }
+
+    function submitLicenseActivation() {
+      const input = document.getElementById('lockScreenKeyInput');
+      const entered = (input ? input.value : '').toUpperCase().trim();
+      if (!entered) {
+        alert("Iltimos, aktivatsiya kalitini kiriting!");
+        return;
+      }
+      const devId = getOrCreateDeviceId();
+      const expected = calculateKeyForDevice(devId);
+
+      if (entered === expected || entered === MASTER_ADMIN_KEY) {
+        localStorage.setItem('app_license_key', entered);
+        localStorage.setItem('app_is_licensed', 'true');
+        const lockModal = document.getElementById('licenseLockModal');
+        if (lockModal) lockModal.classList.add('hidden');
+        showToast("Dastur muvaffaqiyatli faollashtirildi! Xush kelibsiz!", "success");
+        alert("Tabriklaymiz! Dastur ushbu qurilma uchun to'liq faollashtirildi!");
+      } else {
+        alert("Kiritilgan kalit noto'g'ri! Iltimos, muallif Farrux Orziqulov (+998 95 797 27 97) bilan bog'lanib, to'g'ri kalitni oling.");
+      }
+    }
+
+    function copyDeviceId() {
+      const devId = getOrCreateDeviceId();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(devId).then(() => {
+          showToast("Qurilma ID nusxalandi!", "info");
+        }).catch(() => {
+          prompt("Qurilma ID:", devId);
+        });
+      } else {
+        prompt("Qurilma ID:", devId);
+      }
+    }
+
+    function openMasterAdminUnlock() {
+      const pin = prompt("Muallif (Farrux) maxfiy kodini kiriting:");
+      if (pin === MASTER_ADMIN_PIN || pin === MASTER_ADMIN_KEY) {
+        localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
+        localStorage.setItem('app_is_licensed', 'true');
+        const lockModal = document.getElementById('licenseLockModal');
+        if (lockModal) lockModal.classList.add('hidden');
+        showToast("Muallif kirishi tasdiqlandi!", "success");
+      } else if (pin !== null) {
+        alert("Noto'g'ri kod!");
+      }
+    }
+
+    function adminGenerateClientKey() {
+      const input = document.getElementById('adminGenDeviceIdInput');
+      const devId = (input ? input.value : '').toUpperCase().trim();
+      if (!devId) {
+        alert("Iltimos, mijoz aytgan Qurilma ID sini kiriting!");
+        return;
+      }
+      const generatedKey = calculateKeyForDevice(devId);
+      const resBox = document.getElementById('adminGenResultBox');
+      const resKey = document.getElementById('adminGenResultKey');
+      if (resBox && resKey) {
+        resKey.innerText = generatedKey;
+        resBox.classList.remove('hidden');
+        showToast("Mijoz uchun kalit yaratildi!", "success");
+      }
+    }
+
+    function copyGeneratedKey() {
+      const key = document.getElementById('adminGenResultKey')?.innerText || '';
+      if (!key) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(key).then(() => {
+          showToast("Kalit nusxalandi! Telegramdan yuborishingiz mumkin", "success");
+        }).catch(() => {
+          prompt("Mijoz kaliti:", key);
+        });
+      } else {
+        prompt("Mijoz kaliti:", key);
+      }
     }
 
     function showToast(msg, type = 'info') {
@@ -4232,6 +4483,7 @@
       renderShops();
       updateSettingsUI();
       drawCharts();
+      checkLicenseStatusOnBoot();
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
