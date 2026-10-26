@@ -214,9 +214,10 @@
           <i class="fa-solid fa-arrow-left text-xs"></i>
         </button>
 
-        <!-- Clean Factory Icon & Name (No SHIRIN ERP text) -->
-        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 flex items-center justify-center text-white shadow-md shrink-0">
-          <i class="fa-solid fa-cake-candles text-sm"></i>
+        <!-- Clean Factory Icon & Name (With Custom Logo Support) -->
+        <div id="factoryHeaderLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 flex items-center justify-center text-white shadow-md shrink-0 overflow-hidden cursor-pointer">
+          <i id="factoryHeaderIcon" class="fa-solid fa-cake-candles text-sm"></i>
+          <img id="factoryHeaderLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
         </div>
         <div class="min-w-0">
           <h1 id="factoryHeaderName" class="text-xs font-black text-[var(--text-main)] leading-tight truncate">Mening Qandolat Fabrikam</h1>
@@ -249,8 +250,9 @@
         <!-- Factory Profile Card with Status Badge -->
         <div class="erp-card p-3.5 flex items-center justify-between border-l-4 border-l-sky-500">
           <div class="flex items-center space-x-3 flex-1 min-w-0 mr-2">
-            <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 flex items-center justify-center text-base shrink-0 font-black">
-              <i class="fa-solid fa-industry"></i>
+            <div id="bannerLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 flex items-center justify-center text-base shrink-0 font-black overflow-hidden cursor-pointer">
+              <i id="bannerLogoIcon" class="fa-solid fa-industry"></i>
+              <img id="bannerLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
             </div>
             <div class="min-w-0">
               <div class="flex items-center space-x-2">
@@ -618,8 +620,9 @@
         <div class="erp-card p-4 space-y-3 border-l-4 border-l-rose-500">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 flex items-center justify-center text-white text-base shadow-md">
-                <i class="fa-solid fa-user-shield"></i>
+              <div id="settingsLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 flex items-center justify-center text-white text-base shadow-md overflow-hidden cursor-pointer">
+                <i id="settingsLogoIcon" class="fa-solid fa-user-shield"></i>
+                <img id="settingsLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
               </div>
               <div>
                 <h3 id="settingsUserEmail" class="text-xs font-black text-[var(--text-main)]">Bulutga ulanmagan</h3>
@@ -742,7 +745,34 @@
         <h3 class="text-sm font-bold text-[var(--choco-dark)]">Fabrika Ma'lumotlarini Tahrirlash</h3>
         <button onclick="closeFactoryDialog()" class="text-stone-400 text-lg">&times;</button>
       </div>
-      <div class="space-y-2 text-xs">
+      <div class="space-y-2.5 text-xs">
+        <!-- Korxona Logotipi (Logo) Bo'limi -->
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-stone-400 font-bold text-[11px] flex items-center space-x-1.5">
+              <i class="fa-solid fa-image text-rose-400"></i>
+              <span>Korxona Logotipi (Logo):</span>
+            </label>
+            <span class="text-[9px] text-stone-400">Chek va dasturda chiqadi</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <div id="modalLogoPreviewBox" class="w-14 h-14 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+              <i id="modalLogoPreviewIcon" class="fa-solid fa-camera text-stone-400 text-base"></i>
+              <img id="modalLogoPreviewImg" class="w-full h-full object-cover hidden" alt="Logo Preview">
+            </div>
+            <div class="flex-1 space-y-1.5">
+              <input type="file" id="modalFactoryLogoFileInput" accept="image/*" class="hidden" onchange="handleLogoFileUpload(event)">
+              <button type="button" onclick="document.getElementById('modalFactoryLogoFileInput').click()" class="w-full py-1.5 px-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-arrow-up-from-bracket text-[11px]"></i>
+                <span>Logotip yuklash</span>
+              </button>
+              <button type="button" id="modalLogoRemoveBtn" onclick="removeFactoryLogo()" class="w-full py-0.5 px-2 text-[10px] text-stone-400 hover:text-rose-400 transition text-center hidden">
+                <i class="fa-solid fa-trash-can mr-1"></i> Logotipni o'chirish
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label class="block text-stone-500 mb-1">Fabrika nomi:</label>
           <input type="text" id="modalFactoryName" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
@@ -2049,7 +2079,8 @@
       name: "Mening Qandolat Fabrikam",
       address: "Toshkent shahri",
       phone: "+998",
-      director: "Rahbar"
+      director: "Rahbar",
+      logo: ""
     });
 
     let sweetProducts = loadStorage('products', []);
@@ -2225,14 +2256,127 @@
       document.getElementById('bannerFactoryName').innerText = factoryProfile.name;
       document.getElementById('bannerFactoryAddress').innerText = factoryProfile.address;
       document.getElementById('bannerFactoryContact').innerText = `Direktor: ${factoryProfile.director} • Tel: ${factoryProfile.phone}`;
+
+      const settingsFactoryNameEl = document.getElementById('settingsFactoryName');
+      if (settingsFactoryNameEl) settingsFactoryNameEl.innerText = factoryProfile.name;
+
+      updateLogoDisplays();
     }
 
-    // Factory Profile
+    // Factory Profile & Logo Management
+    let tempLogoData = "";
+
+    function handleLogoFileUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 260;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round(height * maxDim / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round(width * maxDim / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/png', 0.85);
+          tempLogoData = compressedDataUrl;
+          setModalLogoPreview(compressedDataUrl);
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setModalLogoPreview(dataUrl) {
+      const imgEl = document.getElementById('modalLogoPreviewImg');
+      const iconEl = document.getElementById('modalLogoPreviewIcon');
+      const removeBtn = document.getElementById('modalLogoRemoveBtn');
+      if (dataUrl) {
+        if (imgEl) { imgEl.src = dataUrl; imgEl.classList.remove('hidden'); }
+        if (iconEl) iconEl.classList.add('hidden');
+        if (removeBtn) removeBtn.classList.remove('hidden');
+      } else {
+        if (imgEl) { imgEl.src = ''; imgEl.classList.add('hidden'); }
+        if (iconEl) iconEl.classList.remove('hidden');
+        if (removeBtn) removeBtn.classList.add('hidden');
+      }
+    }
+
+    function removeFactoryLogo() {
+      tempLogoData = "";
+      setModalLogoPreview("");
+      const fileInput = document.getElementById('modalFactoryLogoFileInput');
+      if (fileInput) fileInput.value = "";
+    }
+
+    function updateLogoDisplays() {
+      const logoUrl = factoryProfile.logo || "";
+
+      // Header logo
+      const hImg = document.getElementById('factoryHeaderLogoImg');
+      const hIcon = document.getElementById('factoryHeaderIcon');
+      if (hImg && hIcon) {
+        if (logoUrl) {
+          hImg.src = logoUrl;
+          hImg.classList.remove('hidden');
+          hIcon.classList.add('hidden');
+        } else {
+          hImg.classList.add('hidden');
+          hIcon.classList.remove('hidden');
+        }
+      }
+
+      // Banner logo
+      const bImg = document.getElementById('bannerLogoImg');
+      const bIcon = document.getElementById('bannerLogoIcon');
+      if (bImg && bIcon) {
+        if (logoUrl) {
+          bImg.src = logoUrl;
+          bImg.classList.remove('hidden');
+          bIcon.classList.add('hidden');
+        } else {
+          bImg.classList.add('hidden');
+          bIcon.classList.remove('hidden');
+        }
+      }
+
+      // Settings logo
+      const sImg = document.getElementById('settingsLogoImg');
+      const sIcon = document.getElementById('settingsLogoIcon');
+      if (sImg && sIcon) {
+        if (logoUrl) {
+          sImg.src = logoUrl;
+          sImg.classList.remove('hidden');
+          sIcon.classList.add('hidden');
+        } else {
+          sImg.classList.add('hidden');
+          sIcon.classList.remove('hidden');
+        }
+      }
+    }
+
     function openFactoryDialog() {
-      document.getElementById('modalFactoryName').value = factoryProfile.name;
-      document.getElementById('modalFactoryAddr').value = factoryProfile.address;
-      document.getElementById('modalFactoryPhone').value = factoryProfile.phone;
-      document.getElementById('modalFactoryDirector').value = factoryProfile.director;
+      document.getElementById('modalFactoryName').value = factoryProfile.name || "";
+      document.getElementById('modalFactoryAddr').value = factoryProfile.address || "";
+      document.getElementById('modalFactoryPhone').value = factoryProfile.phone || "";
+      document.getElementById('modalFactoryDirector').value = factoryProfile.director || "";
+      tempLogoData = factoryProfile.logo || "";
+      setModalLogoPreview(tempLogoData);
       document.getElementById('factoryModal').classList.remove('hidden');
     }
     function closeFactoryDialog() {
@@ -2243,10 +2387,13 @@
       factoryProfile.address = document.getElementById('modalFactoryAddr').value.trim() || "Manzil";
       factoryProfile.phone = document.getElementById('modalFactoryPhone').value.trim() || "+998";
       factoryProfile.director = document.getElementById('modalFactoryDirector').value.trim() || "Rahbar";
+      factoryProfile.logo = tempLogoData || "";
 
       saveStorage('profile', factoryProfile);
       updateDashboardStats();
+      updateLogoDisplays();
       closeFactoryDialog();
+      showToast("Fabrika ma'lumotlari va logotipi saqlandi!", "success");
     }
 
     // Production Sub Tabs
@@ -3408,8 +3555,13 @@
         </tr>
       `).join('');
 
+      const logoHtml = factoryProfile.logo
+        ? `<div class="mb-1 text-center"><img src="${factoryProfile.logo}" class="h-10 max-w-[140px] mx-auto object-contain" alt="Logo"></div>`
+        : '';
+
       document.getElementById('printReceiptContent').innerHTML = `
         <div class="text-center border-b pb-2">
+          ${logoHtml}
           <h2 class="text-sm font-black uppercase tracking-wider">${factoryProfile.name}</h2>
           <p class="text-[9px] text-stone-500">${factoryProfile.address} • Tel: ${factoryProfile.phone}</p>
           <div class="text-[10px] font-bold mt-1 bg-stone-100 py-0.5 rounded">YUK XATI (CHEK) № ${data.invoiceNo}</div>
@@ -3620,7 +3772,8 @@
         returnsLoss: totalReturnsLoss,
         factoryName: factoryProfile?.name || "Mening Qandolat Fabrikam",
         factoryAddress: factoryProfile?.address || "Jizzax shahri",
-        factoryPhone: factoryProfile?.phone || "+998"
+        factoryPhone: factoryProfile?.phone || "+998",
+        factoryLogo: factoryProfile?.logo || ""
       };
 
       // Save to history archive
@@ -3639,6 +3792,9 @@
       if (!container) return;
 
       const fName = (r.factoryName || "QANDOLAT FABRIKASI").toUpperCase();
+      const logoHtml = (r.factoryLogo || factoryProfile.logo)
+        ? `<div class="mb-1 text-center"><img src="${r.factoryLogo || factoryProfile.logo}" class="h-10 max-w-[140px] mx-auto object-contain" alt="Logo"></div>`
+        : '';
 
       currentActiveReceiptText = [
         "================================",
@@ -3665,6 +3821,7 @@
 
       container.innerHTML = `
         <div class="text-center space-y-1 pb-2 border-b border-dashed border-stone-400">
+          ${logoHtml}
           <div class="text-[10px] text-stone-500 font-sans tracking-widest uppercase">O'ZBEKISTON RESPUBLIKASI</div>
           <h2 class="text-xs font-black tracking-wider">${fName}</h2>
           <div class="text-[9px] text-stone-600">${r.factoryAddress} • ${r.factoryPhone}</div>
