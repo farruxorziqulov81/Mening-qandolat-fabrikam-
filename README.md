@@ -7,7 +7,7 @@
 [![Database](https://img.shields.io/badge/Supabase-PostgreSQL-green?logo=supabase)](https://supabase.com)
 [![UI](https://img.shields.io/badge/Design-Glassmorphism_Berry_Dark-purple)](#)
 
-🌐 **Jonli dastur (Live Demo):** https://meningfabrikam.netlify.app
+🌐 **Jonli dastur (Live Demo):** [https://meningfabrikam.netlify.app](https://meningfabrikam.netlify.app)
 
 ---
 
