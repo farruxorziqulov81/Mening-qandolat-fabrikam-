@@ -507,6 +507,12 @@
               </button>
             </div>
 
+            <!-- Vozvrat Qidiruv va Filtr qatori -->
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-xs"></i>
+              <input type="text" id="returnsSearchInput" oninput="filterReturnsList()" placeholder="Mahsulot, do'kon yoki sababi bo'yicha filtr..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-white/10 bg-white/5 font-medium glass-input">
+            </div>
+
             <div id="returnsContainer" class="space-y-2.5"></div>
           </div>
 
@@ -3248,27 +3254,47 @@
     }
 
     // ================= VOZVRAT (RETURNS) LOGIC =================
-    function renderReturns() {
+    function filterReturnsList() {
+      const inputEl = document.getElementById('returnsSearchInput');
+      const q = (inputEl ? inputEl.value : '').toLowerCase().trim();
+      if (!q) {
+        renderReturns(null);
+        return;
+      }
+      const filtered = returns.filter(r => 
+        (r.product || '').toLowerCase().includes(q) ||
+        (r.shop || '').toLowerCase().includes(q) ||
+        (r.reason || '').toLowerCase().includes(q) ||
+        (r.notes || '').toLowerCase().includes(q) ||
+        (r.date || '').toLowerCase().includes(q)
+      );
+      renderReturns(filtered);
+    }
+
+    function renderReturns(filteredList = null) {
       const container = document.getElementById('returnsContainer');
       if (!container) return;
 
-      if (returns.length === 0) {
+      const list = filteredList !== null ? filteredList : returns;
+
+      if (list.length === 0) {
+        const isSearch = filteredList !== null;
         container.innerHTML = `
           <div class="confectionery-card rounded-[22px] p-6 text-center space-y-3">
-            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto text-xl shadow-xs">
+            <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto text-xl shadow-xs">
               <i class="fa-solid fa-rotate-left"></i>
             </div>
-            <div class="font-bold text-xs text-[var(--choco-dark)]">Hozircha vozvratlar qayd etilmagan</div>
-            <p class="text-[11px] text-stone-400">Do'konlardan qaytgan yaroqsiz tovarlar shu yerda hisoblanadi</p>
-            <button onclick="openAddReturnDialog()" class="px-4 py-2 macaron-btn rounded-xl text-xs font-bold inline-flex items-center space-x-1.5">
+            <div class="font-bold text-xs text-[var(--choco-dark)]">${isSearch ? "Filtr bo'yicha vozvrat topilmadi" : "Hozircha vozvratlar qayd etilmagan"}</div>
+            <p class="text-[11px] text-stone-400">${isSearch ? "Qidiruv so'zini o'zgartirib ko'ring" : "Do'konlardan qaytgan yaroqsiz tovarlar shu yerda hisoblanadi"}</p>
+            ${!isSearch ? `<button onclick="openAddReturnDialog()" class="px-4 py-2 macaron-btn rounded-xl text-xs font-bold inline-flex items-center space-x-1.5">
               <i class="fa-solid fa-plus text-[10px]"></i> <span>Vozvrat qo'shish</span>
-            </button>
+            </button>` : ''}
           </div>
         `;
         return;
       }
 
-      container.innerHTML = returns.map(r => `
+      container.innerHTML = list.map(r => `
         <div class="confectionery-card rounded-[22px] p-3.5 space-y-2">
           <div class="flex justify-between items-start">
             <div class="flex items-center space-x-2.5">
