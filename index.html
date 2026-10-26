@@ -690,13 +690,9 @@
             Barcha ma'lumotlarni xavfsiz JSON fayl qilib telefonga yuklab oling.
           </p>
           <div class="flex space-x-2">
-            <button onclick="exportAllDataJson()" class="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
+            <button onclick="exportAllDataJson()" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
               <i class="fa-solid fa-download text-xs text-rose-400"></i>
               <span>Zaxira yuklash (JSON)</span>
-            </button>
-            <button onclick="openTelegramBotModal()" class="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-sky-400 hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-brands fa-telegram text-xs"></i>
-              <span>Telegram Bot</span>
             </button>
           </div>
         </div>
@@ -1308,13 +1304,10 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-1.5 pt-1 shrink-0 border-t border-[var(--border-soft)]">
-        <button onclick="closeNakladnayaModal()" class="py-2.5 rounded-xl border text-stone-600 text-xs font-semibold">Bekor</button>
-        <button onclick="previewNakladnayaPrint()" class="py-2.5 rounded-xl bg-stone-100 text-stone-800 font-bold text-xs flex items-center justify-center space-x-1 hover:bg-stone-200">
-          <i class="fa-solid fa-print text-[11px]"></i> <span>Chek</span>
-        </button>
-        <button onclick="sendNakladnayaTelegram()" class="py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs flex items-center justify-center space-x-1 shadow-md">
-          <i class="fa-solid fa-paper-plane text-[11px]"></i> <span>Telegram</span>
+      <div class="grid grid-cols-2 gap-2 pt-1 shrink-0 border-t border-[var(--border-soft)]">
+        <button onclick="closeNakladnayaModal()" class="py-2.5 rounded-xl border text-stone-600 text-xs font-semibold">Bekor qilish</button>
+        <button onclick="saveAndPreviewNakladnaya()" class="py-2.5 rounded-xl macaron-btn text-xs font-bold flex items-center justify-center space-x-1.5 shadow-md">
+          <i class="fa-solid fa-receipt text-[11px]"></i> <span>Chek chiqarish</span>
         </button>
       </div>
     </div>
@@ -1405,49 +1398,6 @@
     </div>
   </div>
 
-  <!-- 16. Telegram Bot Settings Modal -->
-  <div id="telegramBotModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
-    <div class="confectionery-card w-full max-w-sm rounded-[28px] p-5 space-y-3.5 shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-2">
-        <div class="flex items-center space-x-2">
-          <i class="fa-brands fa-telegram text-sky-500 text-xl"></i>
-          <div>
-            <h3 class="text-xs font-bold text-[var(--choco-dark)]">Telegram Bot Sozlamalari</h3>
-            <p class="text-[10px] text-stone-400">Avtomatik hisobot olish uchun</p>
-          </div>
-        </div>
-        <button onclick="closeTelegramBotModal()" class="text-stone-400 text-lg">&times;</button>
-      </div>
-
-      <div class="space-y-2.5 text-xs">
-        <div class="bg-sky-50 dark:bg-sky-950/30 p-2.5 rounded-xl text-[10px] text-sky-800 dark:text-sky-300 space-y-1">
-          <p class="font-bold">Qanday ulanadi?</p>
-          <ol class="list-decimal pl-3 space-y-0.5">
-            <li>Telegramda <b>@BotFather</b> ga kirib, <code>/newbot</code> deb yozing.</li>
-            <li>U bergan <b>Token</b> kodini quyidagi maydonga yozing.</li>
-            <li>O'z ID raqamingizni olish uchun <b>@userinfobot</b> ga <code>/start</code> bosing.</li>
-          </ol>
-        </div>
-
-        <div>
-          <label class="block text-stone-500 mb-1">Bot Token (BotFather bergan kod):</label>
-          <input type="text" id="tgBotToken" placeholder="123456789:AAH..." class="w-full p-2.5 border rounded-xl bg-transparent font-medium text-xs">
-        </div>
-        <div>
-          <label class="block text-stone-500 mb-1">Sizning Chat ID (Telegram ID):</label>
-          <input type="text" id="tgChatId" placeholder="Masalan: 987654321" class="w-full p-2.5 border rounded-xl bg-transparent font-medium text-xs">
-        </div>
-      </div>
-
-      <div class="flex space-x-2 pt-2">
-        <button onclick="closeTelegramBotModal()" class="py-2.5 px-3 rounded-xl border text-stone-600 text-xs font-semibold">Bekor</button>
-        <button onclick="testTelegramBotConnection()" class="flex-1 py-2.5 rounded-xl border border-sky-400 text-sky-700 font-bold text-xs hover:bg-sky-50">Sinash</button>
-        <button onclick="saveTelegramBotSettings()" class="flex-1 py-2.5 rounded-xl macaron-btn text-xs font-bold">Saqlash</button>
-      </div>
-    </div>
-  </div>
-
-  
   <!-- Warehouse: Add Ingredient Modal -->
   <div id="addIngredientModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
     <div class="confectionery-card w-full max-w-sm rounded-[24px] p-5 space-y-3.5 shadow-2xl">
@@ -3646,7 +3596,7 @@
       window.print();
     }
 
-    function sendNakladnayaTelegram() {
+    function saveAndPreviewNakladnaya() {
       const data = getNakladnayaData();
       if (data.items.length === 0 || data.totalSum <= 0) {
         alert("Iltimos, mahsulotlarni kiriting!");
@@ -3665,9 +3615,7 @@
         });
         saveStorage('debts', debts);
         renderFinance();
-      }
-
-      if (!data.isDebt) {
+      } else {
         transactions.unshift({
           id: Date.now(),
           type: 'KIRIM',
@@ -3681,76 +3629,9 @@
       }
 
       updateDashboardStats();
-
-      let itemsText = data.items.map((it, idx) => {
-        const pName = it.product.length > 16 ? it.product.substring(0, 15) + '.' : it.product.padEnd(16, ' ');
-        return (idx + 1) + ". " + pName + "\n   " + it.qty + " dona x " + fmtCur(it.price) + " = " + fmtCur(it.sum);
-      }).join('\n');
-
-      const fName = (factoryProfile?.name || "QANDOLAT FABRIKASI").toUpperCase();
-
-      const receiptLines = [
-        "================================",
-        "       RASMIY SAVDO CHEKI       ",
-        "  «" + fName + "»",
-        "================================",
-        "Chek №: " + data.invoiceNo,
-        "Sana:   " + data.dateTime,
-        "Do'kon: " + data.shop,
-        "Mas'ul: " + (data.contact || "Xaridor"),
-        "Tel:    " + (data.phone || "-"),
-        "Yetkazdi: " + (data.driver || "Haydovchi"),
-        "--------------------------------",
-        "№  MAHSULOT VA SUMMASI          ",
-        "--------------------------------",
-        itemsText,
-        "--------------------------------",
-        "JAMI SUMMA:     " + fmtCur(data.totalSum),
-        "To'lov turi:    " + data.payStatus,
-        "================================",
-        "    XARIDINGIZ UCHUN RAHMAT!    ",
-        (factoryProfile?.phone ? "Tel: " + factoryProfile.phone : ""),
-        "================================"
-      ].filter(Boolean).join('\n');
-
       closeNakladnayaModal();
-
-      // If Bot is configured: Send directly to Bot silently without opening telegram.org
-      if (botSettings && botSettings.token && botSettings.chatId) {
-        fetch("https://api.telegram.org/bot" + botSettings.token + "/sendMessage", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: botSettings.chatId,
-            text: "<pre>\n" + receiptLines + "\n</pre>",
-            parse_mode: 'HTML'
-          })
-        })
-        .then(res => res.json())
-        .then(resData => {
-          if (resData.ok) {
-            showToast("Chek Telegram botga yuborildi!", "success");
-            alert("Chek Telegram botingizga muvaffaqiyatli yuborildi!");
-          } else {
-            openNativeTelegramShare(receiptLines);
-          }
-        })
-        .catch(() => {
-          openNativeTelegramShare(receiptLines);
-        });
-      } else {
-        openNativeTelegramShare(receiptLines);
-      }
-    }
-
-    function openNativeTelegramShare(text) {
-      // Use tg:// protocol so it opens Telegram APP directly, not telegram.org in browser!
-      const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-      if (isMobile) {
-        window.location.href = "tg://msg?text=" + encodeURIComponent(text);
-      } else {
-        window.open("https://t.me/share/url?text=" + encodeURIComponent(text), '_blank');
-      }
+      showToast("Savdo muvaffaqiyatli saqlandi!", "success");
+      previewNakladnayaPrint();
     }
 
     
@@ -4065,85 +3946,6 @@
       ].join('\n');
     }
 
-    function sendDailyTelegramReport() {
-      const reportText = generateDailyReportText();
-
-      if (botSettings && botSettings.token && botSettings.chatId) {
-        fetch(`https://api.telegram.org/bot${botSettings.token}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: botSettings.chatId,
-            text: "<pre>\n" + reportText + "\n</pre>",
-            parse_mode: 'HTML'
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.ok) {
-            alert("Kechki hisobot Telegram botingizga muvaffaqiyatli yetkazildi!");
-          } else {
-            window.open(`https://t.me/share/url?text=${encodeURIComponent(reportText)}`, '_blank');
-          }
-        })
-        .catch(() => {
-          window.open(`https://t.me/share/url?text=${encodeURIComponent(reportText)}`, '_blank');
-        });
-      } else {
-        window.open(`https://t.me/share/url?text=${encodeURIComponent(reportText)}`, '_blank');
-      }
-    }
-
-    function openTelegramBotModal() {
-      document.getElementById('tgBotToken').value = botSettings.token || '';
-      document.getElementById('tgChatId').value = botSettings.chatId || '';
-      document.getElementById('telegramBotModal').classList.remove('hidden');
-    }
-
-    function closeTelegramBotModal() {
-      document.getElementById('telegramBotModal').classList.add('hidden');
-    }
-
-    function saveTelegramBotSettings() {
-      botSettings.token = document.getElementById('tgBotToken').value.trim();
-      botSettings.chatId = document.getElementById('tgChatId').value.trim();
-      saveStorage('botSettings', botSettings);
-      alert("Telegram bot sozlamalari saqlandi!");
-      closeTelegramBotModal();
-    }
-
-    function testTelegramBotConnection() {
-      const token = document.getElementById('tgBotToken').value.trim();
-      const chatId = document.getElementById('tgChatId').value.trim();
-      if (!token || !chatId) {
-        alert("Iltimos, Bot Token va Chat ID maydonlarini to'ldiring!");
-        return;
-      }
-
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: `Shirin Dunyo bot ulanishi muvaffaqiyatli sinovdan o'tdi!\nBarcha hisobotlar shu yerga yuboriladi.`
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.ok) {
-          alert("Ajoyib! Telegramingizga sinov xabari yuborildi. Bot to'liq ishlamoqda!");
-        } else if (data.description && data.description.includes("can't initiate conversation")) {
-          alert("Iltimos, avval Telegramda @meningfabrikambot ga kirib, pastdagi START (Boshlash) tugmasini bosing! So'ng qayta Sinash tugmasini bosing.");
-        } else {
-          alert("Xatolik: " + (data.description || "Token yoki Chat ID noto'g'ri!"));
-        }
-      })
-      .catch(err => {
-        alert("Tarmoq xatosi: Telegram serveriga ulanib bo'lmadi.");
-      });
-    }
-
-    
     function openAuthDialog() {
       const modal = document.getElementById('authModal');
       const loggedInView = document.getElementById('authLoggedInView');
