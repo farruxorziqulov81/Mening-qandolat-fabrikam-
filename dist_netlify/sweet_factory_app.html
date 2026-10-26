@@ -1779,23 +1779,31 @@
     function submitLicenseActivation() {
       const input = document.getElementById('lockScreenKeyInput');
       const rawEntered = (input ? input.value : '').trim();
-      const entered = rawEntered.toUpperCase();
-      if (!entered) {
-        alert("Iltimos, aktivatsiya kalitini kiriting!");
+      const enteredUpper = rawEntered.toUpperCase();
+      if (!rawEntered) {
+        alert("Iltimos, aktivatsiya kalitini yoki muallif parolini kiriting!");
         return;
       }
       const devId = getOrCreateDeviceId();
       const expected = calculateKeyForDevice(devId);
 
-      if (entered === expected || entered === MASTER_ADMIN_KEY || rawEntered === 'Farrux2010.' || rawEntered === 'Farrux2010') {
+      const isMatch = (
+        enteredUpper === expected || 
+        enteredUpper === MASTER_ADMIN_KEY || 
+        enteredUpper === 'FARRUX2010.' || 
+        enteredUpper === 'FARRUX2010' ||
+        rawEntered === 'Farrux2010.' || 
+        rawEntered === 'Farrux2010'
+      );
+
+      if (isMatch) {
         localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
         localStorage.setItem('app_is_licensed', 'true');
         const lockModal = document.getElementById('licenseLockModal');
         if (lockModal) lockModal.classList.add('hidden');
         showToast("Dastur muvaffaqiyatli faollashtirildi! Xush kelibsiz!", "success");
-        alert("Tabriklaymiz! Dastur ushbu qurilma uchun to'liq faollashtirildi!");
       } else {
-        alert("Kiritilgan kalit noto'g'ri! Iltimos, muallif Farrux Orziqulov (+998 95 797 27 97) bilan bog'lanib, to'g'ri kalitni oling.");
+        alert("Kiritilgan kalit yoki parol noto'g'ri! Iltimos, muallif Farrux Orziqulov (+998 95 797 27 97) bilan bog'lanib, to'g'ri kalitni oling.");
       }
     }
 
@@ -1814,13 +1822,15 @@
 
     function openMasterAdminUnlock() {
       const pin = prompt("Muallif (Farrux) maxfiy kodini kiriting:");
-      if (pin && (pin.trim() === 'Farrux2010.' || pin.trim() === 'Farrux2010' || pin.trim() === MASTER_ADMIN_KEY)) {
+      if (!pin) return;
+      const cleanUpper = pin.trim().toUpperCase();
+      if (cleanUpper === 'FARRUX2010.' || cleanUpper === 'FARRUX2010' || cleanUpper === MASTER_ADMIN_KEY) {
         localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
         localStorage.setItem('app_is_licensed', 'true');
         const lockModal = document.getElementById('licenseLockModal');
         if (lockModal) lockModal.classList.add('hidden');
-        showToast("Muallif kirishi tasdiqlandi!", "success");
-      } else if (pin !== null) {
+        showToast("Muallif kirishi tasdiqlandi! Xush kelibsiz!", "success");
+      } else {
         alert("Noto'g'ri kod!");
       }
     }
@@ -4308,27 +4318,48 @@
     }
 
     async function handleAuthLogout() {
-      if (confirm("Tizimdan chiqilsinmi? Dastur qaytadan qulflanadi va parolingizni tekshirib ko'rishingiz mumkin bo'ladi.")) {
+      try {
         if (supabaseClient) {
-          try { await supabaseClient.auth.signOut(); } catch (e) {}
+          await supabaseClient.auth.signOut();
         }
-        currentUser = null;
-        updateCloudBadge(false);
-        localStorage.removeItem('app_is_licensed');
-        localStorage.removeItem('app_license_key');
-        closeAuthDialog();
-        showToast("Tizimdan chiqildi va dastur qulflandi", "info");
-        setTimeout(() => {
-          window.location.reload();
-        }, 400);
+      } catch (e) {
+        console.warn('Supabase signOut:', e);
+      }
+      currentUser = null;
+      updateCloudBadge(false);
+      localStorage.removeItem('app_is_licensed');
+      localStorage.removeItem('app_license_key');
+      closeAuthDialog();
+      showToast("Tizimdan chiqildi va dastur qulflandi!", "info");
+
+      const lockModal = document.getElementById('licenseLockModal');
+      if (lockModal) {
+        const devIdEl = document.getElementById('lockScreenDeviceId');
+        if (devIdEl) devIdEl.innerText = getOrCreateDeviceId();
+        const input = document.getElementById('lockScreenKeyInput');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+        lockModal.classList.remove('hidden');
       }
     }
 
     function adminLockAppForTesting() {
-      if (confirm("Dasturni qayta qulflab, parolni tekshirib ko'rmoqchimisiz?")) {
-        localStorage.removeItem('app_is_licensed');
-        localStorage.removeItem('app_license_key');
-        window.location.reload();
+      localStorage.removeItem('app_is_licensed');
+      localStorage.removeItem('app_license_key');
+      showToast("Dastur qulflandi! Parolingizni tekshirib ko'ring", "info");
+
+      const lockModal = document.getElementById('licenseLockModal');
+      if (lockModal) {
+        const devIdEl = document.getElementById('lockScreenDeviceId');
+        if (devIdEl) devIdEl.innerText = getOrCreateDeviceId();
+        const input = document.getElementById('lockScreenKeyInput');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+        lockModal.classList.remove('hidden');
       }
     }
 
@@ -4508,7 +4539,9 @@
       checkLicenseStatusOnBoot();
 
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          reg.update();
+        }).catch(() => {});
       }
     });
   </script>
