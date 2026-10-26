@@ -804,6 +804,12 @@
                 </button>
               </div>
             </div>
+            <div class="pt-1 border-t border-white/10">
+              <button onclick="adminLockAppForTesting()" class="w-full py-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 font-bold text-[11px] hover:bg-rose-500/25 transition flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-lock text-xs"></i>
+                <span>Dasturni Qulflash (Parolni tekshirib ko'rish)</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -4302,13 +4308,28 @@
     }
 
     async function handleAuthLogout() {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
+      if (confirm("Tizimdan chiqilsinmi? Dastur qaytadan qulflanadi va parolingizni tekshirib ko'rishingiz mumkin bo'ladi.")) {
+        if (supabaseClient) {
+          try { await supabaseClient.auth.signOut(); } catch (e) {}
+        }
+        currentUser = null;
+        updateCloudBadge(false);
+        localStorage.removeItem('app_is_licensed');
+        localStorage.removeItem('app_license_key');
+        closeAuthDialog();
+        showToast("Tizimdan chiqildi va dastur qulflandi", "info");
+        setTimeout(() => {
+          window.location.reload();
+        }, 400);
       }
-      currentUser = null;
-      updateCloudBadge(false);
-      closeAuthDialog();
-      showToast("Tizimdan chiqildi", "info");
+    }
+
+    function adminLockAppForTesting() {
+      if (confirm("Dasturni qayta qulflab, parolni tekshirib ko'rmoqchimisiz?")) {
+        localStorage.removeItem('app_is_licensed');
+        localStorage.removeItem('app_license_key');
+        window.location.reload();
+      }
     }
 
     function showAuthAlert(msg, type) {
