@@ -1713,7 +1713,7 @@
     // ==========================================
     const LICENSE_SALT = "FARRUX_SWEET_FACTORY_SECRET_2026_KEY";
     const MASTER_ADMIN_KEY = "FARRUX-2026-ADMIN";
-    const MASTER_ADMIN_PIN = "7777";
+    const MASTER_ADMIN_PIN = "Farrux2010.";
 
     function getOrCreateDeviceId() {
       let id = localStorage.getItem('app_device_id');
@@ -1772,7 +1772,8 @@
 
     function submitLicenseActivation() {
       const input = document.getElementById('lockScreenKeyInput');
-      const entered = (input ? input.value : '').toUpperCase().trim();
+      const rawEntered = (input ? input.value : '').trim();
+      const entered = rawEntered.toUpperCase();
       if (!entered) {
         alert("Iltimos, aktivatsiya kalitini kiriting!");
         return;
@@ -1780,8 +1781,8 @@
       const devId = getOrCreateDeviceId();
       const expected = calculateKeyForDevice(devId);
 
-      if (entered === expected || entered === MASTER_ADMIN_KEY) {
-        localStorage.setItem('app_license_key', entered);
+      if (entered === expected || entered === MASTER_ADMIN_KEY || rawEntered === 'Farrux2010.' || rawEntered === 'Farrux2010') {
+        localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
         localStorage.setItem('app_is_licensed', 'true');
         const lockModal = document.getElementById('licenseLockModal');
         if (lockModal) lockModal.classList.add('hidden');
@@ -1807,7 +1808,7 @@
 
     function openMasterAdminUnlock() {
       const pin = prompt("Muallif (Farrux) maxfiy kodini kiriting:");
-      if (pin === MASTER_ADMIN_PIN || pin === MASTER_ADMIN_KEY) {
+      if (pin && (pin.trim() === 'Farrux2010.' || pin.trim() === 'Farrux2010' || pin.trim() === MASTER_ADMIN_KEY)) {
         localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
         localStorage.setItem('app_is_licensed', 'true');
         const lockModal = document.getElementById('licenseLockModal');
