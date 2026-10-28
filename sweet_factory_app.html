@@ -901,9 +901,21 @@
               <i class="fa-solid fa-cake-candles text-[11px]"></i>
               <span>1. Chiqarilgan shirinliklar (Nechta chiqdi?)</span>
             </h4>
-            <span class="text-[9px] text-[var(--text-muted)] font-medium">Miqdorini kiriting</span>
+            <span class="text-[9px] text-[var(--text-muted)] font-medium">O'zingiz tanlang</span>
           </div>
-          <div id="batchProductsContainer" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+
+          <!-- Shirinlik tanlash qatori -->
+          <div class="flex items-center space-x-1.5">
+            <select id="batchSweetSelectPicker" onchange="handleAddSelectedSweetFromSelect()" class="flex-1 text-xs py-2 px-2.5 rounded-xl glass-input border border-white/10 font-bold text-[var(--text-main)]">
+              <!-- Populated via JS -->
+            </select>
+            <button type="button" onclick="handleAddSelectedSweetFromBtn()" class="px-3 py-2 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold text-xs hover:bg-rose-500/30 transition shrink-0 flex items-center space-x-1">
+              <i class="fa-solid fa-plus text-[10px]"></i> <span>Qo'shish</span>
+            </button>
+          </div>
+
+          <!-- Tanlangan shirinliklar ro'yxati -->
+          <div id="batchSelectedProductsContainer" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
         </div>
 
         <!-- 2-Qism: Ombordan ketgan xomashyolar -->
@@ -913,9 +925,21 @@
               <i class="fa-solid fa-boxes-stacked text-[11px]"></i>
               <span>2. Ombordan sarflangan xomashyo (Qancha ketdi?)</span>
             </h4>
-            <span class="text-[9px] text-[var(--text-muted)] font-medium">Ketgan miqdor</span>
+            <span class="text-[9px] text-[var(--text-muted)] font-medium">O'zingiz tanlang</span>
           </div>
-          <div id="batchIngredientsContainer" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+
+          <!-- Xomashyo tanlash qatori -->
+          <div class="flex items-center space-x-1.5">
+            <select id="batchIngredientSelectPicker" onchange="handleAddSelectedIngredientFromSelect()" class="flex-1 text-xs py-2 px-2.5 rounded-xl glass-input border border-white/10 font-bold text-[var(--text-main)]">
+              <!-- Populated via JS -->
+            </select>
+            <button type="button" onclick="handleAddSelectedIngredientFromBtn()" class="px-3 py-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold text-xs hover:bg-amber-500/30 transition shrink-0 flex items-center space-x-1">
+              <i class="fa-solid fa-plus text-[10px]"></i> <span>Qo'shish</span>
+            </button>
+          </div>
+
+          <!-- Tanlangan xomashyolar ro'yxati -->
+          <div id="batchSelectedIngredientsContainer" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
         </div>
 
         <!-- 3-Qism: Yakuniy hisob-kitob -->
@@ -3726,6 +3750,9 @@
     // ==========================================
     // BUGUNGI BUYURTMALAR & ISHLAB CHIQARISH PARTIYASI
     // ==========================================
+    let currentBatchProducts = [];
+    let currentBatchIngredients = [];
+
     function openDailyProductionBatchModal() {
       const modal = document.getElementById('dailyProductionBatchModal');
       if (!modal) return;
@@ -3735,8 +3762,12 @@
         dateInput.value = new Date().toISOString().split('T')[0];
       }
 
-      renderBatchProductsList();
-      renderBatchIngredientsList();
+      currentBatchProducts = [];
+      currentBatchIngredients = [];
+
+      populateBatchPickers();
+      renderSelectedBatchProducts();
+      renderSelectedBatchIngredients();
       calculateBatchTotals();
 
       modal.classList.remove('hidden');
@@ -3747,86 +3778,247 @@
       if (modal) modal.classList.add('hidden');
     }
 
-    function renderBatchProductsList() {
-      const container = document.getElementById('batchProductsContainer');
+    function populateBatchPickers() {
+      const sweetSelect = document.getElementById('batchSweetSelectPicker');
+      if (sweetSelect) {
+        sweetSelect.innerHTML = `<option value="">🍰 Shirinlikni tanlang (${(sweetProducts || []).length} xil mavjud)...</option>` +
+          (sweetProducts || []).map(p => `<option value="${p.id}">${p.name} (${fmtCur(p.price)}/${p.unit || 'dona'})</option>`).join('');
+      }
+
+      const ingSelect = document.getElementById('batchIngredientSelectPicker');
+      if (ingSelect) {
+        ingSelect.innerHTML = `<option value="">🌾 Ishlatilgan xomashyoni tanlang (${(ingredients || []).length} xil)...</option>` +
+          (ingredients || []).map(i => `<option value="${i.id}">${i.name} (Qoldiq: ${i.qty} ${i.unit})</option>`).join('');
+      }
+    }
+
+    // --- Shirinlik qo'shish va boshqarish ---
+    function addSelectedProductToBatch(prodId) {
+      if (!prodId) return;
+      const id = parseInt(prodId);
+      const p = (sweetProducts || []).find(x => x.id === id);
+      if (!p) return;
+
+      const existing = currentBatchProducts.find(x => x.id === id);
+      if (existing) {
+        const el = document.getElementById(`batch_prod_${id}`);
+        if (el) el.focus();
+        return;
+      }
+
+      currentBatchProducts.push({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        price: p.price,
+        unit: p.unit || 'dona',
+        qty: ''
+      });
+
+      renderSelectedBatchProducts();
+      calculateBatchTotals();
+
+      const select = document.getElementById('batchSweetSelectPicker');
+      if (select) select.value = '';
+
+      setTimeout(() => {
+        const el = document.getElementById(`batch_prod_${id}`);
+        if (el) el.focus();
+      }, 50);
+    }
+
+    function handleAddSelectedSweetFromSelect() {
+      const select = document.getElementById('batchSweetSelectPicker');
+      if (select && select.value) {
+        addSelectedProductToBatch(select.value);
+      }
+    }
+
+    function handleAddSelectedSweetFromBtn() {
+      const select = document.getElementById('batchSweetSelectPicker');
+      if (select && select.value) {
+        addSelectedProductToBatch(select.value);
+      } else {
+        showToast("Ro'yxatdan shirinlikni tanlang!", "warning");
+      }
+    }
+
+    function removeSelectedBatchProduct(id) {
+      currentBatchProducts = currentBatchProducts.filter(x => x.id !== id);
+      renderSelectedBatchProducts();
+      calculateBatchTotals();
+    }
+
+    function updateBatchProductQty(id, val) {
+      const item = currentBatchProducts.find(x => x.id === id);
+      if (item) {
+        item.qty = val;
+      }
+      calculateBatchTotals();
+    }
+
+    function renderSelectedBatchProducts() {
+      const container = document.getElementById('batchSelectedProductsContainer');
       if (!container) return;
 
-      if (!sweetProducts || sweetProducts.length === 0) {
+      if (currentBatchProducts.length === 0) {
         container.innerHTML = `
-          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-white/10">
-            Hali shirinliklar kiritilmagan. Avval «Shirinliklar» bo'limida mahsulot qo'shing.
+          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
+            <i class="fa-solid fa-cake-candles mb-1 text-sm text-rose-400 opacity-60 block"></i>
+            Hali shirinlik tanlanmadi. Yuqoridagi ro'yxatdan tanlang.
           </div>
         `;
         return;
       }
 
-      container.innerHTML = sweetProducts.map(prod => `
-        <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-rose-500/30 transition">
-          <div class="min-w-0 flex-1">
-            <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${prod.name}</h4>
-            <div class="text-[10px] text-[var(--text-muted)]">Narxi: <span class="text-emerald-400 font-semibold">${fmtCur(prod.price)} / ${prod.unit || 'dona'}</span></div>
-          </div>
-          <div class="flex items-center space-x-1.5 shrink-0">
-            <div class="relative w-28">
-              <input type="number" min="0" step="any" id="batch_prod_${prod.id}" oninput="calculateBatchTotals()" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-rose-500">
-              <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${prod.unit || 'dona'}</span>
+      container.innerHTML = currentBatchProducts.map(prod => {
+        const subtotal = (parseFloat(prod.qty) || 0) * (prod.price || 0);
+        return `
+          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-rose-500/30 transition">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${prod.name}</h4>
+              <div class="text-[10px] text-[var(--text-muted)]">
+                Narxi: <span class="text-emerald-400 font-semibold">${fmtCur(prod.price)} / ${prod.unit}</span>
+                ${subtotal > 0 ? `• Jami: <span class="text-white font-bold">${fmtCur(subtotal)}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <div class="relative w-28">
+                <input type="number" min="0" step="any" id="batch_prod_${prod.id}" value="${prod.qty !== '' ? prod.qty : ''}" oninput="updateBatchProductQty(${prod.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-rose-500">
+                <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${prod.unit}</span>
+              </div>
+              <button type="button" onclick="removeSelectedBatchProduct(${prod.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition" title="O'chirish">
+                <i class="fa-solid fa-trash-can text-[11px]"></i>
+              </button>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    function renderBatchIngredientsList() {
-      const container = document.getElementById('batchIngredientsContainer');
+    // --- Xomashyo qo'shish va boshqarish ---
+    function addSelectedIngredientToBatch(ingId) {
+      if (!ingId) return;
+      const id = parseInt(ingId);
+      const ing = (ingredients || []).find(x => x.id === id);
+      if (!ing) return;
+
+      const existing = currentBatchIngredients.find(x => x.id === id);
+      if (existing) {
+        const el = document.getElementById(`batch_ing_${id}`);
+        if (el) el.focus();
+        return;
+      }
+
+      currentBatchIngredients.push({
+        id: ing.id,
+        name: ing.name,
+        qty: ing.qty,
+        unit: ing.unit,
+        price: ing.price,
+        usedQty: ''
+      });
+
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+
+      const select = document.getElementById('batchIngredientSelectPicker');
+      if (select) select.value = '';
+
+      setTimeout(() => {
+        const el = document.getElementById(`batch_ing_${id}`);
+        if (el) el.focus();
+      }, 50);
+    }
+
+    function handleAddSelectedIngredientFromSelect() {
+      const select = document.getElementById('batchIngredientSelectPicker');
+      if (select && select.value) {
+        addSelectedIngredientToBatch(select.value);
+      }
+    }
+
+    function handleAddSelectedIngredientFromBtn() {
+      const select = document.getElementById('batchIngredientSelectPicker');
+      if (select && select.value) {
+        addSelectedIngredientToBatch(select.value);
+      } else {
+        showToast("Ro'yxatdan xomashyoni tanlang!", "warning");
+      }
+    }
+
+    function removeSelectedBatchIng(id) {
+      currentBatchIngredients = currentBatchIngredients.filter(x => x.id !== id);
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+    }
+
+    function updateBatchIngredientQty(id, val) {
+      const item = currentBatchIngredients.find(x => x.id === id);
+      if (item) {
+        item.usedQty = val;
+      }
+      calculateBatchTotals();
+    }
+
+    function renderSelectedBatchIngredients() {
+      const container = document.getElementById('batchSelectedIngredientsContainer');
       if (!container) return;
 
-      if (!ingredients || ingredients.length === 0) {
+      if (currentBatchIngredients.length === 0) {
         container.innerHTML = `
-          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-white/10">
-            Omborda xomashyo yo'q. Avval omborga mahsulot qabul qiling.
+          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
+            <i class="fa-solid fa-boxes-stacked mb-1 text-sm text-amber-400 opacity-60 block"></i>
+            Hali xomashyo tanlanmadi. Yuqoridagi ro'yxatdan tanlang.
           </div>
         `;
         return;
       }
 
-      container.innerHTML = ingredients.map(ing => `
-        <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-amber-500/30 transition">
-          <div class="min-w-0 flex-1">
-            <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${ing.name}</h4>
-            <div class="text-[10px] text-[var(--text-muted)]">
-              Omborda bor: <b class="text-white">${ing.qty} ${ing.unit}</b> • 
-              Tan narxi: <span class="text-rose-400 font-semibold">${fmtCur(ing.price)}/${ing.unit}</span>
+      container.innerHTML = currentBatchIngredients.map(ing => {
+        const cost = (parseFloat(ing.usedQty) || 0) * (ing.price || 0);
+        return `
+          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-amber-500/30 transition">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${ing.name}</h4>
+              <div class="text-[10px] text-[var(--text-muted)]">
+                Omborda: <b class="text-white">${ing.qty} ${ing.unit}</b> • 
+                Narx: <span class="text-rose-400 font-semibold">${fmtCur(ing.price)}/${ing.unit}</span>
+                ${cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(cost)}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <div class="relative w-28">
+                <input type="number" min="0" step="any" id="batch_ing_${ing.id}" value="${ing.usedQty !== '' ? ing.usedQty : ''}" oninput="updateBatchIngredientQty(${ing.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-amber-500">
+                <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${ing.unit}</span>
+              </div>
+              <button type="button" onclick="removeSelectedBatchIng(${ing.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition" title="O'chirish">
+                <i class="fa-solid fa-trash-can text-[11px]"></i>
+              </button>
             </div>
           </div>
-          <div class="flex items-center space-x-1.5 shrink-0">
-            <div class="relative w-28">
-              <input type="number" min="0" step="any" id="batch_ing_${ing.id}" oninput="calculateBatchTotals()" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-amber-500">
-              <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${ing.unit}</span>
-            </div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
+    // --- Hisob-kitob va Yakuniy Saqlash ---
     function calculateBatchTotals() {
       let totalProducedQty = 0;
       let totalProducedVal = 0;
       let totalExpenseCost = 0;
 
-      (sweetProducts || []).forEach(prod => {
-        const el = document.getElementById(`batch_prod_${prod.id}`);
-        const q = parseFloat(el?.value) || 0;
+      currentBatchProducts.forEach(p => {
+        const q = parseFloat(p.qty) || 0;
         if (q > 0) {
           totalProducedQty += q;
-          totalProducedVal += (q * (prod.price || 0));
+          totalProducedVal += (q * (p.price || 0));
         }
       });
 
-      (ingredients || []).forEach(ing => {
-        const el = document.getElementById(`batch_ing_${ing.id}`);
-        const q = parseFloat(el?.value) || 0;
+      currentBatchIngredients.forEach(i => {
+        const q = parseFloat(i.usedQty) || 0;
         if (q > 0) {
-          totalExpenseCost += (q * (ing.price || 0));
+          totalExpenseCost += (q * (i.price || 0));
         }
       });
 
@@ -3844,57 +4036,35 @@
       const autoDeduct = document.getElementById('batchAutoDeduct')?.checked ?? true;
       const autoExpense = document.getElementById('batchAutoExpense')?.checked ?? true;
 
-      const producedItems = [];
-      let totalProducedQty = 0;
-      let totalProducedVal = 0;
+      const validProducts = currentBatchProducts.filter(p => (parseFloat(p.qty) || 0) > 0);
+      const validIngredients = currentBatchIngredients.filter(i => (parseFloat(i.usedQty) || 0) > 0);
 
-      (sweetProducts || []).forEach(prod => {
-        const el = document.getElementById(`batch_prod_${prod.id}`);
-        const q = parseFloat(el?.value) || 0;
-        if (q > 0) {
-          producedItems.push({
-            id: prod.id,
-            name: prod.name,
-            qty: q,
-            unit: prod.unit || 'dona',
-            price: prod.price || 0,
-            val: q * (prod.price || 0)
-          });
-          totalProducedQty += q;
-          totalProducedVal += (q * (prod.price || 0));
-        }
-      });
-
-      const usedIngredients = [];
-      let totalExpenseCost = 0;
-
-      (ingredients || []).forEach(ing => {
-        const el = document.getElementById(`batch_ing_${ing.id}`);
-        const q = parseFloat(el?.value) || 0;
-        if (q > 0) {
-          usedIngredients.push({
-            id: ing.id,
-            name: ing.name,
-            qty: q,
-            unit: ing.unit,
-            price: ing.price || 0,
-            cost: q * (ing.price || 0)
-          });
-          totalExpenseCost += (q * (ing.price || 0));
-        }
-      });
-
-      if (producedItems.length === 0 && usedIngredients.length === 0) {
+      if (validProducts.length === 0 && validIngredients.length === 0) {
         showToast("Kamida bitta shirinlik yoki sarflangan xomashyo miqdorini kiriting!", "warning");
         return;
       }
 
+      let totalExpenseCost = 0;
+      validIngredients.forEach(i => {
+        const q = parseFloat(i.usedQty) || 0;
+        totalExpenseCost += (q * (i.price || 0));
+      });
+
+      let totalProducedQty = 0;
+      let totalProducedVal = 0;
+      validProducts.forEach(p => {
+        const q = parseFloat(p.qty) || 0;
+        totalProducedQty += q;
+        totalProducedVal += (q * (p.price || 0));
+      });
+
       // 1. Deduct from warehouse ingredients if autoDeduct
-      if (autoDeduct && usedIngredients.length > 0) {
-        usedIngredients.forEach(u => {
+      if (autoDeduct && validIngredients.length > 0) {
+        validIngredients.forEach(u => {
           const ing = ingredients.find(i => i.id === u.id);
           if (ing) {
-            ing.qty = Math.max(0, Math.round((ing.qty - u.qty) * 100) / 100);
+            const used = parseFloat(u.usedQty) || 0;
+            ing.qty = Math.max(0, Math.round((ing.qty - used) * 100) / 100);
           }
         });
         saveStorage('ingredients', ingredients);
@@ -3903,7 +4073,7 @@
 
       // 2. Add expense transaction to finance if autoExpense
       if (autoExpense && totalExpenseCost > 0) {
-        const desc = "Ishlab chiqarish uchun sarflangan xomashyo: " + usedIngredients.map(u => `${u.name} (${u.qty} ${u.unit})`).join(', ');
+        const desc = "Ishlab chiqarish uchun sarflangan xomashyo: " + validIngredients.map(u => `${u.name} (${u.usedQty} ${u.unit})`).join(', ');
         const tx = {
           id: Date.now(),
           type: 'CHIQIM',
@@ -3918,15 +4088,15 @@
       }
 
       // 3. Save produced items to productionLogs
-      producedItems.forEach((p, idx) => {
+      validProducts.forEach((p, idx) => {
         productionLogs.unshift({
           id: Date.now() + idx,
           name: p.name,
-          qty: p.qty,
-          unit: p.unit,
+          qty: parseFloat(p.qty) || 0,
+          unit: p.unit || 'dona',
           date: batchDate,
           staff: "Qandolat sexi",
-          notes: "Bugungi ishlab chiqarish buyurtmasi"
+          notes: "Bugungi ishlab chiqarish partiyasi"
         });
       });
       saveStorage('logs', productionLogs);
@@ -3936,8 +4106,8 @@
       batches.unshift({
         id: Date.now(),
         date: batchDate,
-        producedItems,
-        usedIngredients,
+        producedItems: validProducts,
+        usedIngredients: validIngredients,
         totalQty: totalProducedQty,
         totalVal: totalProducedVal,
         totalExpense: totalExpenseCost,
@@ -3952,7 +4122,7 @@
       }
 
       closeDailyProductionBatchModal();
-      showToast(`Bugungi ishlab chiqarish va xomashyo chiqimi (${fmtCur(totalExpenseCost)}) saqlandi!`, "success");
+      showToast(`Bugungi partiya saqlandi! Chiqim: ${fmtCur(totalExpenseCost)}`, "success");
     }
 
     // New Production
