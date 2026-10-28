@@ -1,7 +1,9 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T08:10:20.553Z",
-  "blocked_devices": [],
+  "updated_at": "2026-10-28T08:13:06.378Z",
+  "blocked_devices": [
+    "DEV-DZN8U"
+  ],
   "clients": [
     {
       "id": "CLI-001",
@@ -18,7 +20,7 @@
       "phone": "+998",
       "deviceId": "DEV-DZN8U",
       "key": "KEY-W48NYM",
-      "status": "active",
+      "status": "blocked",
       "plan": "Ulangan Qurilma",
       "createdAt": "2026-10-28",
       "lastSeen": "2026-10-28 08:10"
