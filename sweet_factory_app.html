@@ -218,8 +218,12 @@
       </div>
 
       <div class="space-y-1">
-        <h2 class="text-base font-black text-white">Dastur Faollashtirilmagan</h2>
-        <p class="text-[11px] text-stone-400">«Mening Qandolat Fabrikam» professional biznes tizimi litsenziya talab qiladi.</p>
+        <h2 id="lockScreenTitle" class="text-base font-black text-white">Dastur Faollashtirilmagan</h2>
+        <p id="lockScreenSubtitle" class="text-[11px] text-stone-400">«Mening Qandolat Fabrikam» professional biznes tizimi litsenziya talab qiladi.</p>
+        <div id="lockScreenReasonBox" class="hidden text-xs p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold text-center leading-relaxed mt-1">
+          <i class="fa-solid fa-triangle-exclamation mr-1 text-rose-400"></i>
+          <span id="lockScreenReasonText"></span>
+        </div>
       </div>
 
       <!-- Author Contact Card -->
@@ -269,10 +273,14 @@
         </button>
       </div>
 
-      <!-- Secret Admin Trigger -->
-      <div class="pt-1">
+      <!-- Secret Admin Trigger & Console -->
+      <div class="pt-2 flex flex-col items-center space-y-1.5 border-t border-white/5">
+        <button onclick="openMasterAdminConsole()" class="text-xs text-rose-400 font-bold hover:underline flex items-center space-x-1.5 py-1 px-3 rounded-lg hover:bg-white/5 transition">
+          <i class="fa-solid fa-crown text-[11px]"></i>
+          <span>Muallif Boshqaruv Markazi (Farrux)</span>
+        </button>
         <button onclick="openMasterAdminUnlock()" class="text-[10px] text-stone-500 hover:text-stone-300 transition">
-          Muallif (Farrux) uchun maxsus kirish
+          Tezkor PIN bilan dasturni ochish
         </button>
       </div>
     </div>
@@ -772,51 +780,57 @@
           </div>
         </div>
 
-        <!-- FARUX ADMIN: Litsenziyalar Generatori -->
-        <div class="erp-card p-4 space-y-3 border-l-4 border-l-emerald-500">
+        <!-- SUPER ADMIN & MIJOZLAR BOSHQARUVI (FARRUX UCHUN) -->
+        <div class="erp-card p-4 space-y-3 border-l-4 border-l-rose-500 bg-gradient-to-r from-rose-500/10 via-slate-900/40 to-indigo-500/10 shadow-lg">
           <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <div class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-sm font-bold">
-                <i class="fa-solid fa-key"></i>
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-lg ring-2 ring-rose-500/20">
+                <i class="fa-solid fa-crown"></i>
               </div>
               <div>
-                <h3 class="text-xs font-bold text-[var(--text-main)]">Mijozlar uchun Kalit Generatori</h3>
-                <p class="text-[10px] text-[var(--text-muted)]">Faqat muallif (Farrux) uchun</p>
+                <h3 class="text-xs font-black text-white">Bosh Admin & Mijozlar Nazorati</h3>
+                <p class="text-[10px] text-stone-400">Ulangan qurilmalarni ko'rish, chiqarish va kalit berish</p>
               </div>
             </div>
-            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold">Farrux Admin</span>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-black border border-rose-500/30">FARRUX</span>
           </div>
-          <div class="space-y-2 text-xs">
-            <div>
-              <label class="block text-[var(--text-muted)] text-[10px] mb-1">Mijoz telefonidagi Qurilma ID sini kiriting:</label>
-              <input type="text" id="adminGenDeviceIdInput" placeholder="Masalan: DEV-8392" class="w-full p-2.5 glass-input font-mono font-bold text-xs uppercase">
+
+          <button onclick="openMasterAdminConsole()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-indigo-600 text-white font-black text-xs hover:opacity-90 transition flex items-center justify-center space-x-2 shadow-md">
+            <i class="fa-solid fa-sliders text-xs"></i>
+            <span>Mijozlar va Qurilmalar Boshqaruv Markazi</span>
+          </button>
+
+          <!-- Tezkor Kalit Generatori (Farrux uchun) -->
+          <div class="pt-2 border-t border-white/10 space-y-2 text-xs">
+            <label class="block text-[var(--text-muted)] text-[10px]">Tezkor kalit yaratish (Qurilma ID sini kiriting):</label>
+            <div class="flex space-x-2">
+              <input type="text" id="adminGenDeviceIdInput" placeholder="Masalan: DEV-8392" class="flex-1 p-2 glass-input font-mono font-bold text-xs uppercase">
+              <button onclick="adminGenerateClientKey()" class="px-3 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition shrink-0 flex items-center space-x-1">
+                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+                <span>Kalit</span>
+              </button>
             </div>
-            <button onclick="adminGenerateClientKey()" class="w-full py-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
-              <span>Mijoz uchun Kalit Yaratish</span>
-            </button>
-            <div id="adminGenResultBox" class="hidden p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-1">
-              <div class="text-[10px] text-emerald-400 font-bold">Mijozga jo'natiladigan kalit:</div>
+            <div id="adminGenResultBox" class="hidden p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-1">
               <div class="flex items-center justify-between">
-                <span id="adminGenResultKey" class="font-mono text-sm font-black text-white tracking-wider">KEY-XXXXXX</span>
-                <button onclick="copyGeneratedKey()" class="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-900 font-bold text-[10px]">
+                <span id="adminGenResultKey" class="font-mono text-xs font-black text-white tracking-wider">KEY-XXXXXX</span>
+                <button onclick="copyGeneratedKey()" class="px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-900 font-bold text-[9px]">
                   Nusxa olish
                 </button>
               </div>
             </div>
-            <div class="pt-1 border-t border-white/10">
-              <button onclick="adminLockAppForTesting()" class="w-full py-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 font-bold text-[11px] hover:bg-rose-500/25 transition flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-lock text-xs"></i>
-                <span>Dasturni Qulflash (Parolni tekshirib ko'rish)</span>
-              </button>
-            </div>
           </div>
         </div>
 
-        <div class="pt-1">
-          <button onclick="handleAuthLogout()" class="w-full py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold hover:bg-rose-500/20 transition flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
-            <span>Tizimdan Chiqish</span>
+        <!-- PASTKI CHIQISH VA SHARTNOMANI TUGATISH BO'LIMI -->
+        <div class="pt-2 space-y-2">
+          <button onclick="handleAuthLogout()" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-stone-300 text-xs font-bold hover:bg-white/10 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-lock text-xs text-rose-400"></i>
+            <span>Dasturni Qulflash (Vaqtinchalik chiqish)</span>
+          </button>
+
+          <button onclick="openContractTerminationModal()" class="w-full py-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-ban text-xs text-rose-400"></i>
+            <span>Shartnomani Tugatish va Qurilmani Bo'shatish</span>
           </button>
         </div>
       </div>
@@ -1748,7 +1762,17 @@
       return 'KEY-' + raw.slice(0, 6);
     }
 
+    function isDeviceBlocked(devId) {
+      if (!devId) devId = getOrCreateDeviceId();
+      const blocked = JSON.parse(localStorage.getItem('sweet_app_admin_blocked_devices') || '[]');
+      return blocked.includes(devId);
+    }
+
     function isAppLicensed() {
+      const devId = getOrCreateDeviceId();
+      if (isDeviceBlocked(devId)) {
+        return false;
+      }
       if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return true;
       }
@@ -1758,7 +1782,6 @@
       const savedKey = localStorage.getItem('app_license_key');
       if (!savedKey) return false;
 
-      const devId = getOrCreateDeviceId();
       const expectedKey = calculateKeyForDevice(devId);
       return (savedKey === expectedKey || savedKey === MASTER_ADMIN_KEY);
     }
@@ -1767,12 +1790,22 @@
       const devId = getOrCreateDeviceId();
       const lockModal = document.getElementById('licenseLockModal');
       const devIdEl = document.getElementById('lockScreenDeviceId');
+      const reasonBox = document.getElementById('lockScreenReasonBox');
+      const reasonText = document.getElementById('lockScreenReasonText');
       if (devIdEl) devIdEl.innerText = devId;
 
-      if (!isAppLicensed()) {
+      if (isDeviceBlocked(devId)) {
         if (lockModal) lockModal.classList.remove('hidden');
+        if (reasonBox && reasonText) {
+          reasonText.innerText = "Ushbu qurilma litsenziyasi muallif (Farrux) tomonidan to'xtatildi yoki shartnoma muddati tugadi!";
+          reasonBox.classList.remove('hidden');
+        }
+      } else if (!isAppLicensed()) {
+        if (lockModal) lockModal.classList.remove('hidden');
+        if (reasonBox) reasonBox.classList.add('hidden');
       } else {
         if (lockModal) lockModal.classList.add('hidden');
+        if (reasonBox) reasonBox.classList.add('hidden');
       }
     }
 
@@ -1864,6 +1897,389 @@
       } else {
         prompt("Mijoz kaliti:", key);
       }
+    }
+
+    // ==========================================
+    // MASTER ADMIN & DEVICE REGISTRY (FARRUX CONTROL)
+    // ==========================================
+    let isMasterAdminAuthenticated = false;
+
+    let adminClientsRegistry = loadStorage('admin_clients', [
+      {
+        id: "CLI-001",
+        name: "Farrux Qandolat Fabrikasi (Muallif)",
+        phone: "+998 95 797 27 97",
+        deviceId: "DEV-FARRUX",
+        key: "FARRUX-2026-ADMIN",
+        status: "active",
+        plan: "Muddatsiz (Muallif)",
+        createdAt: "2026-10-26"
+      }
+    ]);
+
+    let adminBlockedDevices = loadStorage('admin_blocked_devices', []);
+
+    async function checkRemoteLicenseRevocation() {
+      const currentDevId = getOrCreateDeviceId();
+      try {
+        const res = await fetch('./license_registry.json?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.blocked_devices)) {
+            adminBlockedDevices = Array.from(new Set([...adminBlockedDevices, ...data.blocked_devices]));
+            saveStorage('admin_blocked_devices', adminBlockedDevices);
+          }
+          if (data && Array.isArray(data.clients)) {
+            if (adminClientsRegistry.length <= 1 && data.clients.length > 1) {
+              adminClientsRegistry = data.clients;
+              saveStorage('admin_clients', adminClientsRegistry);
+            }
+          }
+        }
+      } catch (e) {}
+
+      if (isDeviceBlocked(currentDevId)) {
+        localStorage.removeItem('app_is_licensed');
+        localStorage.removeItem('app_license_key');
+        if (supabaseClient) {
+          try { await supabaseClient.auth.signOut(); } catch (err) {}
+        }
+        currentUser = null;
+        updateCloudBadge(false);
+        const lockModal = document.getElementById('licenseLockModal');
+        if (lockModal) {
+          lockModal.classList.remove('hidden');
+          const reasonBox = document.getElementById('lockScreenReasonBox');
+          const reasonText = document.getElementById('lockScreenReasonText');
+          if (reasonBox && reasonText) {
+            reasonText.innerText = "Ushbu qurilma litsenziyasi muallif (Farrux) tomonidan to'xtatildi yoki shartnoma muddati tugadi!";
+            reasonBox.classList.remove('hidden');
+          }
+        }
+        return false;
+      }
+      return true;
+    }
+
+    function openMasterAdminConsole() {
+      if (isMasterAdminAuthenticated) {
+        showMasterAdminModal();
+        return;
+      }
+      const pinModal = document.getElementById('masterAdminAuthModal');
+      if (pinModal) {
+        const pinInput = document.getElementById('adminPinInput');
+        if (pinInput) pinInput.value = '';
+        pinModal.classList.remove('hidden');
+        setTimeout(() => document.getElementById('adminPinInput')?.focus(), 150);
+      }
+    }
+
+    function closeMasterAdminAuthModal() {
+      document.getElementById('masterAdminAuthModal')?.classList.add('hidden');
+    }
+
+    function verifyMasterAdminPin() {
+      const input = document.getElementById('adminPinInput');
+      const entered = (input ? input.value : '').trim();
+      const currentPin = localStorage.getItem('sweet_admin_pin') || MASTER_ADMIN_PIN;
+
+      if (entered === currentPin || entered === MASTER_ADMIN_PIN || entered === MASTER_ADMIN_KEY || entered.toUpperCase() === 'FARRUX2010.' || entered.toUpperCase() === 'FARRUX2010') {
+        isMasterAdminAuthenticated = true;
+        closeMasterAdminAuthModal();
+        showMasterAdminModal();
+        showToast("Bosh Admin boshqaruviga xush kelibsiz, Farrux!", "success");
+      } else {
+        alert("Noto'g'ri maxfiy PIN kod!");
+      }
+    }
+
+    function showMasterAdminModal() {
+      updateAdminStats();
+      renderAdminClientsList();
+      document.getElementById('masterAdminModal')?.classList.remove('hidden');
+    }
+
+    function closeMasterAdminModal() {
+      document.getElementById('masterAdminModal')?.classList.add('hidden');
+    }
+
+    function updateAdminStats() {
+      const totalEl = document.getElementById('adminStatsTotal');
+      const activeEl = document.getElementById('adminStatsActive');
+      const blockedEl = document.getElementById('adminStatsBlocked');
+
+      const total = adminClientsRegistry.length;
+      const active = adminClientsRegistry.filter(c => c.status === 'active').length;
+      const blocked = adminClientsRegistry.filter(c => c.status === 'blocked').length;
+
+      if (totalEl) totalEl.innerText = total;
+      if (activeEl) activeEl.innerText = active;
+      if (blockedEl) blockedEl.innerText = blocked;
+    }
+
+    function renderAdminClientsList(filterText = '') {
+      const container = document.getElementById('adminClientsListContainer');
+      if (!container) return;
+
+      const q = filterText.toLowerCase().trim();
+      const filtered = adminClientsRegistry.filter(c => {
+        return (c.name || '').toLowerCase().includes(q) ||
+               (c.phone || '').toLowerCase().includes(q) ||
+               (c.deviceId || '').toLowerCase().includes(q) ||
+               (c.key || '').toLowerCase().includes(q);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-stone-400 space-y-2">
+            <i class="fa-solid fa-users-slash text-2xl text-stone-600"></i>
+            <p class="text-xs">Hech qanday mijoz topilmadi</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const isActive = c.status === 'active';
+        const statusBadge = isActive
+          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold text-[9px]"><i class="fa-solid fa-circle-check mr-1"></i>Faol</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold text-[9px]"><i class="fa-solid fa-ban mr-1"></i>Bloklangan</span>`;
+
+        return `
+          <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 transition hover:border-white/20">
+            <div class="flex items-start justify-between">
+              <div class="space-y-0.5">
+                <div class="flex items-center space-x-2">
+                  <h4 class="text-xs font-black text-white">${c.name}</h4>
+                  ${statusBadge}
+                </div>
+                <div class="flex items-center space-x-3 text-[10px] text-stone-400">
+                  <span><i class="fa-solid fa-phone text-[9px] mr-1 text-emerald-400"></i><a href="tel:${c.phone}" class="hover:underline">${c.phone}</a></span>
+                  <span><i class="fa-solid fa-calendar text-[9px] mr-1 text-sky-400"></i>${c.createdAt || "2026"}</span>
+                  <span class="text-rose-300 font-bold">${c.plan || "Standart"}</span>
+                </div>
+              </div>
+              <button onclick="adminDeleteClient('${c.id}')" title="O'chirish" class="text-stone-500 hover:text-rose-400 p-1 text-xs transition">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+
+            <!-- Device & Key info bar -->
+            <div class="p-2.5 rounded-xl bg-black/40 border border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="text-[10px] text-stone-400 font-bold">ID:</span>
+                <span class="font-mono font-bold text-rose-300 text-[11px]">${c.deviceId}</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] text-stone-400 font-bold">Kalit:</span>
+                <span class="font-mono font-bold text-emerald-300 text-[11px]">${c.key}</span>
+                <button onclick="copyClientKeyAndShare('${c.key}', '${c.name}', '${c.deviceId}')" class="ml-1 px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-[10px] font-bold border border-emerald-500/40 flex items-center space-x-1">
+                  <i class="fa-brands fa-telegram text-[10px]"></i>
+                  <span>Nusxalash</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center space-x-2 pt-1 border-t border-white/5 text-[11px]">
+              ${isActive ? `
+                <button onclick="adminKickoutDevice('${c.id}')" class="flex-1 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-1">
+                  <i class="fa-solid fa-ban text-[10px]"></i>
+                  <span>Chiqarib yuborish / Bloklash</span>
+                </button>
+              ` : `
+                <button onclick="adminReactivateDevice('${c.id}')" class="flex-1 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1">
+                  <i class="fa-solid fa-check text-[10px]"></i>
+                  <span>Qayta Faollashtirish</span>
+                </button>
+              `}
+              <button onclick="adminRegenerateKey('${c.id}')" class="py-1.5 px-3 rounded-xl bg-white/5 border border-white/10 text-stone-300 font-bold hover:bg-white/10 transition flex items-center space-x-1">
+                <i class="fa-solid fa-rotate text-[10px] text-sky-400"></i>
+                <span>Yangi Kalit</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleAddClientForm() {
+      const box = document.getElementById('newClientFormBox');
+      if (box) box.classList.toggle('hidden');
+    }
+
+    function adminAddNewClient() {
+      const name = document.getElementById('newClientNameInput').value.trim();
+      const phone = document.getElementById('newClientPhoneInput').value.trim();
+      const devId = document.getElementById('newClientDevIdInput').value.toUpperCase().trim();
+      const plan = document.getElementById('newClientPlanSelect').value;
+
+      if (!name || !devId) {
+        alert("Iltimos, mijoz nomi va Qurilma ID sini kiriting!");
+        return;
+      }
+
+      const key = calculateKeyForDevice(devId);
+      const newClient = {
+        id: 'CLI-' + Math.floor(1000 + Math.random() * 9000),
+        name: name,
+        phone: phone || "Ko'rsatilmagan",
+        deviceId: devId,
+        key: key,
+        status: 'active',
+        plan: plan,
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+
+      adminClientsRegistry.unshift(newClient);
+      adminBlockedDevices = adminBlockedDevices.filter(id => id !== devId);
+      saveStorage('admin_clients', adminClientsRegistry);
+      saveStorage('admin_blocked_devices', adminBlockedDevices);
+
+      document.getElementById('newClientNameInput').value = '';
+      document.getElementById('newClientPhoneInput').value = '';
+      document.getElementById('newClientDevIdInput').value = '';
+      document.getElementById('newClientFormBox')?.classList.add('hidden');
+
+      renderAdminClientsList();
+      updateAdminStats();
+      showToast("Yangi mijoz qo'shildi va kalit tayyorlandi!", "success");
+      copyClientKeyAndShare(key, name, devId);
+    }
+
+    function adminKickoutDevice(clientId) {
+      const c = adminClientsRegistry.find(item => item.id === clientId);
+      if (!c) return;
+      c.status = 'blocked';
+      if (!adminBlockedDevices.includes(c.deviceId)) {
+        adminBlockedDevices.push(c.deviceId);
+      }
+      saveStorage('admin_clients', adminClientsRegistry);
+      saveStorage('admin_blocked_devices', adminBlockedDevices);
+      renderAdminClientsList();
+      updateAdminStats();
+      showToast(`${c.name} (${c.deviceId}) tizimdan chiqarib yuborildi va bloklandi!`, "info");
+    }
+
+    function adminReactivateDevice(clientId) {
+      const c = adminClientsRegistry.find(item => item.id === clientId);
+      if (!c) return;
+      c.status = 'active';
+      adminBlockedDevices = adminBlockedDevices.filter(id => id !== c.deviceId);
+      saveStorage('admin_clients', adminClientsRegistry);
+      saveStorage('admin_blocked_devices', adminBlockedDevices);
+      renderAdminClientsList();
+      updateAdminStats();
+      showToast(`${c.name} qayta faollashtirildi!`, "success");
+    }
+
+    function adminRegenerateKey(clientId) {
+      const c = adminClientsRegistry.find(item => item.id === clientId);
+      if (!c) return;
+      c.key = calculateKeyForDevice(c.deviceId);
+      saveStorage('admin_clients', adminClientsRegistry);
+      renderAdminClientsList();
+      showToast("Kalit qayta generatsiya qilindi!", "success");
+      copyClientKeyAndShare(c.key, c.name, c.deviceId);
+    }
+
+    function adminDeleteClient(clientId) {
+      if (confirm("Ushbu mijozni ro'yxatdan butunlay o'chirmoqchimisiz?")) {
+        adminClientsRegistry = adminClientsRegistry.filter(c => c.id !== clientId);
+        saveStorage('admin_clients', adminClientsRegistry);
+        renderAdminClientsList();
+        updateAdminStats();
+        showToast("Mijoz ro'yxatdan o'chirildi", "info");
+      }
+    }
+
+    function toggleChangePinForm() {
+      const box = document.getElementById('adminChangePinBox');
+      if (box) box.classList.toggle('hidden');
+    }
+
+    function adminChangeMasterPin() {
+      const currentPin = localStorage.getItem('sweet_admin_pin') || MASTER_ADMIN_PIN;
+      const oldPin = document.getElementById('adminOldPinInput')?.value.trim();
+      const newPin = document.getElementById('adminNewPinInput')?.value.trim();
+      const confirmPin = document.getElementById('adminConfirmPinInput')?.value.trim();
+
+      if (oldPin !== currentPin && oldPin !== MASTER_ADMIN_PIN && oldPin !== MASTER_ADMIN_KEY && oldPin.toUpperCase() !== 'FARRUX2010.' && oldPin.toUpperCase() !== 'FARRUX2010') {
+        alert("Amaldagi eski PIN kod noto'g'ri!");
+        return;
+      }
+      if (!newPin || newPin.length < 4) {
+        alert("Yangi PIN kod kamida 4 ta belgidan iborat bo'lishi kerak!");
+        return;
+      }
+      if (newPin !== confirmPin) {
+        alert("Yangi PIN kod tasdiqlash bilan mos kelmadi!");
+        return;
+      }
+
+      localStorage.setItem('sweet_admin_pin', newPin);
+      showToast("Muallif PIN kodi muvaffaqiyatli almashtirildi!", "success");
+      document.getElementById('adminChangePinBox')?.classList.add('hidden');
+      document.getElementById('adminOldPinInput').value = '';
+      document.getElementById('adminNewPinInput').value = '';
+      document.getElementById('adminConfirmPinInput').value = '';
+    }
+
+    function copyClientKeyAndShare(key, name, devId) {
+      const text = `Salom ${name}!\n\n«Mening Qandolat Fabrikam» professional tizimini faollashtirish uchun sizning maxsus kalitingiz:\n🔑 Kalit: ${key}\n📱 Qurilma ID: ${devId}\n\nMuallif: Farrux Orziqulov (+998 95 797 27 97)`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("Kalit va xabar nusxalandi! Telegramdan yuborishingiz mumkin", "success");
+        }).catch(() => {
+          prompt("Mijozga yuboriladigan xabar:", text);
+        });
+      } else {
+        prompt("Mijozga yuboriladigan xabar:", text);
+      }
+    }
+
+    function openContractTerminationModal() {
+      const modal = document.getElementById('contractTerminationModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeContractTerminationModal() {
+      const modal = document.getElementById('contractTerminationModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function confirmContractTermination() {
+      try {
+        if (supabaseClient) {
+          await supabaseClient.auth.signOut();
+        }
+      } catch (e) {}
+
+      // Clear all cached local data
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('sweet_app_') || k.startsWith('app_') || k.startsWith('sb-'))) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+
+      // Generate a fresh device ID to break old connection
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let rand = '';
+      for (let i = 0; i < 5; i++) {
+        rand += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      localStorage.setItem('app_device_id', 'DEV-' + rand);
+
+      closeContractTerminationModal();
+      showToast("Shartnoma bekor qilindi va qurilma tozalandi!", "info");
+
+      setTimeout(() => {
+        window.location.href = window.location.pathname + '?reset=' + Date.now();
+      }, 350);
     }
 
     function showToast(msg, type = 'info') {
@@ -4537,6 +4953,8 @@
       updateSettingsUI();
       drawCharts();
       checkLicenseStatusOnBoot();
+      checkRemoteLicenseRevocation();
+      setInterval(checkRemoteLicenseRevocation, 180000);
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
@@ -4660,6 +5078,192 @@
       <div class="pt-1 shrink-0 border-t border-white/10">
         <button onclick="closeDailyReceiptsHistoryModal()" class="w-full py-2.5 rounded-xl border border-white/10 bg-white/5 text-[var(--text-sub)] text-xs font-semibold hover:bg-white/10 transition">
           Yopish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MASTER ADMIN AUTH PIN MODAL ================= -->
+  <div id="masterAdminAuthModal" class="fixed inset-0 bg-black/80 z-[99999999] flex items-center justify-center p-4 hidden backdrop-blur-md">
+    <div class="w-full max-w-xs rounded-[28px] bg-slate-900 border border-rose-500/30 p-5 space-y-4 shadow-2xl text-center relative">
+      <div class="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-xl shadow-lg ring-4 ring-rose-500/20">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <div class="space-y-1">
+        <h3 class="text-sm font-black text-white">Muallif Kirishi</h3>
+        <p class="text-[11px] text-stone-400">Farrux Orziqulov maxfiy PIN kodini kiriting:</p>
+      </div>
+      <div class="space-y-2">
+        <input type="password" id="adminPinInput" placeholder="PIN kod (masalan: Farrux2010.)" class="w-full p-3 rounded-xl border border-white/15 bg-white/5 text-center font-bold text-sm text-white focus:outline-none focus:border-rose-500">
+        <div class="flex space-x-2 pt-1">
+          <button onclick="closeMasterAdminAuthModal()" class="flex-1 py-2.5 rounded-xl border border-white/15 text-stone-400 font-bold text-xs hover:bg-white/5 transition">
+            Bekor qilish
+          </button>
+          <button onclick="verifyMasterAdminPin()" class="flex-1 py-2.5 rounded-xl macaron-btn text-xs font-black shadow-lg">
+            Kirish
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MASTER ADMIN & CLIENTS MANAGEMENT MODAL ================= -->
+  <div id="masterAdminModal" class="fixed inset-0 bg-black/85 z-[9999999] flex items-center justify-center p-3 hidden backdrop-blur-md">
+    <div class="w-full max-w-lg rounded-[28px] bg-slate-900 border border-white/15 p-4 space-y-3.5 shadow-2xl max-h-[92vh] flex flex-col relative overflow-hidden">
+      <!-- Glow element -->
+      <div class="absolute -top-16 -right-16 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Header -->
+      <div class="flex justify-between items-center border-b border-white/10 pb-3 shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-md ring-2 ring-rose-500/20">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-white flex items-center space-x-1.5">
+              <span>Bosh Admin & Mijozlar Nazorati</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold">Farrux</span>
+            </h3>
+            <p class="text-[10px] text-stone-400">Ulangan qurilmalarni boshqarish, chiqarish va kalit berish</p>
+          </div>
+        </div>
+        <button onclick="closeMasterAdminModal()" class="w-7 h-7 rounded-xl bg-white/5 text-stone-400 hover:text-white flex items-center justify-center text-base transition">&times;</button>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid grid-cols-3 gap-2 shrink-0">
+        <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-center space-y-0.5">
+          <div class="text-[10px] text-stone-400 font-semibold">Jami Mijozlar</div>
+          <div id="adminStatsTotal" class="text-base font-black text-white">0</div>
+        </div>
+        <div class="p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-0.5">
+          <div class="text-[10px] text-emerald-400 font-semibold">Faol Qurilmalar</div>
+          <div id="adminStatsActive" class="text-base font-black text-emerald-300">0</div>
+        </div>
+        <div class="p-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center space-y-0.5">
+          <div class="text-[10px] text-rose-400 font-semibold">Bloklangan</div>
+          <div id="adminStatsBlocked" class="text-base font-black text-rose-300">0</div>
+        </div>
+      </div>
+
+      <!-- Control Toolbar -->
+      <div class="flex space-x-2 shrink-0">
+        <button onclick="toggleAddClientForm()" class="flex-1 py-2 px-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition flex items-center justify-center space-x-1.5">
+          <i class="fa-solid fa-user-plus text-[10px]"></i>
+          <span>Yangi Mijoz Qo'shish</span>
+        </button>
+        <button onclick="toggleChangePinForm()" class="py-2 px-3 rounded-xl bg-white/5 border border-white/10 text-stone-300 font-bold text-xs hover:bg-white/10 transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-key text-[10px] text-amber-400"></i>
+          <span>PIN Almashtirish</span>
+        </button>
+      </div>
+
+      <!-- Collapsible Add Client Form -->
+      <div id="newClientFormBox" class="hidden p-3.5 rounded-2xl bg-white/5 border border-emerald-500/30 space-y-2 shrink-0">
+        <div class="text-xs font-bold text-emerald-300 flex items-center space-x-1.5">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>Yangi Mijozni Ro'yxatga Olish</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[10px] text-stone-400 mb-0.5">Fabrika / Mijoz nomi:</label>
+            <input type="text" id="newClientNameInput" placeholder="Masalan: Lazzat Shirinliklari" class="w-full p-2 rounded-xl glass-input text-xs font-medium">
+          </div>
+          <div>
+            <label class="block text-[10px] text-stone-400 mb-0.5">Telefon raqami:</label>
+            <input type="text" id="newClientPhoneInput" placeholder="+998 90 123 45 67" class="w-full p-2 rounded-xl glass-input text-xs font-medium">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[10px] text-stone-400 mb-0.5">Mijoz Qurilma ID si:</label>
+            <input type="text" id="newClientDevIdInput" placeholder="DEV-XXXXX" class="w-full p-2 rounded-xl glass-input font-mono font-bold text-xs uppercase">
+          </div>
+          <div>
+            <label class="block text-[10px] text-stone-400 mb-0.5">Shartnoma muddati:</label>
+            <select id="newClientPlanSelect" class="w-full p-2 rounded-xl glass-input text-xs font-medium">
+              <option value="1 oylik">1 oylik litsenziya</option>
+              <option value="3 oylik">3 oylik litsenziya</option>
+              <option value="6 oylik">6 oylik litsenziya</option>
+              <option value="1 yillik">1 yillik litsenziya</option>
+              <option value="Muddatsiz">Muddatsiz (Sotilgan)</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex space-x-2 pt-1">
+          <button onclick="toggleAddClientForm()" class="flex-1 py-1.5 rounded-xl border border-white/10 text-stone-400 text-xs font-bold hover:bg-white/5">Bekor qilish</button>
+          <button onclick="adminAddNewClient()" class="flex-1 py-1.5 rounded-xl macaron-btn text-xs font-black shadow-md">Saqlash & Kalit Berish</button>
+        </div>
+      </div>
+
+      <!-- Collapsible Change Master PIN Form -->
+      <div id="adminChangePinBox" class="hidden p-3.5 rounded-2xl bg-white/5 border border-amber-500/30 space-y-2 shrink-0">
+        <div class="text-xs font-bold text-amber-300 flex items-center space-x-1.5">
+          <i class="fa-solid fa-lock"></i>
+          <span>Muallif Maxfiy Kirish PIN Kodini Almashtirish</span>
+        </div>
+        <div class="space-y-1.5 text-xs">
+          <input type="password" id="adminOldPinInput" placeholder="Amaldagi eski PIN kod (masalan: Farrux2010.)" class="w-full p-2 rounded-xl glass-input text-xs">
+          <input type="password" id="adminNewPinInput" placeholder="Yangi PIN kodni kiriting" class="w-full p-2 rounded-xl glass-input text-xs">
+          <input type="password" id="adminConfirmPinInput" placeholder="Yangi PIN kodni qayta kiriting" class="w-full p-2 rounded-xl glass-input text-xs">
+        </div>
+        <div class="flex space-x-2 pt-1">
+          <button onclick="toggleChangePinForm()" class="flex-1 py-1.5 rounded-xl border border-white/10 text-stone-400 text-xs font-bold hover:bg-white/5">Bekor qilish</button>
+          <button onclick="adminChangeMasterPin()" class="flex-1 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold text-xs hover:bg-amber-500/30">Parolni Yangilash</button>
+        </div>
+      </div>
+
+      <!-- Search bar -->
+      <div class="relative shrink-0">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-stone-400"></i>
+        <input type="text" id="adminClientSearchInput" oninput="renderAdminClientsList(this.value)" placeholder="Mijoz nomi, telefon yoki Qurilma ID bo'yicha qidirish..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-rose-500">
+      </div>
+
+      <!-- Clients List Container -->
+      <div id="adminClientsListContainer" class="flex-1 overflow-y-auto space-y-2.5 pr-1 select-text">
+        <!-- Rendered in JS -->
+      </div>
+
+      <!-- Footer -->
+      <div class="pt-2 border-t border-white/10 flex items-center justify-between shrink-0 text-[10px] text-stone-400">
+        <span>Muallif: Farrux Orziqulov (+998 95 797 27 97)</span>
+        <button onclick="closeMasterAdminModal()" class="px-3 py-1.5 rounded-xl bg-white/10 text-white font-bold hover:bg-white/15">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CLIENT CONTRACT TERMINATION / UNREGISTER MODAL ================= -->
+  <div id="contractTerminationModal" class="fixed inset-0 bg-black/85 z-[99999999] flex items-center justify-center p-4 hidden backdrop-blur-md">
+    <div class="w-full max-w-sm rounded-[28px] bg-slate-900 border border-rose-500/40 p-5 space-y-4 shadow-2xl text-center relative overflow-hidden">
+      <div class="w-14 h-14 mx-auto rounded-3xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-2xl border border-rose-500/30">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div class="space-y-1.5">
+        <h3 class="text-sm font-black text-white">Shartnomani Tugatish va Qurilmani Bo'shatish</h3>
+        <p class="text-xs text-stone-400 leading-relaxed">
+          Haqiqatan ham shartnomani tugatib, ushbu telefon/qurilmadagi ro'yxatni bekor qilmoqchimisiz?
+        </p>
+      </div>
+
+      <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-left text-[11px] text-rose-300 space-y-1">
+        <div class="font-bold flex items-center space-x-1.5">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Nimalar sodir bo'ladi:</span>
+        </div>
+        <ul class="list-disc pl-4 space-y-0.5 text-[10px] text-stone-300">
+          <li>Ushbu qurilmadagi litsenziya kaliti o'chiriladi.</li>
+          <li>Qurilma ro'yxati to'liq bekor qilinadi.</li>
+          <li>Mahalliy xotiradagi barcha keshlar tozalanadi.</li>
+          <li>Qaytadan kirish uchun muallifdan yangi kalit olish kerak bo'ladi.</li>
+        </ul>
+      </div>
+
+      <div class="flex space-x-2 pt-1">
+        <button onclick="closeContractTerminationModal()" class="flex-1 py-2.5 rounded-xl border border-white/15 text-stone-300 font-bold text-xs hover:bg-white/5 transition">
+          Bekor qilish
+        </button>
+        <button onclick="confirmContractTermination()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-lg transition">
+          Ha, To'liq Chiqish
         </button>
       </div>
     </div>
