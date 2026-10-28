@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "updated_at": "2026-10-28T09:40:00Z",
+  "blocked_devices": [],
+  "clients": [
+    {
+      "id": "CLI-001",
+      "name": "Farrux Qandolat Fabrikasi (Muallif)",
+      "phone": "+998 95 797 27 97",
+      "deviceId": "DEV-FARRUX",
+      "status": "active",
+      "plan": "Muddatsiz (Muallif)",
+      "createdAt": "2026-10-26"
+    }
+  ]
+}
