@@ -1,12 +1,12 @@
 {
-  "name": "Qandolat Fabrikasi",
-  "short_name": "Qandolat",
-  "description": "Qandolat fabrikasini boshqarish mobil ilovasi",
+  "name": "Mening Fabrikam",
+  "short_name": "Mening Fabrikam",
+  "description": "Farrux Qandolat Fabrikasi - Biznes Boshqaruv Tizimi",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F4F7FC",
-  "theme_color": "#0284C7",
+  "background_color": "#0B0F19",
+  "theme_color": "#0B0F19",
   "orientation": "portrait",
   "icons": [
     {
