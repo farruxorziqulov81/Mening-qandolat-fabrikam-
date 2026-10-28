@@ -462,6 +462,37 @@
           </div>
         </div>
 
+        <!-- LOW STOCK ALERT BANNER (KAM QOLGAN XOMASHYOLAR BILDIRISHNOMASI) -->
+        <div id="warehouseLowStockAlertBanner" class="hidden relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500/20 via-amber-500/15 to-rose-500/20 border border-rose-500/40 p-3 shadow-lg shadow-rose-950/20 backdrop-blur-md transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start space-x-2.5">
+              <div class="w-8 h-8 rounded-xl bg-rose-500/25 border border-rose-500/40 text-rose-400 flex items-center justify-center text-xs shrink-0 mt-0.5 animate-pulse">
+                <i class="fa-solid fa-bell"></i>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+                  <span class="text-xs font-black text-rose-400">Diqqat: Xomashyo kam qoldi!</span>
+                  <span id="lowStockBadgeCount" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white shadow-xs">0 ta</span>
+                </div>
+                <p class="text-[10px] text-[var(--text-muted)] font-medium">Quyidagi xomashyolar zaxirasi minimal chegaraga yetdi yoki tugamoqda:</p>
+                <div id="warehouseLowStockNames" class="flex flex-wrap gap-1 pt-1">
+                  <!-- Kam qolgan xomashyolar teglari -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end space-x-2 mt-2 pt-2 border-t border-rose-500/20">
+            <button onclick="toggleLowStockFilter()" id="btnToggleLowStockFilter" class="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-[11px] font-bold text-[var(--text-main)] transition flex items-center space-x-1.5 shadow-xs">
+              <i class="fa-solid fa-filter text-[10px] text-amber-400"></i>
+              <span id="txtToggleLowStockFilter">Faqat kamlarni ko'rish</span>
+            </button>
+            <button onclick="openRestockModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white text-[11px] font-black shadow-md transition flex items-center space-x-1.5">
+              <i class="fa-solid fa-cart-plus text-[10px]"></i>
+              <span>+ Xarid qilish</span>
+            </button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-3 gap-2">
           <div class="erp-card p-3 space-y-1">
             <div class="text-[10px] text-[var(--text-muted)] font-medium">Xomashyolar</div>
@@ -473,10 +504,13 @@
             <div id="statTotalIngValue" class="text-xs font-black text-rose-400">0 so'm</div>
             <div class="text-[9px] text-[var(--text-muted)]">Xarid narxida</div>
           </div>
-          <div class="erp-card p-3 space-y-1">
-            <div class="text-[10px] text-[var(--text-muted)] font-medium">Kam qolganlar</div>
+          <div onclick="toggleLowStockFilter()" class="erp-card p-3 space-y-1 cursor-pointer hover:border-amber-400/50 hover:bg-amber-500/5 transition active:scale-95 group" title="Kam qolganlarni saralash">
+            <div class="text-[10px] text-[var(--text-muted)] font-medium flex items-center justify-between">
+              <span>Kam qolganlar</span>
+              <i class="fa-solid fa-filter text-[9px] text-amber-400 opacity-60 group-hover:opacity-100 transition"></i>
+            </div>
             <div id="statLowStockCount" class="text-base font-black text-amber-400">0 ta</div>
-            <div class="text-[9px] text-amber-400/80">Xarid talab</div>
+            <div class="text-[9px] text-amber-400/80">Filtrlash uchun bosing</div>
           </div>
         </div>
 
@@ -789,27 +823,28 @@
 
     <!-- Glassmorphic Bottom Navigation Bar -->
     <nav class="shrink-0 border-t border-[var(--card-border)] bg-[var(--header-bg)] backdrop-blur-xl px-1 pt-1.5 pb-2.5 flex justify-around items-center" style="z-index: 40 !important; position: relative; padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));">
-      <button onclick="switchTab('dashboard')" id="navBtn-dashboard" class="flex flex-col items-center flex-1 py-1 text-rose-500 transition scale-105 font-black">
+      <button onclick="switchTab('dashboard')" id="navBtn-dashboard" class="relative flex flex-col items-center flex-1 py-1 text-rose-500 transition scale-105 font-black">
         <i class="fa-solid fa-chart-pie text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_dashboard">Asosiy</span>
       </button>
-      <button onclick="switchTab('warehouse')" id="navBtn-warehouse" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
+      <button onclick="switchTab('warehouse')" id="navBtn-warehouse" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-boxes-stacked text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_warehouse">Ombor</span>
+        <span id="navWarehouseBadge" class="hidden absolute top-0.5 right-3.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-2 ring-stone-900 shadow-md animate-pulse">0</span>
       </button>
-      <button onclick="switchTab('production')" id="navBtn-production" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
+      <button onclick="switchTab('production')" id="navBtn-production" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-cake-candles text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_production">Ishlab chiqarish</span>
       </button>
-      <button onclick="switchTab('shops')" id="navBtn-shops" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
+      <button onclick="switchTab('shops')" id="navBtn-shops" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-store text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_shops">Do'konlar</span>
       </button>
-      <button onclick="switchTab('finance')" id="navBtn-finance" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
+      <button onclick="switchTab('finance')" id="navBtn-finance" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-wallet text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_finance">Moliya</span>
       </button>
-      <button onclick="switchTab('profile')" id="navBtn-profile" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
+      <button onclick="switchTab('profile')" id="navBtn-profile" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-circle-user text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_profile">Profil</span>
       </button>
@@ -2580,9 +2615,20 @@
       const container = document.getElementById('toastContainer');
       if (!container) return;
       const t = document.createElement('div');
-      const bg = type === 'success' ? 'bg-emerald-600 text-white' : (type === 'error' ? 'bg-rose-600 text-white' : 'bg-slate-900 text-white');
+      let bg = 'bg-slate-900 text-white';
+      let icon = '';
+      if (type === 'success') {
+        bg = 'bg-emerald-600 text-white';
+        icon = '<i class="fa-solid fa-circle-check text-xs"></i>';
+      } else if (type === 'error') {
+        bg = 'bg-rose-600 text-white';
+        icon = '<i class="fa-solid fa-circle-exclamation text-xs"></i>';
+      } else if (type === 'warning') {
+        bg = 'bg-amber-600 text-white';
+        icon = '<i class="fa-solid fa-triangle-exclamation text-xs"></i>';
+      }
       t.className = `${bg} px-3.5 py-2 rounded-2xl shadow-xl text-xs font-semibold flex items-center space-x-2 transition-all duration-300 transform -translate-y-2 opacity-0 pointer-events-auto border border-white/10`;
-      t.innerHTML = `<span>${msg}</span>`;
+      t.innerHTML = `${icon}<span>${msg}</span>`;
       container.appendChild(t);
       requestAnimationFrame(() => {
         t.classList.remove('-translate-y-2', 'opacity-0');
@@ -2645,6 +2691,58 @@
       { id: 8, name: "Tabiiy Asal", qty: 18, unit: "kg", price: 55000, minAlert: 3 }
     ]);
 
+    function updateWarehouseAlertBadge() {
+      const lowStockItems = ingredients.filter(i => (parseFloat(i.qty) || 0) <= (parseFloat(i.minAlert) || 0));
+      const lowCount = lowStockItems.length;
+
+      // 1. Navigation bottom bar badge
+      const navBadge = document.getElementById('navWarehouseBadge');
+      if (navBadge) {
+        if (lowCount > 0) {
+          navBadge.classList.remove('hidden');
+          navBadge.innerText = lowCount > 9 ? '9+' : lowCount;
+        } else {
+          navBadge.classList.add('hidden');
+        }
+      }
+
+      // 2. Alert banner inside tab-warehouse
+      const banner = document.getElementById('warehouseLowStockAlertBanner');
+      const countEl = document.getElementById('lowStockBadgeCount');
+      const namesEl = document.getElementById('warehouseLowStockNames');
+
+      if (banner && countEl && namesEl) {
+        if (lowCount > 0) {
+          banner.classList.remove('hidden');
+          countEl.innerText = `${lowCount} ta`;
+          namesEl.innerHTML = lowStockItems.map(i => `
+            <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[10px] font-bold">
+              <span>${i.name}:</span>
+              <span class="text-white">${i.qty} ${i.unit}</span>
+              <span class="text-rose-400/80 font-normal text-[9px]">(min: ${i.minAlert})</span>
+            </span>
+          `).join('');
+        } else {
+          banner.classList.add('hidden');
+        }
+      }
+    }
+
+    function toggleLowStockFilter() {
+      const filterSelect = document.getElementById('ingFilterSelect');
+      const btnText = document.getElementById('txtToggleLowStockFilter');
+      if (!filterSelect) return;
+
+      if (filterSelect.value === 'low') {
+        filterSelect.value = 'all';
+        if (btnText) btnText.innerText = "Faqat kamlarni ko'rish";
+      } else {
+        filterSelect.value = 'low';
+        if (btnText) btnText.innerText = "Barchasini ko'rsatish";
+      }
+      renderIngredients();
+    }
+
     function renderIngredients() {
       const container = document.getElementById('ingredientsContainer');
       if (!container) return;
@@ -2652,12 +2750,17 @@
       const searchVal = (document.getElementById('ingSearchInput')?.value || '').toLowerCase();
       const filterVal = document.getElementById('ingFilterSelect')?.value || 'all';
 
+      const btnText = document.getElementById('txtToggleLowStockFilter');
+      if (btnText) {
+        btnText.innerText = (filterVal === 'low') ? "Barchasini ko'rsatish" : "Faqat kamlarni ko'rish";
+      }
+
       let totalVal = 0;
       let lowCount = 0;
 
       ingredients.forEach(i => {
         totalVal += (i.qty * i.price);
-        if (i.qty <= i.minAlert) lowCount++;
+        if ((parseFloat(i.qty) || 0) <= (parseFloat(i.minAlert) || 0)) lowCount++;
       });
 
       const typesEl = document.getElementById('statTotalIngTypes');
@@ -2668,19 +2771,25 @@
       if (valEl) valEl.innerText = fmtCur(totalVal);
       if (lowEl) lowEl.innerText = lowCount + " ta";
 
+      updateWarehouseAlertBadge();
+
       let filtered = ingredients.filter(i => {
         const matchesSearch = i.name.toLowerCase().includes(searchVal);
-        if (filterVal === 'low') return matchesSearch && (i.qty <= i.minAlert);
+        if (filterVal === 'low') return matchesSearch && ((parseFloat(i.qty) || 0) <= (parseFloat(i.minAlert) || 0));
         return matchesSearch;
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="erp-card p-6 text-center text-xs text-[var(--text-muted)]"><i class="fa-solid fa-boxes-stacked text-2xl mb-2 opacity-50 block"></i>Xomashyo topilmadi</div>';
+        const emptyMsg = filterVal === 'low' 
+          ? "Kam qolgan xomashyo yo'q. Barcha mahsulotlar zaxirasi yetarli darajada!" 
+          : "Xomashyo topilmadi";
+        const emptyIcon = filterVal === 'low' ? 'fa-circle-check text-emerald-400' : 'fa-boxes-stacked opacity-50';
+        container.innerHTML = `<div class="erp-card p-6 text-center text-xs text-[var(--text-muted)]"><i class="fa-solid ${emptyIcon} text-2xl mb-2 block"></i>${emptyMsg}</div>`;
         return;
       }
 
       container.innerHTML = filtered.map(i => {
-        const isLow = i.qty <= i.minAlert;
+        const isLow = (parseFloat(i.qty) || 0) <= (parseFloat(i.minAlert) || 0);
         const totalItemVal = i.qty * i.price;
         return `
           <div class="erp-card p-3.5 space-y-2 border-l-4 ${isLow ? 'border-l-rose-500 bg-rose-500/5' : 'border-l-emerald-500'}">
@@ -3106,9 +3215,9 @@
         const navBtn = document.getElementById('navBtn-' + t);
         if (navBtn) {
           if (t === tab) {
-            navBtn.className = "flex flex-col items-center flex-1 py-1 text-rose-500 transition scale-105 font-black";
+            navBtn.className = "relative flex flex-col items-center flex-1 py-1 text-rose-500 transition scale-105 font-black";
           } else {
-            navBtn.className = "flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium";
+            navBtn.className = "relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium";
           }
         }
       });
@@ -3116,6 +3225,10 @@
       // Tab specific data rendering
       if (tab === 'warehouse') {
         renderIngredients();
+        const lowStockCount = ingredients.filter(i => (parseFloat(i.qty) || 0) <= (parseFloat(i.minAlert) || 0)).length;
+        if (lowStockCount > 0) {
+          showToast(`Diqqat: Omborda ${lowStockCount} ta mahsulot zaxirasi kam qolgan!`, 'warning');
+        }
       } else if (tab === 'profile' || tab === 'settings') {
         updateSettingsUI();
         updateDashboardStats();
@@ -3205,6 +3318,9 @@
       if (settingsFactoryNameEl) settingsFactoryNameEl.innerText = factoryProfile.name;
 
       updateLogoDisplays();
+      if (typeof updateWarehouseAlertBadge === 'function') {
+        updateWarehouseAlertBadge();
+      }
     }
 
     // Factory Profile & Logo Management
