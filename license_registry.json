@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T06:40:31.297Z",
+  "updated_at": "2026-10-28T06:40:47.368Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -18,6 +18,17 @@
       "phone": "+998",
       "deviceId": "DEV-4CHRZ",
       "key": "KEY-QCFTXA",
+      "status": "active",
+      "plan": "Ulangan Qurilma",
+      "createdAt": "2026-10-28",
+      "lastSeen": "2026-10-28 06:40"
+    },
+    {
+      "id": "CLI-4486",
+      "name": "Mening Qandolat Fabrikam",
+      "phone": "+998",
+      "deviceId": "DEV-DZN8U",
+      "key": "KEY-W48NYM",
       "status": "active",
       "plan": "Ulangan Qurilma",
       "createdAt": "2026-10-28",
