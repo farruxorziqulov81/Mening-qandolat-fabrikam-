@@ -301,11 +301,11 @@
         </button>
 
         <!-- Clean Factory Icon & Name (With Custom Logo Support) -->
-        <div id="factoryHeaderLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 flex items-center justify-center text-white shadow-md shrink-0 overflow-hidden cursor-pointer">
+        <div id="factoryHeaderLogoBox" onclick="switchTab('profile')" title="Fabrika profili" class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 flex items-center justify-center text-white shadow-md shrink-0 overflow-hidden cursor-pointer">
           <i id="factoryHeaderIcon" class="fa-solid fa-cake-candles text-sm"></i>
           <img id="factoryHeaderLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
         </div>
-        <div class="min-w-0">
+        <div class="min-w-0 cursor-pointer" onclick="switchTab('profile')" title="Fabrika profili">
           <h1 id="factoryHeaderName" class="text-xs font-black text-[var(--text-main)] leading-tight truncate">Mening Qandolat Fabrikam</h1>
           <p id="factoryHeaderAddr" class="text-[10px] text-[var(--text-muted)] truncate">Toshkent shahri</p>
         </div>
@@ -315,7 +315,7 @@
           <i id="cloudIcon" class="fa-solid fa-cloud text-xs"></i>
           <span id="cloudLabel">Bulut</span>
         </button>
-        <button onclick="openFactoryDialog()" title="Fabrika profilini sozlash" class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center text-[var(--text-main)] transition">
+        <button onclick="switchTab('profile')" title="Fabrika profili" class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center text-[var(--text-main)] transition">
           <i class="fa-solid fa-building text-xs"></i>
         </button>
         <button onclick="toggleDarkMode()" title="Mavzu almashtirish" class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center text-rose-400 transition">
@@ -333,31 +333,6 @@
       <!-- ================= TAB 1: ASOSIY (DASHBOARD) ================= -->
       <div id="tab-dashboard" class="space-y-3.5">
         
-        <!-- Factory Profile Card with Status Badge -->
-        <div class="erp-card p-3.5 flex items-center justify-between border-l-4 border-l-sky-500">
-          <div class="flex items-center space-x-3 flex-1 min-w-0 mr-2">
-            <div id="bannerLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 flex items-center justify-center text-base shrink-0 font-black overflow-hidden cursor-pointer">
-              <i id="bannerLogoIcon" class="fa-solid fa-industry"></i>
-              <img id="bannerLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center space-x-2">
-                <span class="text-xs font-extrabold text-[var(--text-main)] truncate" id="bannerFactoryName">Mening Qandolat Fabrikam</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold flex items-center space-x-1 shrink-0">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>Faol</span>
-                </span>
-              </div>
-              <div class="text-[11px] text-[var(--text-sub)] truncate" id="bannerFactoryAddress">Manzil kiritilmagan</div>
-              <div class="text-[10px] text-stone-400 truncate" id="bannerFactoryContact">Direktor: Rahbar • Tel: +998...</div>
-            </div>
-          </div>
-          <button onclick="openFactoryDialog()" class="px-2.5 py-1.5 rounded-xl bg-sky-500/10 border border-sky-400/40 text-sky-700 dark:text-sky-300 text-[10px] font-bold flex items-center space-x-1 shrink-0 hover:bg-sky-500/20 transition">
-            <i class="fa-solid fa-pen text-[9px]"></i>
-            <span>Tahrirlash</span>
-          </button>
-        </div>
-
         <!-- 4 KPI Ticker Chips (Inspired by SiSTEMERP top tickers) -->
         <div class="grid grid-cols-2 gap-2">
           <!-- 1. Bugungi Mahsulot -->
@@ -695,43 +670,86 @@
         </div>
 
       
-      <!-- ================= TAB 6: SOZLAMALAR ================= -->
-      <div id="tab-settings" class="hidden space-y-3.5">
+      <!-- ================= TAB 6: PROFIL VA SOZLAMALAR ================= -->
+      <div id="tab-profile" class="hidden space-y-3.5">
+        <!-- Top bar with Title and Sozlamalar button on the corner -->
         <div class="flex items-center justify-between pb-1">
           <div class="flex items-center space-x-2">
             <button onclick="switchTab('dashboard')" class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 text-[var(--text-main)] flex items-center justify-center hover:bg-white/10 transition">
               <i class="fa-solid fa-arrow-left text-xs"></i>
             </button>
             <div>
-              <h2 class="text-sm font-black text-[var(--text-main)]">Tizim Sozlamalari</h2>
-              <p class="text-[10px] text-[var(--text-muted)]">Profil, tillar, mavzu va zaxira</p>
+              <h2 class="text-sm font-black text-[var(--text-main)]">Mening Profilim</h2>
+              <p class="text-[10px] text-[var(--text-muted)]">Fabrika ma'lumotlari va tizim sozlamalari</p>
             </div>
+          </div>
+          <!-- Sozlamalar button on the corner -->
+          <button onclick="document.getElementById('profileSettingsAnchor')?.scrollIntoView({ behavior: 'smooth' })" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 hover:bg-rose-500/25 flex items-center space-x-1.5 text-xs font-bold transition shadow-xs">
+            <i class="fa-solid fa-gear text-xs"></i>
+            <span>Sozlamalar</span>
+          </button>
+        </div>
+
+        <!-- Asosiy Fabrika Profili Card (Moved from Dashboard) -->
+        <div class="erp-card p-4 space-y-3.5 border-l-4 border-l-rose-500 bg-gradient-to-br from-rose-500/10 via-slate-900/60 to-indigo-500/10 shadow-lg">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3.5 flex-1 min-w-0 mr-2">
+              <div id="bannerLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-xl shrink-0 font-black overflow-hidden cursor-pointer shadow-md ring-2 ring-rose-500/20 relative group">
+                <i id="bannerLogoIcon" class="fa-solid fa-industry"></i>
+                <img id="bannerLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs transition">
+                  <i class="fa-solid fa-camera"></i>
+                </div>
+              </div>
+              <div class="min-w-0 space-y-0.5">
+                <div class="flex items-center space-x-2">
+                  <h3 class="text-sm font-black text-[var(--text-main)] truncate" id="bannerFactoryName">Mening Qandolat Fabrikam</h3>
+                  <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center space-x-1 shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Faol</span>
+                  </span>
+                </div>
+                <div class="text-xs text-[var(--text-sub)] truncate flex items-center space-x-1" id="bannerFactoryAddress">
+                  <i class="fa-solid fa-location-dot text-rose-400 text-[10px]"></i>
+                  <span>Manzil kiritilmagan</span>
+                </div>
+                <div class="text-[11px] text-stone-400 truncate flex items-center space-x-1" id="bannerFactoryContact">
+                  <i class="fa-solid fa-phone text-emerald-400 text-[10px]"></i>
+                  <span>Direktor: Rahbar • Tel: +998...</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="openFactoryDialog()" class="px-3 py-1.5 rounded-xl macaron-btn text-xs font-bold flex items-center space-x-1.5 shrink-0 shadow-md">
+              <i class="fa-solid fa-pen text-[10px]"></i>
+              <span>Tahrirlash</span>
+            </button>
+          </div>
+
+          <!-- Cloud Account Status Row -->
+          <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-xs shrink-0">
+                <i class="fa-solid fa-cloud"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] text-stone-400 font-medium">Bulutli Baza (Sinxronizatsiya)</div>
+                <div id="settingsUserEmail" class="font-bold text-[var(--text-main)] text-[11px] truncate">Bulutga ulanmagan</div>
+                <span id="settingsFactoryName" class="hidden"></span>
+                <span id="settingsCloudStatus" class="hidden"></span>
+              </div>
+            </div>
+            <button onclick="openAuthDialog()" class="px-2.5 py-1 rounded-xl bg-white/10 text-rose-400 hover:bg-white/15 text-[11px] font-bold transition shrink-0">
+              Hisob / Kirish
+            </button>
           </div>
         </div>
 
-        <div class="erp-card p-4 space-y-3 border-l-4 border-l-rose-500">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <div id="settingsLogoBox" onclick="openFactoryDialog()" title="Fabrika logotipi va profilini sozlash" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 flex items-center justify-center text-white text-base shadow-md overflow-hidden cursor-pointer">
-                <i id="settingsLogoIcon" class="fa-solid fa-user-shield"></i>
-                <img id="settingsLogoImg" class="w-full h-full object-cover hidden" alt="Logo">
-              </div>
-              <div>
-                <h3 id="settingsUserEmail" class="text-xs font-black text-[var(--text-main)]">Bulutga ulanmagan</h3>
-                <p id="settingsFactoryName" class="text-[10px] text-[var(--text-muted)]">Mening Qandolat Fabrikam</p>
-              </div>
-            </div>
-            <button onclick="openAuthDialog()" class="px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-bold hover:bg-rose-500/25 transition">
-              Hisob
-            </button>
+        <!-- Sozlamalar Anchor & Header -->
+        <div id="profileSettingsAnchor" class="pt-1 flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-400 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-gear"></i>
           </div>
-          <div class="p-2.5 rounded-xl bg-white/5 text-[11px] text-[var(--text-sub)] flex items-center justify-between">
-            <span class="flex items-center space-x-1.5">
-              <i class="fa-solid fa-cloud text-rose-400"></i>
-              <span>Bulutli Baza (Supabase):</span>
-            </span>
-            <span id="settingsCloudStatus" class="font-bold text-emerald-400">Faol</span>
-          </div>
+          <span class="text-xs font-black text-[var(--text-main)] uppercase tracking-wider">Tizim Sozlamalari</span>
         </div>
 
         <div class="erp-card p-4 space-y-3">
@@ -892,9 +910,9 @@
         <i class="fa-solid fa-wallet text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_finance">Moliya</span>
       </button>
-      <button onclick="switchTab('settings')" id="navBtn-settings" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
-        <i class="fa-solid fa-gear text-sm"></i>
-        <span class="text-[9px] font-bold mt-1" data-i18n="nav_settings">Sozlamalar</span>
+      <button onclick="switchTab('profile')" id="navBtn-profile" class="flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
+        <i class="fa-solid fa-circle-user text-sm"></i>
+        <span class="text-[9px] font-bold mt-1" data-i18n="nav_profile">Profil</span>
       </button>
     </nav>
 
@@ -2778,7 +2796,8 @@
         nav_production: "Ishlab chiqarish",
         nav_shops: "Do'konlar",
         nav_finance: "Moliya",
-        nav_settings: "Sozlamalar"
+        nav_settings: "Sozlamalar",
+        nav_profile: "Profil"
       },
       uz_kr: {
         nav_dashboard: "Асосий",
@@ -2786,7 +2805,8 @@
         nav_production: "Ишлаб чиқариш",
         nav_shops: "Дўконлар",
         nav_finance: "Молия",
-        nav_settings: "Созламалар"
+        nav_settings: "Созламалар",
+        nav_profile: "Профиль"
       },
       ru: {
         nav_dashboard: "Главная",
@@ -2794,7 +2814,8 @@
         nav_production: "Производство",
         nav_shops: "Магазины",
         nav_finance: "Финансы",
-        nav_settings: "Настройки"
+        nav_settings: "Настройки",
+        nav_profile: "Профиль"
       }
     };
 
@@ -3020,8 +3041,9 @@
     }
 
     function switchTab(tab) {
+      if (tab === 'settings') tab = 'profile';
       activeTab = tab;
-      const allTabs = ['dashboard', 'warehouse', 'production', 'shops', 'finance', 'settings'];
+      const allTabs = ['dashboard', 'warehouse', 'production', 'shops', 'finance', 'profile'];
 
       allTabs.forEach(t => {
         const screen = document.getElementById('tab-' + t);
@@ -3046,8 +3068,9 @@
       // Tab specific data rendering
       if (tab === 'warehouse') {
         renderIngredients();
-      } else if (tab === 'settings') {
+      } else if (tab === 'profile' || tab === 'settings') {
         updateSettingsUI();
+        updateDashboardStats();
       } else if (tab === 'shops') {
         renderShops();
       } else if (tab === 'production') {
@@ -5429,9 +5452,9 @@
           <i class="fa-solid fa-wallet text-violet-400 w-5"></i>
           <span>Moliya & Kassa</span>
         </button>
-        <button onclick="switchTabFromQuick('settings')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 flex items-center space-x-2.5 text-[var(--text-main)] font-bold transition">
-          <i class="fa-solid fa-gear text-rose-400 w-5"></i>
-          <span>Tizim Sozlamalari</span>
+        <button onclick="switchTabFromQuick('profile')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 flex items-center space-x-2.5 text-[var(--text-main)] font-bold transition">
+          <i class="fa-solid fa-circle-user text-rose-400 w-5"></i>
+          <span>Fabrika Profili & Sozlamalar</span>
         </button>
       </div>
     </div>
