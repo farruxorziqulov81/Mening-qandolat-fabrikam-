@@ -380,6 +380,25 @@
           </div>
         </div>
 
+        <!-- BUGUNGI BUYURTMALARNI QO'SHISH & ISHLAB CHIQARISH ACTION BANNER -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500/20 via-pink-500/15 to-purple-500/20 border-2 border-rose-500/40 p-3.5 shadow-lg shadow-rose-950/20 backdrop-blur-md">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-base shadow-md font-black shrink-0">
+                <i class="fa-solid fa-cake-candles"></i>
+              </div>
+              <div class="min-w-0">
+                <h3 class="text-xs font-black text-[var(--text-main)] truncate">Bugungi buyurtmalarni qo'shish</h3>
+                <p class="text-[10px] text-[var(--text-muted)] leading-tight">Shirinliklar va ketgan xomashyo chiqimini belgilash</p>
+              </div>
+            </div>
+            <button onclick="openDailyProductionBatchModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white text-xs font-black shadow-md transition flex items-center space-x-1.5 shrink-0 active:scale-95">
+              <i class="fa-solid fa-plus text-[10px]"></i>
+              <span>Kiritish</span>
+            </button>
+          </div>
+        </div>
+
         <!-- SiSTEMERP PASTEL MODULE TILES GRID (8 Core Modules) -->
         
 
@@ -539,41 +558,31 @@
             </button>
           </div>
 
-          <!-- Sub Tabs: Qaydlar vs Shirinliklar turlari vs Vozvratlar -->
-          <div class="grid grid-cols-3 gap-1 bg-black/5 p-1 rounded-2xl text-[11px]">
-            <button onclick="setProdSubTab(0)" id="btnProdTab0" class="py-1.5 rounded-xl font-bold bg-white text-[var(--choco-dark)] shadow-xs transition text-center truncate">Ishlab chiqarish</button>
-            <button onclick="setProdSubTab(1)" id="btnProdTab1" class="py-1.5 rounded-xl text-stone-500 transition text-center truncate">Shirinliklar</button>
-            <button onclick="setProdSubTab(2)" id="btnProdTab2" class="py-1.5 rounded-xl text-stone-500 transition text-center truncate"><i class="fa-solid fa-rotate-left mr-1"></i> Vozvratlar</button>
+          <!-- Sub Tabs: Shirinliklar turlari vs Vozvratlar -->
+          <div class="grid grid-cols-2 gap-1.5 bg-black/5 p-1 rounded-2xl text-[11px]">
+            <button onclick="setProdSubTab(0)" id="btnProdTab0" class="py-2 rounded-xl font-bold bg-white dark:bg-stone-850 text-rose-500 shadow-xs transition text-center truncate flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-shapes"></i>
+              <span>Shirinliklar katalogi</span>
+            </button>
+            <button onclick="setProdSubTab(1)" id="btnProdTab1" class="py-2 rounded-xl text-stone-500 transition text-center truncate flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Vozvratlar</span>
+            </button>
           </div>
 
-          <!-- Section 1: Production Logs -->
-          <div id="secProdLogs" class="space-y-2.5">
+          <!-- Section 1: Sweet Products Catalog (Primary view) -->
+          <div id="secProdCatalog" class="space-y-2.5">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-xs font-bold text-[var(--choco-dark)]">Ishlab chiqarish jurnali</h2>
-                <p class="text-[10px] text-stone-400">Har bir yozuvni tahrirlash mumkin</p>
+                <h2 class="text-xs font-bold text-[var(--text-main)]">Shirinliklar katalogi</h2>
+                <p class="text-[10px] text-[var(--text-muted)]">Fabrikangiz ishlab chiqaradigan mahsulotlar va narxlari</p>
               </div>
-              <button onclick="openNewProductionDialog()" class="text-xs macaron-btn px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1">
-                <i class="fa-solid fa-plus text-[10px]"></i> <span>Yangi qayd</span>
+              <button onclick="openAddProductDialog()" class="text-xs macaron-btn px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 shadow-md">
+                <i class="fa-solid fa-plus text-[10px]"></i> <span>+ Shirinlik qo'shish</span>
               </button>
             </div>
 
-            <div id="productionLogsContainer" class="space-y-2.5"></div>
-          </div>
-
-          <!-- Section 2: Sweet Products Catalog -->
-          <div id="secProdCatalog" class="hidden space-y-2.5">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-xs font-bold text-[var(--choco-dark)]">Shirinliklar katalogi</h2>
-                <p class="text-[10px] text-stone-400">Siz ishlab chiqaradigan mahsulotlar va narxlari</p>
-              </div>
-              <button onclick="openAddProductDialog()" class="text-xs macaron-btn px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1">
-                <i class="fa-solid fa-plus text-[10px]"></i> <span>Shirinlik qo'shish</span>
-              </button>
-            </div>
-
-            <div id="sweetProductsContainer" class="space-y-2.5"></div>
+            <div id="sweetProductsContainer" class="space-y-2"></div>
           </div>
 
           <!-- Section 3: Vozvratlar (Qaytgan tovarlar) -->
@@ -834,7 +843,7 @@
       </button>
       <button onclick="switchTab('production')" id="navBtn-production" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-cake-candles text-sm"></i>
-        <span class="text-[9px] font-bold mt-1" data-i18n="nav_production">Ishlab chiqarish</span>
+        <span class="text-[9px] font-bold mt-1" data-i18n="nav_production">Shirinliklar</span>
       </button>
       <button onclick="switchTab('shops')" id="navBtn-shops" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-store text-sm"></i>
@@ -854,6 +863,191 @@
     </div>
 
   <!-- ================= EDIT MODALS (TAHRIRLASH OYNALARI) ================= -->
+
+  <!-- Daily Production Batch Modal (Bugungi buyurtmalar va ishlab chiqarish) -->
+  <div id="dailyProductionBatchModal" class="fixed inset-0 bg-black/85 z-[99999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeDailyProductionBatchModal()">
+    <div class="confectionery-card w-full max-w-lg rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[88vh] flex flex-col my-auto border border-white/10" onclick="event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center border-b border-white/10 pb-2.5 shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-sm font-black shadow-md">
+            <i class="fa-solid fa-cake-candles"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-xs text-[var(--text-main)]">Bugungi Buyurtmalar & Ishlab Chiqarish</h3>
+            <p class="text-[10px] text-[var(--text-muted)]">Chiqarilgan shirinliklar va sarflangan xomashyo hisobi</p>
+          </div>
+        </div>
+        <button onclick="closeDailyProductionBatchModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
+      </div>
+
+      <!-- Scrollable Body -->
+      <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs pb-6" style="-webkit-overflow-scrolling: touch;">
+        
+        <!-- Partiya sanasi -->
+        <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10">
+          <span class="text-[11px] font-bold text-[var(--text-main)] flex items-center space-x-1.5">
+            <i class="fa-solid fa-calendar-day text-rose-400"></i>
+            <span>Partiya sanasi:</span>
+          </span>
+          <input type="date" id="batchDateInput" class="px-2.5 py-1 text-xs rounded-xl glass-input font-bold text-[var(--text-main)] border border-white/10">
+        </div>
+
+        <!-- 1-Qism: Chiqarilgan shirinliklar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-black text-rose-400 flex items-center space-x-1.5">
+              <i class="fa-solid fa-cake-candles text-[11px]"></i>
+              <span>1. Chiqarilgan shirinliklar (Nechta chiqdi?)</span>
+            </h4>
+            <span id="batchSelectedProductsBadge" class="text-[10px] font-bold text-rose-300">0 ta tanlandi</span>
+          </div>
+
+          <!-- Tanlangan shirinliklar ro'yxati -->
+          <div id="batchSelectedProductsContainer" class="space-y-1.5"></div>
+
+          <!-- SHIRINLIKLAR RO'YXATIDAN TANLASH TUGMASI -->
+          <button type="button" onclick="openSweetPickerModal()" class="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-rose-500/15 via-pink-500/10 to-rose-500/15 border-2 border-dashed border-rose-500/40 hover:bg-rose-500/25 text-rose-300 font-black text-xs flex items-center justify-center space-x-2 transition active:scale-95 shadow-sm">
+            <i class="fa-solid fa-circle-plus text-sm text-rose-400"></i>
+            <span>Shirinliklar ro'yxatidan tanlash</span>
+          </button>
+        </div>
+
+        <!-- 2-Qism: Ombordan sarflangan xomashyolar -->
+        <div class="space-y-2 pt-2 border-t border-white/10">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-black text-amber-400 flex items-center space-x-1.5">
+              <i class="fa-solid fa-boxes-stacked text-[11px]"></i>
+              <span>2. Ombordan sarflangan xomashyo (Qancha ketdi?)</span>
+            </h4>
+            <span id="batchSelectedIngredientsBadge" class="text-[10px] font-bold text-amber-300">0 ta tanlandi</span>
+          </div>
+
+          <!-- Tanlangan xomashyolar ro'yxati -->
+          <div id="batchSelectedIngredientsContainer" class="space-y-1.5"></div>
+
+          <!-- OMBOR MAHSULOTLARIDAN TANLASH TUGMASI -->
+          <button type="button" onclick="openIngredientPickerModal()" class="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border-2 border-dashed border-amber-500/40 hover:bg-amber-500/25 text-amber-300 font-black text-xs flex items-center justify-center space-x-2 transition active:scale-95 shadow-sm">
+            <i class="fa-solid fa-circle-plus text-sm text-amber-400"></i>
+            <span>Ombor mahsulotlaridan tanlash</span>
+          </button>
+        </div>
+
+        <!-- 3-Qism: Yakuniy hisob-kitob -->
+        <div class="p-3 rounded-2xl bg-gradient-to-br from-rose-500/10 via-amber-500/10 to-emerald-500/10 border border-white/10 space-y-2">
+          <div class="flex justify-between items-center text-[11px]">
+            <span class="text-[var(--text-muted)] font-medium">Jami tayyorlangan mahsulot:</span>
+            <b id="batchSumQty" class="text-white font-black">0 dona</b>
+          </div>
+          <div class="flex justify-between items-center text-[11px]">
+            <span class="text-[var(--text-muted)] font-medium">Tayyor mahsulot sotish qiymati:</span>
+            <b id="batchSumVal" class="text-emerald-400 font-black">0 so'm</b>
+          </div>
+          <div class="flex justify-between items-center text-[11px] pt-1.5 border-t border-white/10">
+            <span class="text-rose-300 font-bold">Xomashyo chiqimi (Xarajat):</span>
+            <b id="batchSumCost" class="text-rose-400 font-black text-sm">0 so'm</b>
+          </div>
+
+          <div class="pt-2 space-y-1.5 border-t border-white/10 text-[10px]">
+            <label class="flex items-center space-x-2 cursor-pointer text-[var(--text-main)]">
+              <input type="checkbox" id="batchAutoDeduct" checked class="w-3.5 h-3.5 rounded accent-rose-500">
+              <span>Ombordagi xomashyolardan ketgan miqdor avtomatik ayirilsin</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer text-[var(--text-main)]">
+              <input type="checkbox" id="batchAutoExpense" checked class="w-3.5 h-3.5 rounded accent-rose-500">
+              <span>Moliya bo'limiga «Xomashyo xarajati» deb Chiqim yozilsin</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end space-x-2 pt-2.5 border-t border-white/10 shrink-0">
+        <button onclick="closeDailyProductionBatchModal()" class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[var(--text-muted)] font-bold text-xs transition">
+          Bekor qilish
+        </button>
+        <button onclick="confirmSaveProductionBatch()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white font-black text-xs shadow-lg transition flex items-center space-x-1.5 active:scale-95">
+          <i class="fa-solid fa-check"></i>
+          <span>Saqlash va Chiqimni Tasdiqlash</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Sweet Picker Modal (Shirinliklar ro'yxatidan tanlash) -->
+  <div id="sweetPickerModal" class="fixed inset-0 bg-black/85 z-[999999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeSweetPickerModal()">
+    <div class="confectionery-card w-full max-w-md rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-cake-candles"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-[var(--text-main)]">Shirinliklar Ro'yxatidan Tanlash</h3>
+            <p class="text-[9px] text-[var(--text-muted)]">Bugun ishlab chiqargan shirinligingizni tanlang</p>
+          </div>
+        </div>
+        <button onclick="closeSweetPickerModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
+      </div>
+
+      <!-- Qidiruv maydoni -->
+      <div class="relative shrink-0">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-xs"></i>
+        <input type="text" id="sweetPickerSearchInput" oninput="renderSweetPickerList()" placeholder="Shirinlik nomini qidirish..." class="w-full pl-8 pr-3 py-2 text-xs glass-input rounded-xl border border-white/10 font-medium">
+      </div>
+
+      <!-- Shirinliklar ro'yxati -->
+      <div id="sweetPickerListContainer" class="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-64" style="-webkit-overflow-scrolling: touch;"></div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-between pt-2 border-t border-white/10 shrink-0 text-xs">
+        <button onclick="loadDefaultSweetsCatalog()" class="text-[10px] text-rose-400 hover:underline flex items-center space-x-1 font-bold">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>15 xil shirinlikni yuklash</span>
+        </button>
+        <button onclick="closeSweetPickerModal()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[var(--text-main)] font-bold text-xs transition">
+          Yopish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ingredient Picker Modal (Ombor mahsulotlaridan tanlash) -->
+  <div id="ingredientPickerModal" class="fixed inset-0 bg-black/85 z-[999999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeIngredientPickerModal()">
+    <div class="confectionery-card w-full max-w-md rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-boxes-stacked"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-[var(--text-main)]">Ombor Mahsulotlaridan Tanlash</h3>
+            <p class="text-[9px] text-[var(--text-muted)]">Bugun ishlatilgan xomashyoni tanlang</p>
+          </div>
+        </div>
+        <button onclick="closeIngredientPickerModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
+      </div>
+
+      <!-- Qidiruv maydoni -->
+      <div class="relative shrink-0">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-xs"></i>
+        <input type="text" id="ingPickerSearchInput" oninput="renderIngPickerList()" placeholder="Xomashyo izlash (un, shakar, yog')..." class="w-full pl-8 pr-3 py-2 text-xs glass-input rounded-xl border border-white/10 font-medium">
+      </div>
+
+      <!-- Xomashyolar ro'yxati -->
+      <div id="ingPickerListContainer" class="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-64" style="-webkit-overflow-scrolling: touch;"></div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end pt-2 border-t border-white/10 shrink-0 text-xs">
+        <button onclick="closeIngredientPickerModal()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[var(--text-main)] font-bold text-xs transition">
+          Yopish
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- 0. Settings Modal (Tizim Sozlamalari Popup) -->
   <div id="settingsModal" class="fixed inset-0 bg-black/80 z-[99999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeSettingsModal()">
@@ -3134,7 +3328,43 @@
       logo: ""
     });
 
-    let sweetProducts = loadStorage('products', []);
+    let sweetProducts = loadStorage('products', [
+      { id: 1, name: "Medovik Asalli Tort", category: "Tortlar", price: 85000, unit: "dona" },
+      { id: 2, name: "Napoleon Qatlamali Tort", category: "Tortlar", price: 90000, unit: "dona" },
+      { id: 3, name: "Shokoladli Biskvit Tort", category: "Tortlar", price: 95000, unit: "dona" },
+      { id: 4, name: "Klassik Qozon Paxlava", category: "Sharq shirinliklari", price: 75000, unit: "kg" },
+      { id: 5, name: "Asalli Chak-Chak", category: "Sharq shirinliklari", price: 45000, unit: "kg" },
+      { id: 6, name: "Krem-bryule Ekler", category: "Pirojniylar", price: 8000, unit: "dona" },
+      { id: 7, name: "Qandolat Pryanigi", category: "Pechenye", price: 28000, unit: "kg" },
+      { id: 8, name: "Shokoladli Vafli", category: "Vafli", price: 32000, unit: "kg" },
+      { id: 9, name: "Shokoladli Kruassan", category: "Pishiriqlar", price: 12000, unit: "dona" },
+      { id: 10, name: "Qumli Pechenye (Kurabiye)", category: "Pechenye", price: 30000, unit: "kg" },
+      { id: 11, name: "Mevali Biskvit Rulet", category: "Ruletlar", price: 40000, unit: "dona" },
+      { id: 12, name: "Keks (Muffin)", category: "Kekslar", price: 6000, unit: "dona" },
+      { id: 13, name: "Vanilli Zefir", category: "Zefir", price: 35000, unit: "kg" },
+      { id: 14, name: "Quyultirilgan sutli Trubochka", category: "Pirojniylar", price: 7000, unit: "dona" },
+      { id: 15, name: "Qandolat Pechenyesi (Assorti)", category: "Pechenye", price: 35000, unit: "kg" }
+    ]);
+    if (!sweetProducts || sweetProducts.length === 0) {
+      sweetProducts = [
+        { id: 1, name: "Medovik Asalli Tort", category: "Tortlar", price: 85000, unit: "dona" },
+        { id: 2, name: "Napoleon Qatlamali Tort", category: "Tortlar", price: 90000, unit: "dona" },
+        { id: 3, name: "Shokoladli Biskvit Tort", category: "Tortlar", price: 95000, unit: "dona" },
+        { id: 4, name: "Klassik Qozon Paxlava", category: "Sharq shirinliklari", price: 75000, unit: "kg" },
+        { id: 5, name: "Asalli Chak-Chak", category: "Sharq shirinliklari", price: 45000, unit: "kg" },
+        { id: 6, name: "Krem-bryule Ekler", category: "Pirojniylar", price: 8000, unit: "dona" },
+        { id: 7, name: "Qandolat Pryanigi", category: "Pechenye", price: 28000, unit: "kg" },
+        { id: 8, name: "Shokoladli Vafli", category: "Vafli", price: 32000, unit: "kg" },
+        { id: 9, name: "Shokoladli Kruassan", category: "Pishiriqlar", price: 12000, unit: "dona" },
+        { id: 10, name: "Qumli Pechenye (Kurabiye)", category: "Pechenye", price: 30000, unit: "kg" },
+        { id: 11, name: "Mevali Biskvit Rulet", category: "Ruletlar", price: 40000, unit: "dona" },
+        { id: 12, name: "Keks (Muffin)", category: "Kekslar", price: 6000, unit: "dona" },
+        { id: 13, name: "Vanilli Zefir", category: "Zefir", price: 35000, unit: "kg" },
+        { id: 14, name: "Quyultirilgan sutli Trubochka", category: "Pirojniylar", price: 7000, unit: "dona" },
+        { id: 15, name: "Qandolat Pechenyesi (Assorti)", category: "Pechenye", price: 35000, unit: "kg" }
+      ];
+      saveStorage('products', sweetProducts);
+    }
     let productionLogs = loadStorage('logs', []);
     let transactions = loadStorage('transactions', []);
     let debts = loadStorage('debts', []);
@@ -3235,7 +3465,7 @@
       } else if (tab === 'shops') {
         renderShops();
       } else if (tab === 'production') {
-        renderProductionLogs();
+        setProdSubTab(0);
         renderSweetProducts();
       } else if (tab === 'finance') {
         renderFinance();
@@ -3465,12 +3695,11 @@
       showToast("Fabrika ma'lumotlari va logotipi saqlandi!", "success");
     }
 
-    // Production Sub Tabs
+    // Production Sub Tabs (0: Shirinliklar katalogi, 1: Vozvratlar)
     function setProdSubTab(idx) {
       const tabs = [
-        { sec: 'secProdLogs', btn: 'btnProdTab0' },
-        { sec: 'secProdCatalog', btn: 'btnProdTab1' },
-        { sec: 'secProdReturns', btn: 'btnProdTab2' }
+        { sec: 'secProdCatalog', btn: 'btnProdTab0' },
+        { sec: 'secProdReturns', btn: 'btnProdTab1' }
       ];
       tabs.forEach((t, i) => {
         const secEl = document.getElementById(t.sec);
@@ -3478,73 +3707,30 @@
         if (secEl && btnEl) {
           if (i === idx) {
             secEl.classList.remove('hidden');
-            btnEl.className = "py-1.5 rounded-xl font-bold bg-white dark:bg-stone-850 text-sky-600 dark:text-sky-400 shadow-xs transition text-center truncate";
+            btnEl.className = "py-2 rounded-xl font-bold bg-white dark:bg-stone-850 text-rose-500 shadow-xs transition text-center truncate flex items-center justify-center space-x-1.5";
           } else {
             secEl.classList.add('hidden');
-            btnEl.className = "py-1.5 rounded-xl text-stone-500 transition text-center truncate";
+            btnEl.className = "py-2 rounded-xl text-stone-500 transition text-center truncate flex items-center justify-center space-x-1.5";
           }
         }
       });
-      if (idx === 2) renderReturns();
-    }
-
-    // Render Production Logs
-    function renderProductionLogs() {
-      const container = document.getElementById('productionLogsContainer');
-      if (productionLogs.length === 0) {
-        container.innerHTML = `
-          <div class="confectionery-card rounded-[22px] p-6 text-center space-y-3">
-            <div class="w-14 h-14 rounded-2xl bg-[#FCE4EC] text-[#EC407A] flex items-center justify-center mx-auto text-xl shadow-xs">
-              <i class="fa-solid fa-cake-candles"></i>
-            </div>
-            <div class="font-bold text-xs text-[var(--choco-dark)]">Hali ishlab chiqarish qaydlari kiritilmagan</div>
-            <p class="text-[11px] text-stone-400">Ishlab chiqargan mahsulotlaringizni o'zingiz yozib boring</p>
-            <button onclick="openNewProductionDialog()" class="px-4 py-2 macaron-btn rounded-xl text-xs font-bold inline-flex items-center space-x-1.5">
-              <i class="fa-solid fa-plus text-[10px]"></i> <span>Birinchi qaydni kiritish</span>
-            </button>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = productionLogs.map(log => `
-        <div class="confectionery-card rounded-[20px] p-3.5 space-y-2">
-          <div class="flex justify-between items-start">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-xl bg-[#FCE4EC] text-[#EC407A] flex items-center justify-center text-sm shadow-xs">
-                <i class="fa-solid fa-cake-candles"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-[var(--choco-dark)]">${log.name}</h4>
-                <div class="text-[10px] text-stone-400">${log.date} • Mas'ul: ${log.staff}</div>
-              </div>
-            </div>
-            <div class="flex items-center space-x-1.5">
-              <span class="text-xs bg-[var(--choco-dark)] text-[#FCE4EC] px-2.5 py-1 rounded-xl font-bold">+${log.qty} dona</span>
-              <button onclick="openEditLogModal(${log.id})" title="Tahrirlash" class="w-7 h-7 rounded-lg bg-black/5 hover:bg-black/10 flex items-center justify-center text-[var(--choco-dark)]">
-                <i class="fa-solid fa-pen text-[10px]"></i>
-              </button>
-              <button onclick="deleteLog(${log.id})" title="O'chirish" class="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center">
-                <i class="fa-solid fa-trash text-[10px]"></i>
-              </button>
-            </div>
-          </div>
-          ${log.notes ? `<div class="bg-black/5 p-2 rounded-xl text-[10px] text-stone-500">Izoh: ${log.notes}</div>` : ''}
-        </div>
-      `).join('');
+      if (idx === 0) renderSweetProducts();
+      if (idx === 1) renderReturns();
     }
 
     // Render Sweet Products Catalog
     function renderSweetProducts() {
       const container = document.getElementById('sweetProductsContainer');
+      if (!container) return;
+
       if (sweetProducts.length === 0) {
         container.innerHTML = `
-          <div class="confectionery-card rounded-[22px] p-6 text-center space-y-3">
-            <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto text-xl shadow-xs">
+          <div class="erp-card p-6 text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-400 flex items-center justify-center mx-auto text-xl shadow-xs">
               <i class="fa-solid fa-shapes"></i>
             </div>
-            <div class="font-bold text-xs text-[var(--choco-dark)]">Hali shirinlik turlari kiritilmagan</div>
-            <p class="text-[11px] text-stone-400">Siz ishlab chiqaradigan shirinlik nomlari va narxlarini qo'shing</p>
+            <div class="font-bold text-xs text-[var(--text-main)]">Hali shirinlik turlari kiritilmagan</div>
+            <p class="text-[11px] text-[var(--text-muted)]">Siz ishlab chiqaradigan shirinlik nomlari va narxlarini qo'shing</p>
             <button onclick="openAddProductDialog()" class="px-4 py-2 macaron-btn rounded-xl text-xs font-bold inline-flex items-center space-x-1.5">
               <i class="fa-solid fa-plus text-[10px]"></i> <span>Shirinlik qo'shish</span>
             </button>
@@ -3554,17 +3740,17 @@
       }
 
       container.innerHTML = sweetProducts.map(prod => `
-        <div class="confectionery-card rounded-[20px] p-3.5 flex justify-between items-center">
+        <div class="erp-card p-3 flex justify-between items-center border border-white/5 hover:border-rose-500/30 transition">
           <div>
-            <h4 class="text-xs font-bold text-[var(--choco-dark)]">${prod.name}</h4>
-            <div class="text-[10px] text-stone-400">${prod.category} • Sotish narxi: <b class="text-[var(--choco-dark)]">${fmtCur(prod.price)} / ${prod.unit}</b></div>
+            <h4 class="text-xs font-bold text-[var(--text-main)]">${prod.name}</h4>
+            <div class="text-[10px] text-[var(--text-muted)]">${prod.category || 'Shirinlik'} • Sotish narxi: <b class="text-emerald-400">${fmtCur(prod.price)} / ${prod.unit || 'dona'}</b></div>
           </div>
           <div class="flex items-center space-x-1.5">
-            <button onclick="openEditProductModal(${prod.id})" class="px-2.5 py-1.5 rounded-xl bg-[#FCE4EC] text-[#EC407A] text-[10px] font-bold flex items-center space-x-1 hover:opacity-90">
+            <button onclick="openEditProductModal(${prod.id})" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 text-rose-400 text-[10px] font-bold flex items-center space-x-1 hover:bg-rose-500/25 transition">
               <i class="fa-solid fa-pen text-[9px]"></i>
               <span>Tahrirlash</span>
             </button>
-            <button onclick="deleteProduct(${prod.id})" class="w-7 h-7 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center">
+            <button onclick="deleteProduct(${prod.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition">
               <i class="fa-solid fa-trash text-[10px]"></i>
             </button>
           </div>
@@ -3623,6 +3809,464 @@
         saveStorage('products', sweetProducts);
         renderSweetProducts();
       }
+    }
+
+    // ==========================================
+    // BUGUNGI BUYURTMALAR & ISHLAB CHIQARISH PARTIYASI
+    // ==========================================
+    let currentBatchProducts = [];
+    let currentBatchIngredients = [];
+
+    function openDailyProductionBatchModal() {
+      const modal = document.getElementById('dailyProductionBatchModal');
+      if (!modal) return;
+
+      const dateInput = document.getElementById('batchDateInput');
+      if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+
+      currentBatchProducts = [];
+      currentBatchIngredients = [];
+
+      renderSelectedBatchProducts();
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeDailyProductionBatchModal() {
+      const modal = document.getElementById('dailyProductionBatchModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // --- Shirinliklar Picker Modali & Ro'yxatidan tanlash ---
+    function openSweetPickerModal() {
+      const modal = document.getElementById('sweetPickerModal');
+      const searchInput = document.getElementById('sweetPickerSearchInput');
+      if (searchInput) searchInput.value = '';
+      renderSweetPickerList();
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeSweetPickerModal() {
+      const modal = document.getElementById('sweetPickerModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderSweetPickerList() {
+      const container = document.getElementById('sweetPickerListContainer');
+      if (!container) return;
+
+      const searchVal = (document.getElementById('sweetPickerSearchInput')?.value || '').toLowerCase();
+      const filtered = (sweetProducts || []).filter(p => p.name.toLowerCase().includes(searchVal) || (p.category || '').toLowerCase().includes(searchVal));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl">
+            Shirinlik topilmadi.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => {
+        const isAlreadyAdded = currentBatchProducts.some(x => x.id === p.id);
+        return `
+          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-rose-500/30 transition">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${p.name}</h4>
+              <div class="text-[10px] text-[var(--text-muted)]">${p.category || 'Shirinlik'} • <span class="text-emerald-400 font-bold">${fmtCur(p.price)} / ${p.unit || 'dona'}</span></div>
+            </div>
+            <button type="button" onclick="selectSweetFromPicker(${p.id})" class="px-3 py-1.5 rounded-xl ${isAlreadyAdded ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md active:scale-95'} font-black text-xs transition flex items-center space-x-1 shrink-0">
+              <i class="fa-solid ${isAlreadyAdded ? 'fa-check' : 'fa-plus'} text-[10px]"></i>
+              <span>${isAlreadyAdded ? 'Tanlangan' : 'Tanlash'}</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectSweetFromPicker(id) {
+      addSelectedProductToBatch(id);
+      closeSweetPickerModal();
+    }
+
+    function addSelectedProductToBatch(prodId) {
+      if (!prodId) return;
+      const id = parseInt(prodId);
+      const p = (sweetProducts || []).find(x => x.id === id);
+      if (!p) return;
+
+      const existing = currentBatchProducts.find(x => x.id === id);
+      if (existing) {
+        const el = document.getElementById(`batch_prod_${id}`);
+        if (el) el.focus();
+        return;
+      }
+
+      currentBatchProducts.push({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        price: p.price,
+        unit: p.unit || 'dona',
+        qty: ''
+      });
+
+      renderSelectedBatchProducts();
+      calculateBatchTotals();
+
+      setTimeout(() => {
+        const el = document.getElementById(`batch_prod_${id}`);
+        if (el) el.focus();
+      }, 50);
+    }
+
+    function removeSelectedBatchProduct(id) {
+      currentBatchProducts = currentBatchProducts.filter(x => x.id !== id);
+      renderSelectedBatchProducts();
+      calculateBatchTotals();
+    }
+
+    function updateBatchProductQty(id, val) {
+      const item = currentBatchProducts.find(x => x.id === id);
+      if (item) {
+        item.qty = val;
+      }
+      calculateBatchTotals();
+    }
+
+    function renderSelectedBatchProducts() {
+      const container = document.getElementById('batchSelectedProductsContainer');
+      const badge = document.getElementById('batchSelectedProductsBadge');
+      if (badge) badge.innerText = `${currentBatchProducts.length} ta tanlandi`;
+      if (!container) return;
+
+      if (currentBatchProducts.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
+            <i class="fa-solid fa-cake-candles mb-1 text-sm text-rose-400 opacity-60 block"></i>
+            Hali shirinlik tanlanmadi. Pastdagi tugma orqali ro'yxatdan tanlang.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = currentBatchProducts.map(prod => {
+        const subtotal = (parseFloat(prod.qty) || 0) * (prod.price || 0);
+        return `
+          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-rose-500/30 transition">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${prod.name}</h4>
+              <div class="text-[10px] text-[var(--text-muted)]">
+                Narxi: <span class="text-emerald-400 font-semibold">${fmtCur(prod.price)} / ${prod.unit}</span>
+                ${subtotal > 0 ? `• Jami: <span class="text-white font-bold">${fmtCur(subtotal)}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <div class="relative w-28">
+                <input type="number" min="0" step="any" id="batch_prod_${prod.id}" value="${prod.qty !== '' ? prod.qty : ''}" oninput="updateBatchProductQty(${prod.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-rose-500">
+                <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${prod.unit}</span>
+              </div>
+              <button type="button" onclick="removeSelectedBatchProduct(${prod.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition" title="O'chirish">
+                <i class="fa-solid fa-trash-can text-[11px]"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- Ombor Xomashyolari Picker Modali & Ro'yxatidan tanlash ---
+    function openIngredientPickerModal() {
+      const modal = document.getElementById('ingredientPickerModal');
+      const searchInput = document.getElementById('ingPickerSearchInput');
+      if (searchInput) searchInput.value = '';
+      renderIngPickerList();
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeIngredientPickerModal() {
+      const modal = document.getElementById('ingredientPickerModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderIngPickerList() {
+      const container = document.getElementById('ingPickerListContainer');
+      if (!container) return;
+
+      const searchVal = (document.getElementById('ingPickerSearchInput')?.value || '').toLowerCase();
+      const filtered = (ingredients || []).filter(i => i.name.toLowerCase().includes(searchVal));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl">
+            Xomashyo topilmadi.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(i => {
+        const isAlreadyAdded = currentBatchIngredients.some(x => x.id === i.id);
+        return `
+          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-amber-500/30 transition">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${i.name}</h4>
+              <div class="text-[10px] text-[var(--text-muted)]">
+                Omborda: <b class="text-white">${i.qty} ${i.unit}</b> • 
+                Tan narxi: <span class="text-rose-400 font-semibold">${fmtCur(i.price)}/${i.unit}</span>
+              </div>
+            </div>
+            <button type="button" onclick="selectIngredientFromPicker(${i.id})" class="px-3 py-1.5 rounded-xl ${isAlreadyAdded ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 shadow-md active:scale-95'} font-black text-xs transition flex items-center space-x-1 shrink-0">
+              <i class="fa-solid ${isAlreadyAdded ? 'fa-check' : 'fa-plus'} text-[10px]"></i>
+              <span>${isAlreadyAdded ? 'Tanlangan' : 'Tanlash'}</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectIngredientFromPicker(id) {
+      addSelectedIngredientToBatch(id);
+      closeIngredientPickerModal();
+    }
+
+    function addSelectedIngredientToBatch(ingId) {
+      if (!ingId) return;
+      const id = parseInt(ingId);
+      const ing = (ingredients || []).find(x => x.id === id);
+      if (!ing) return;
+
+      const existing = currentBatchIngredients.find(x => x.id === id);
+      if (existing) {
+        const el = document.getElementById(`batch_ing_${id}`);
+        if (el) el.focus();
+        return;
+      }
+
+      currentBatchIngredients.push({
+        id: ing.id,
+        name: ing.name,
+        qty: ing.qty,
+        unit: ing.unit,
+        price: ing.price,
+        usedQty: ''
+      });
+
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+
+      setTimeout(() => {
+        const el = document.getElementById(`batch_ing_${id}`);
+        if (el) el.focus();
+      }, 50);
+    }
+
+    function removeSelectedBatchIng(id) {
+      currentBatchIngredients = currentBatchIngredients.filter(x => x.id !== id);
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+    }
+
+    function updateBatchIngredientQty(id, val) {
+      const item = currentBatchIngredients.find(x => x.id === id);
+      if (item) {
+        item.usedQty = val;
+      }
+      calculateBatchTotals();
+    }
+
+    function renderSelectedBatchIngredients() {
+      const container = document.getElementById('batchSelectedIngredientsContainer');
+      const badge = document.getElementById('batchSelectedIngredientsBadge');
+      if (badge) badge.innerText = `${currentBatchIngredients.length} ta tanlandi`;
+      if (!container) return;
+
+      if (currentBatchIngredients.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
+            <i class="fa-solid fa-boxes-stacked mb-1 text-sm text-amber-400 opacity-60 block"></i>
+            Hali xomashyo tanlanmadi. Pastdagi tugma orqali ro'yxatdan tanlang.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = currentBatchIngredients.map(ing => {
+        const cost = (parseFloat(ing.usedQty) || 0) * (ing.price || 0);
+        return `
+          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-amber-500/30 transition">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${ing.name}</h4>
+              <div class="text-[10px] text-[var(--text-muted)]">
+                Omborda: <b class="text-white">${ing.qty} ${ing.unit}</b> • 
+                Narx: <span class="text-rose-400 font-semibold">${fmtCur(ing.price)}/${ing.unit}</span>
+                ${cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(cost)}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <div class="relative w-28">
+                <input type="number" min="0" step="any" id="batch_ing_${ing.id}" value="${ing.usedQty !== '' ? ing.usedQty : ''}" oninput="updateBatchIngredientQty(${ing.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-amber-500">
+                <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${ing.unit}</span>
+              </div>
+              <button type="button" onclick="removeSelectedBatchIng(${ing.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition" title="O'chirish">
+                <i class="fa-solid fa-trash-can text-[11px]"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadDefaultSweetsCatalog() {
+      sweetProducts = [
+        { id: 1, name: "Medovik Asalli Tort", category: "Tortlar", price: 85000, unit: "kg" },
+        { id: 2, name: "Napoleon Qatlamali Tort", category: "Tortlar", price: 90000, unit: "kg" },
+        { id: 3, name: "Shokoladli Biskvit Tort", category: "Tortlar", price: 95000, unit: "kg" },
+        { id: 4, name: "Klassik Qozon Paxlava", category: "Sharq shirinliklari", price: 75000, unit: "kg" },
+        { id: 5, name: "Asalli Chak-Chak", category: "Sharq shirinliklari", price: 45000, unit: "kg" },
+        { id: 6, name: "Krem-bryule Ekler", category: "Pirojniylar", price: 8000, unit: "dona" },
+        { id: 7, name: "Qandolat Pryanigi", category: "Pechenye", price: 28000, unit: "kg" },
+        { id: 8, name: "Shokoladli Vafli", category: "Vafli", price: 32000, unit: "kg" },
+        { id: 9, name: "Shokoladli Kruassan", category: "Pishiriqlar", price: 12000, unit: "dona" },
+        { id: 10, name: "Qumli Pechenye (Kurabiye)", category: "Pechenye", price: 30000, unit: "kg" },
+        { id: 11, name: "Mevali Biskvit Rulet", category: "Ruletlar", price: 40000, unit: "dona" },
+        { id: 12, name: "Keks (Muffin)", category: "Kekslar", price: 6000, unit: "dona" },
+        { id: 13, name: "Vanilli Zefir", category: "Zefir", price: 35000, unit: "kg" },
+        { id: 14, name: "Quyultirilgan sutli Trubochka", category: "Pirojniylar", price: 7000, unit: "dona" },
+        { id: 15, name: "Qandolat Pechenyesi (Assorti)", category: "Pechenye", price: 35000, unit: "kg" }
+      ];
+      saveStorage('products', sweetProducts);
+      renderSweetProducts();
+      renderSweetPickerList();
+      showToast("15 xil shirinliklar katalogi yuklandi!", "success");
+    }
+
+    // --- Hisob-kitob va Yakuniy Saqlash ---
+    function calculateBatchTotals() {
+      let totalProducedQty = 0;
+      let totalProducedVal = 0;
+      let totalExpenseCost = 0;
+
+      currentBatchProducts.forEach(p => {
+        const q = parseFloat(p.qty) || 0;
+        if (q > 0) {
+          totalProducedQty += q;
+          totalProducedVal += (q * (p.price || 0));
+        }
+      });
+
+      currentBatchIngredients.forEach(i => {
+        const q = parseFloat(i.usedQty) || 0;
+        if (q > 0) {
+          totalExpenseCost += (q * (i.price || 0));
+        }
+      });
+
+      const qtyEl = document.getElementById('batchSumQty');
+      const valEl = document.getElementById('batchSumVal');
+      const costEl = document.getElementById('batchSumCost');
+
+      if (qtyEl) qtyEl.innerText = `${totalProducedQty} dona/kg`;
+      if (valEl) valEl.innerText = fmtCur(totalProducedVal);
+      if (costEl) costEl.innerText = fmtCur(totalExpenseCost);
+    }
+
+    function confirmSaveProductionBatch() {
+      const batchDate = document.getElementById('batchDateInput')?.value || new Date().toISOString().split('T')[0];
+      const autoDeduct = document.getElementById('batchAutoDeduct')?.checked ?? true;
+      const autoExpense = document.getElementById('batchAutoExpense')?.checked ?? true;
+
+      const validProducts = currentBatchProducts.filter(p => (parseFloat(p.qty) || 0) > 0);
+      const validIngredients = currentBatchIngredients.filter(i => (parseFloat(i.usedQty) || 0) > 0);
+
+      if (validProducts.length === 0 && validIngredients.length === 0) {
+        showToast("Kamida bitta shirinlik yoki sarflangan xomashyo miqdorini kiriting!", "warning");
+        return;
+      }
+
+      let totalExpenseCost = 0;
+      validIngredients.forEach(i => {
+        const q = parseFloat(i.usedQty) || 0;
+        totalExpenseCost += (q * (i.price || 0));
+      });
+
+      let totalProducedQty = 0;
+      let totalProducedVal = 0;
+      validProducts.forEach(p => {
+        const q = parseFloat(p.qty) || 0;
+        totalProducedQty += q;
+        totalProducedVal += (q * (p.price || 0));
+      });
+
+      // 1. Deduct from warehouse ingredients if autoDeduct
+      if (autoDeduct && validIngredients.length > 0) {
+        validIngredients.forEach(u => {
+          const ing = ingredients.find(i => i.id === u.id);
+          if (ing) {
+            const used = parseFloat(u.usedQty) || 0;
+            ing.qty = Math.max(0, Math.round((ing.qty - used) * 100) / 100);
+          }
+        });
+        saveStorage('ingredients', ingredients);
+        renderIngredients();
+      }
+
+      // 2. Add expense transaction to finance if autoExpense
+      if (autoExpense && totalExpenseCost > 0) {
+        const desc = "Ishlab chiqarish uchun sarflangan xomashyo: " + validIngredients.map(u => `${u.name} (${u.usedQty} ${u.unit})`).join(', ');
+        const tx = {
+          id: Date.now(),
+          type: 'CHIQIM',
+          category: 'Xomashyo xarajati',
+          amount: totalExpenseCost,
+          date: batchDate,
+          desc: desc
+        };
+        transactions.unshift(tx);
+        saveStorage('transactions', transactions);
+        renderFinance();
+      }
+
+      // 3. Save produced items to productionLogs
+      validProducts.forEach((p, idx) => {
+        productionLogs.unshift({
+          id: Date.now() + idx,
+          name: p.name,
+          qty: parseFloat(p.qty) || 0,
+          unit: p.unit || 'dona',
+          date: batchDate,
+          staff: "Qandolat sexi",
+          notes: "Bugungi ishlab chiqarish partiyasi"
+        });
+      });
+      saveStorage('logs', productionLogs);
+
+      // 4. Save batch history record
+      let batches = loadStorage('productionBatches', []);
+      batches.unshift({
+        id: Date.now(),
+        date: batchDate,
+        producedItems: validProducts,
+        usedIngredients: validIngredients,
+        totalQty: totalProducedQty,
+        totalVal: totalProducedVal,
+        totalExpense: totalExpenseCost,
+        createdAt: new Date().toISOString()
+      });
+      saveStorage('productionBatches', batches);
+
+      // Update stats and UI
+      updateDashboardStats();
+      if (typeof updateWarehouseAlertBadge === 'function') {
+        updateWarehouseAlertBadge();
+      }
+
+      closeDailyProductionBatchModal();
+      showToast(`Bugungi partiya saqlandi! Chiqim: ${fmtCur(totalExpenseCost)}`, "success");
     }
 
     // New Production
