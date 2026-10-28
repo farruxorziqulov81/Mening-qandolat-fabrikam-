@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T09:44:02.988Z",
+  "updated_at": "2026-10-28T13:55:17.357Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -88,6 +88,17 @@
       "plan": "Ulangan Qurilma",
       "createdAt": "2026-10-28",
       "lastSeen": "2026-10-28 09:39"
+    },
+    {
+      "id": "CLI-8931",
+      "name": "Mening Qandolat Fabrikam",
+      "phone": "+998",
+      "deviceId": "DEV-NW23C",
+      "key": "KEY-EI4EVQ",
+      "status": "active",
+      "plan": "Ulangan Qurilma",
+      "createdAt": "2026-10-28",
+      "lastSeen": "2026-10-28 13:55"
     }
   ]
 }
