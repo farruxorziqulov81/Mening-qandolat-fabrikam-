@@ -1,9 +1,7 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T08:13:06.378Z",
-  "blocked_devices": [
-    "DEV-DZN8U"
-  ],
+  "updated_at": "2026-10-28T09:40:00Z",
+  "blocked_devices": [],
   "clients": [
     {
       "id": "CLI-001",
@@ -13,17 +11,6 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
-    },
-    {
-      "id": "CLI-5642",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-DZN8U",
-      "key": "KEY-W48NYM",
-      "status": "blocked",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 08:10"
     }
   ]
 }
