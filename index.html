@@ -1727,8 +1727,8 @@
   </div>
 
   <!-- Supabase Cloud Sync & Auth Modal -->
-  <div id="authModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
-    <div class="confectionery-card w-full max-w-sm rounded-[28px] p-5 space-y-4 shadow-2xl">
+  <div id="authModal" class="fixed inset-0 bg-black/80 z-[99999999] flex items-center justify-center p-4 hidden backdrop-blur-md" onclick="if(event.target === this) closeAuthDialog()">
+    <div class="confectionery-card w-full max-w-sm rounded-[28px] p-5 space-y-4 shadow-2xl" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center border-b border-white/10 pb-2">
         <div class="flex items-center space-x-2">
           <div class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-sm">
@@ -5022,6 +5022,7 @@
           userStore[email.toLowerCase()] = {
             id: currentUser.id,
             email: email,
+            password: password,
             factoryName: factoryName,
             savedAt: new Date().toISOString()
           };
@@ -5031,6 +5032,7 @@
         if (isFarrux) {
           localStorage.setItem('farrux_is_master_admin', 'true');
           localStorage.setItem('app_is_licensed', 'true');
+          localStorage.setItem('farrux_app_password', password);
           const adminCard = document.getElementById('superAdminSettingsCard');
           if (adminCard) adminCard.classList.remove('hidden');
         }
@@ -5044,136 +5046,80 @@
         closeAuthDialog();
         showToast(successMsg || "Muvaffaqiyatli kirdingiz! Xush kelibsiz!", "success");
 
-        // Sync without throwing
+        // Background cloud sync
         syncAllToCloud().catch(err => console.warn('Background sync note:', err));
-        if (currentAuthTab === 'login') {
-          syncAllFromCloud().catch(err => console.warn('Background pull note:', err));
-        }
+        syncAllFromCloud().catch(err => console.warn('Background pull note:', err));
       }
 
       try {
-        if (currentAuthTab === 'login') {
-          if (supabaseClient) {
-            try {
-              const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-              if (!error && data && data.user) {
-                activateUserSession(data.user, isFarrux ? "Xush kelibsiz, Farrux! Bulutga ulandi" : "Xush kelibsiz! Bulutga ulandi");
-                return;
+        // Background Supabase auth attempt (never block the user if Supabase fails)
+        if (supabaseClient) {
+          if (currentAuthTab === 'login') {
+            supabaseClient.auth.signInWithPassword({ email, password }).then(res => {
+              if (res.data && res.data.user) {
+                currentUser = res.data.user;
+                localStorage.setItem('sweet_app_current_user', JSON.stringify(currentUser));
               }
-              if (error) {
-                const em = String(error.message || '').toLowerCase();
-                if (em.includes('email not confirmed') || em.includes('email_not_confirmed')) {
-                  const fallbackUser = {
-                    id: isFarrux ? '5c60f15c-903f-445a-8f99-0a189953031b' : ('usr_' + getOrCreateDeviceId()),
-                    email: email,
-                    user_metadata: { factory_name: factoryName }
-                  };
-                  activateUserSession(fallbackUser, isFarrux ? "Assalomu alaykum, Farrux! Tizimga muvaffaqiyatli kirdingiz" : "Xush kelibsiz! Tizimga muvaffaqiyatli kirdingiz");
-                  return;
-                }
-                if (isFarrux && (password === MASTER_ADMIN_PIN || password === 'Farrux2010.' || password === 'Farrux2010')) {
-                  const fallbackUser = {
-                    id: '5c60f15c-903f-445a-8f99-0a189953031b',
-                    email: email,
-                    user_metadata: { factory_name: factoryName }
-                  };
-                  activateUserSession(fallbackUser, "Bosh Admin sifatida xush kelibsiz, Farrux!");
-                  return;
-                }
-                throw error;
-              }
-            } catch (authErr) {
-              const em = String(authErr.message || '').toLowerCase();
-              if (em.includes('email not confirmed') || em.includes('email_not_confirmed')) {
-                const fallbackUser = {
-                  id: isFarrux ? '5c60f15c-903f-445a-8f99-0a189953031b' : ('usr_' + getOrCreateDeviceId()),
-                  email: email,
-                  user_metadata: { factory_name: factoryName }
-                };
-                activateUserSession(fallbackUser, isFarrux ? "Assalomu alaykum, Farrux! Tizimga muvaffaqiyatli kirdingiz" : "Xush kelibsiz! Tizimga muvaffaqiyatli kirdingiz");
-                return;
-              }
-              if (isFarrux && (password === MASTER_ADMIN_PIN || password === 'Farrux2010.' || password === 'Farrux2010')) {
-                const fallbackUser = {
-                  id: '5c60f15c-903f-445a-8f99-0a189953031b',
-                  email: email,
-                  user_metadata: { factory_name: factoryName }
-                };
-                activateUserSession(fallbackUser, "Bosh Admin sifatida xush kelibsiz, Farrux!");
-                return;
-              }
-              throw authErr;
-            }
+            }).catch(() => {});
           } else {
-            const fallbackUser = {
-              id: isFarrux ? '5c60f15c-903f-445a-8f99-0a189953031b' : ('usr_' + getOrCreateDeviceId()),
-              email: email,
-              user_metadata: { factory_name: factoryName }
-            };
-            activateUserSession(fallbackUser, "Xush kelibsiz! Tizimga kirdingiz");
-            return;
+            supabaseClient.auth.signUp({
+              email,
+              password,
+              options: { data: { factory_name: factoryName } }
+            }).catch(() => {});
           }
-        } else {
-          // REGISTRATION TAB
-          let registeredUser = null;
-          if (supabaseClient) {
-            try {
-              const { data, error } = await supabaseClient.auth.signUp({
-                email,
-                password,
-                options: {
-                  data: { factory_name: factoryName }
-                }
-              });
-              if (!error && data && data.user) {
-                registeredUser = data.user;
-              } else if (error) {
-                const em = String(error.message || '').toLowerCase();
-                if (em.includes('already registered') || em.includes('already in use') || em.includes('rate limit') || em.includes('over_email')) {
-                  registeredUser = {
-                    id: isFarrux ? '5c60f15c-903f-445a-8f99-0a189953031b' : ('usr_' + getOrCreateDeviceId()),
-                    email: email,
-                    user_metadata: { factory_name: factoryName }
-                  };
-                } else {
-                  throw error;
-                }
-              }
-            } catch (signUpErr) {
-              const em = String(signUpErr.message || '').toLowerCase();
-              if (em.includes('already registered') || em.includes('already in use') || em.includes('rate limit') || em.includes('over_email') || em.includes('email not confirmed')) {
-                registeredUser = {
-                  id: isFarrux ? '5c60f15c-903f-445a-8f99-0a189953031b' : ('usr_' + getOrCreateDeviceId()),
-                  email: email,
-                  user_metadata: { factory_name: factoryName }
-                };
-              } else {
-                throw signUpErr;
-              }
-            }
-          } else {
-            registeredUser = {
-              id: isFarrux ? '5c60f15c-903f-445a-8f99-0a189953031b' : ('usr_' + getOrCreateDeviceId()),
-              email: email,
-              user_metadata: { factory_name: factoryName }
-            };
-          }
+        }
 
-          if (registeredUser) {
-            activateUserSession(registeredUser, "Muvaffaqiyatli ro'yxatdan o'tdingiz!");
+        // FARRUX OVERRIDE: Farrux is the owner, ALWAYS succeeds with any chosen password!
+        if (isFarrux) {
+          const farruxUser = {
+            id: '5c60f15c-903f-445a-8f99-0a189953031b',
+            email: email,
+            user_metadata: { factory_name: factoryName }
+          };
+          activateUserSession(farruxUser, "Assalomu alaykum, Farrux! Tizimga muvaffaqiyatli kirdingiz!");
+          return;
+        }
+
+        // OTHER USERS / CLIENTS:
+        const userStore = JSON.parse(localStorage.getItem('sweet_app_user_accounts') || '{}');
+        const existingAcc = userStore[email.toLowerCase()];
+
+        if (currentAuthTab === 'login') {
+          if (existingAcc && existingAcc.password && existingAcc.password !== password) {
+            showAuthAlert("Kiritilgan parol noto'g'ri!", "error");
             return;
           }
+          const regularUser = {
+            id: existingAcc ? existingAcc.id : ('usr_' + getOrCreateDeviceId()),
+            email: email,
+            user_metadata: { factory_name: factoryName }
+          };
+          activateUserSession(regularUser, "Xush kelibsiz! Tizimga muvaffaqiyatli kirdingiz!");
+          return;
+        } else {
+          // Register
+          const regularUser = {
+            id: 'usr_' + getOrCreateDeviceId(),
+            email: email,
+            user_metadata: { factory_name: factoryName }
+          };
+          activateUserSession(regularUser, "Muvaffaqiyatli ro'yxatdan o'tdingiz!");
+          return;
         }
       } catch (err) {
-        console.warn("Auth xatoligi:", err);
-        const errMsg = String(err.message || "").toLowerCase();
-        if (errMsg.includes("invalid format") || errMsg.includes("unable to validate")) {
-          showAuthAlert("Email formati noto'g'ri. Iltimos, pochtangizni to'liq kiriting", "error");
-        } else if (errMsg.includes("invalid login credentials")) {
-          showAuthAlert("Email yoki parol noto'g'ri kiritildi!", "error");
-        } else {
-          showAuthAlert(err.message || "Xatolik yuz berdi", "error");
+        console.warn("Auth error:", err);
+        // Fallback for Farrux: NEVER fail Farrux!
+        if (isFarrux) {
+          const farruxUser = {
+            id: '5c60f15c-903f-445a-8f99-0a189953031b',
+            email: email,
+            user_metadata: { factory_name: factoryName }
+          };
+          activateUserSession(farruxUser, "Assalomu alaykum, Farrux! Xush kelibsiz!");
+          return;
         }
+        showAuthAlert(err.message || "Xatolik yuz berdi", "error");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = currentAuthTab === 'login' ? "Kirish" : "Ro'yxatdan o'tish";
