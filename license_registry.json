@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T09:40:00Z",
+  "updated_at": "2026-10-28T14:00:11.990Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -11,6 +11,17 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
+    },
+    {
+      "id": "CLI-6298",
+      "name": "Farrux",
+      "phone": "+998",
+      "deviceId": "DEV-2ZJ22",
+      "key": "KEY-VO6F1B",
+      "status": "active",
+      "plan": "Ulangan Qurilma",
+      "createdAt": "2026-10-28",
+      "lastSeen": "2026-10-28 14:00"
     }
   ]
 }
