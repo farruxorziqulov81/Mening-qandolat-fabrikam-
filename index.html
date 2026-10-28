@@ -684,7 +684,7 @@
             </div>
           </div>
           <!-- Sozlamalar button on the corner -->
-          <button onclick="document.getElementById('profileSettingsAnchor')?.scrollIntoView({ behavior: 'smooth' })" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 hover:bg-rose-500/25 flex items-center space-x-1.5 text-xs font-bold transition shadow-xs">
+          <button onclick="openSettingsModal()" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 hover:bg-rose-500/25 flex items-center space-x-1.5 text-xs font-bold transition shadow-xs" title="Tizim sozlamalari">
             <i class="fa-solid fa-gear text-xs"></i>
             <span>Sozlamalar</span>
           </button>
@@ -744,152 +744,51 @@
           </div>
         </div>
 
-        <!-- Sozlamalar Anchor & Header -->
-        <div id="profileSettingsAnchor" class="pt-1 flex items-center space-x-2">
-          <div class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-400 flex items-center justify-center text-xs font-bold">
-            <i class="fa-solid fa-gear"></i>
+        <!-- Tezkor Bo'limlar & Fabrika Ma'lumotlari -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div onclick="switchTab('production')" class="erp-card p-3 cursor-pointer hover:border-sky-500/40 transition space-y-1">
+            <div class="text-[10px] text-stone-400 flex items-center space-x-1">
+              <i class="fa-solid fa-cake-candles text-sky-400"></i>
+              <span>Mahsulotlar</span>
+            </div>
+            <div class="text-sm font-black text-[var(--text-main)]" id="profileProductsCount">0 xil</div>
+            <div class="text-[9px] text-sky-400 font-semibold">Ishlab chiqarishga o'tish &rarr;</div>
           </div>
-          <span class="text-xs font-black text-[var(--text-main)] uppercase tracking-wider">Tizim Sozlamalari</span>
-        </div>
-
-        <div class="erp-card p-4 space-y-3">
-          <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
-            <i class="fa-solid fa-globe text-rose-400"></i>
-            <span>Dastur Tili (Language)</span>
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-xs">
-            <button onclick="changeLanguage('uz')" id="langBtn-uz" class="py-2 px-3 rounded-xl border border-rose-500 bg-rose-500/20 text-white font-bold transition">
-              O'zbekcha
-            </button>
-            <button onclick="changeLanguage('uz_kr')" id="langBtn-uz_kr" class="py-2 px-3 rounded-xl border border-white/10 bg-white/5 text-[var(--text-muted)] font-medium hover:bg-white/10 transition">
-              Ўзбекча
-            </button>
-            <button onclick="changeLanguage('ru')" id="langBtn-ru" class="py-2 px-3 rounded-xl border border-white/10 bg-white/5 text-[var(--text-muted)] font-medium hover:bg-white/10 transition">
-              Русский
-            </button>
+          <div onclick="switchTab('shops')" class="erp-card p-3 cursor-pointer hover:border-emerald-500/40 transition space-y-1">
+            <div class="text-[10px] text-stone-400 flex items-center space-x-1">
+              <i class="fa-solid fa-store text-emerald-400"></i>
+              <span>Hamkor Do'konlar</span>
+            </div>
+            <div class="text-sm font-black text-[var(--text-main)]" id="profileShopsCount">0 ta</div>
+            <div class="text-[9px] text-emerald-400 font-semibold">Do'konlar ro'yxati &rarr;</div>
           </div>
         </div>
 
-        <div class="erp-card p-4 flex items-center justify-between">
+        <!-- Fabrika Ma'lumotlarini Sozlash Qatori -->
+        <div onclick="openFactoryDialog()" class="erp-card p-3 cursor-pointer hover:border-rose-500/40 transition flex items-center justify-between">
           <div class="flex items-center space-x-2.5">
-            <div class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-rose-400 text-sm">
-              <i class="fa-solid fa-circle-half-stroke"></i>
+            <div class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-pen-to-square"></i>
             </div>
             <div>
-              <div class="text-xs font-bold text-[var(--text-main)]">Tungi va Kunduzgi Rejim</div>
-              <div class="text-[10px] text-[var(--text-muted)]">Tungi Glassmorphism rejimi</div>
+              <div class="text-xs font-bold text-[var(--text-main)]">Fabrika Ma'lumotlarini Tahrirlash</div>
+              <div class="text-[10px] text-[var(--text-muted)]">Nomi, telefon, manzil va logotipni yangilash</div>
             </div>
           </div>
-          <button onclick="toggleDarkMode()" class="px-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition">
-            Almashtirish
-          </button>
+          <i class="fa-solid fa-chevron-right text-stone-500 text-xs"></i>
         </div>
 
-        <!-- Mobil Ilovani Telefonga O'rnatish Card (PWA) -->
-        <div id="pwaInstallCard" class="erp-card p-4 space-y-2.5 border-l-4 border-l-emerald-500 bg-emerald-500/5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-sm">
-                <i class="fa-solid fa-mobile-screen-button"></i>
-              </div>
-              <div>
-                <div class="text-xs font-bold text-[var(--text-main)]">Telefonga Ilova Qilib O'rnatish</div>
-                <div class="text-[10px] text-[var(--text-muted)]">Brauzersiz, to'liq ekranli mobil ilova</div>
-              </div>
-            </div>
-          </div>
-          <p class="text-[11px] text-[var(--text-muted)]">
-            Dasturni xuddi Play Market ilovasiday telefoningiz bosh ekraniga o'rnatib oling. Shunda tepasidagi brauzer qatori va netlify yozuvlari butunlay yo'qoladi.
-          </p>
-          <button onclick="triggerPwaInstallPrompt()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-black hover:bg-emerald-400 transition flex items-center justify-center space-x-1.5 shadow-md">
-            <i class="fa-solid fa-download text-xs"></i>
-            <span>Bosh Ekranga O'rnatish</span>
-          </button>
-        </div>
-
-        <div class="erp-card p-4 space-y-3">
-          <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
-            <i class="fa-solid fa-database text-rose-400"></i>
-            <span>Ma'lumotlar Zaxirasi (Backup)</span>
-          </div>
-          <p class="text-[11px] text-[var(--text-muted)]">
-            Barcha ma'lumotlarni xavfsiz JSON fayl qilib telefonga yuklab oling.
-          </p>
-          <div class="flex space-x-2">
-            <button onclick="exportAllDataJson()" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-download text-xs text-rose-400"></i>
-              <span>Zaxira yuklash (JSON)</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- SUPER ADMIN & MIJOZLAR BOSHQARUVI (FARRUX UCHUN - DEFAULT HIDDEN ON CLIENT PHONES) -->
-        <div id="superAdminSettingsCard" class="hidden erp-card p-4 space-y-3 border-l-4 border-l-rose-500 bg-gradient-to-r from-rose-500/10 via-slate-900/40 to-indigo-500/10 shadow-lg">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-lg ring-2 ring-rose-500/20">
-                <i class="fa-solid fa-crown"></i>
-              </div>
-              <div>
-                <h3 class="text-xs font-black text-white">Bosh Admin & Mijozlar Nazorati</h3>
-                <p class="text-[10px] text-stone-400">Ulangan qurilmalarni ko'rish, chiqarish va kalit berish</p>
-              </div>
-            </div>
-            <span class="text-[9px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-black border border-rose-500/30">FARRUX</span>
-          </div>
-
-          <button onclick="openMasterAdminConsole()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-indigo-600 text-white font-black text-xs hover:opacity-90 transition flex items-center justify-center space-x-2 shadow-md">
-            <i class="fa-solid fa-sliders text-xs"></i>
-            <span>Mijozlar va Qurilmalar Boshqaruv Markazi</span>
-          </button>
-
-          <!-- Tezkor Kalit Generatori (Farrux uchun) -->
-          <div class="pt-2 border-t border-white/10 space-y-2 text-xs">
-            <label class="block text-[var(--text-muted)] text-[10px]">Tezkor kalit yaratish (Qurilma ID sini kiriting):</label>
-            <div class="flex space-x-2">
-              <input type="text" id="adminGenDeviceIdInput" placeholder="DEV-XXXXX" class="flex-1 p-2 glass-input font-mono font-bold text-xs uppercase">
-              <button onclick="adminGenerateClientKey()" class="px-3 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition shrink-0 flex items-center space-x-1">
-                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
-                <span>Kalit</span>
-              </button>
-            </div>
-            <div id="adminGenResultBox" class="hidden p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-1">
-              <div class="flex items-center justify-between">
-                <span id="adminGenResultKey" class="font-mono text-xs font-black text-white tracking-wider">KEY-XXXXXX</span>
-                <button onclick="copyGeneratedKey()" class="px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-900 font-bold text-[9px]">
-                  Nusxa olish
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- PASTKI CHIQISH VA SHARTNOMANI TUGATISH BO'LIMI -->
-        <div class="pt-2 space-y-2">
-          <button onclick="handleAuthLogout()" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-stone-300 text-xs font-bold hover:bg-white/10 transition flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-lock text-xs text-rose-400"></i>
-            <span>Dasturni Qulflash (Vaqtinchalik chiqish)</span>
-          </button>
-
-          <button onclick="openContractTerminationModal()" class="w-full py-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-ban text-xs text-rose-400"></i>
-            <span>Shartnomani Tugatish va Qurilmani Bo'shatish</span>
-          </button>
-        </div>
-
-        <!-- Discreet Author Trigger Footer -->
-        <div class="pt-4 pb-6 text-center space-y-1">
+        <!-- Mualliflik ma'lumotlari -->
+        <div class="pt-2 pb-4 text-center space-y-1">
           <p class="text-[10px] text-stone-500">«Mening Qandolat Fabrikam» v2.0</p>
-          <button onclick="openMasterAdminConsole()" class="text-[9px] text-stone-600 hover:text-stone-400 transition">
-            Mualliflik tizimi: Farrux Orziqulov (+998 95 797 27 97)
-          </button>
+          <p class="text-[9px] text-stone-600">Muallif: Farrux Orziqulov (+998 95 797 27 97)</p>
         </div>
       </div>
 
       </main>
 
     <!-- Glassmorphic Bottom Navigation Bar -->
-    <nav class="shrink-0 border-t border-[var(--card-border)] bg-[var(--header-bg)] backdrop-blur-xl px-1 pt-1.5 pb-2.5 flex justify-around items-center" style="z-index: 9999999 !important; position: relative; padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));">
+    <nav class="shrink-0 border-t border-[var(--card-border)] bg-[var(--header-bg)] backdrop-blur-xl px-1 pt-1.5 pb-2.5 flex justify-around items-center" style="z-index: 40 !important; position: relative; padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));">
       <button onclick="switchTab('dashboard')" id="navBtn-dashboard" class="flex flex-col items-center flex-1 py-1 text-rose-500 transition scale-105 font-black">
         <i class="fa-solid fa-chart-pie text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_dashboard">Asosiy</span>
@@ -920,6 +819,150 @@
     </div>
 
   <!-- ================= EDIT MODALS (TAHRIRLASH OYNALARI) ================= -->
+
+  <!-- 0. Settings Modal (Tizim Sozlamalari Popup) -->
+  <div id="settingsModal" class="fixed inset-0 bg-black/80 z-[99999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeSettingsModal()">
+    <div class="confectionery-card w-full max-w-sm rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[82vh] flex flex-col my-auto" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2.5 shrink-0">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-gear"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-[var(--text-main)]">Tizim Sozlamalari</h3>
+            <p class="text-[9px] text-[var(--text-muted)]">Ilova, til va boshqaruv parametrlari</p>
+          </div>
+        </div>
+        <button onclick="closeSettingsModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs pb-10" style="-webkit-overflow-scrolling: touch;">
+        <!-- Dastur Tili -->
+        <div class="erp-card p-3 space-y-2">
+          <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
+            <i class="fa-solid fa-globe text-rose-400"></i>
+            <span>Dastur Tili (Language)</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <button onclick="changeLanguage('uz')" id="langBtn-uz" class="py-2 px-3 rounded-xl border border-rose-500 bg-rose-500/20 text-white font-bold transition">
+              O'zbekcha
+            </button>
+            <button onclick="changeLanguage('uz_kr')" id="langBtn-uz_kr" class="py-2 px-3 rounded-xl border border-white/10 bg-white/5 text-[var(--text-muted)] font-medium hover:bg-white/10 transition">
+              Ўзбекча
+            </button>
+            <button onclick="changeLanguage('ru')" id="langBtn-ru" class="py-2 px-3 rounded-xl border border-white/10 bg-white/5 text-[var(--text-muted)] font-medium hover:bg-white/10 transition">
+              Русский
+            </button>
+          </div>
+        </div>
+
+        <!-- Mavzu (Dark/Light) -->
+        <div class="erp-card p-3 flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-rose-400 text-sm">
+              <i class="fa-solid fa-circle-half-stroke"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[var(--text-main)]">Mavzu Rejimi</div>
+              <div class="text-[10px] text-[var(--text-muted)]">Tungi / Kunduzgi ko'rinish</div>
+            </div>
+          </div>
+          <button onclick="toggleDarkMode()" class="px-3 py-1.5 rounded-xl border border-white/15 bg-white/5 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition">
+            Almashtirish
+          </button>
+        </div>
+
+        <!-- Mobil Ilovani Telefonga O'rnatish Card (PWA) -->
+        <div id="pwaInstallCard" class="erp-card p-3 space-y-2 border-l-4 border-l-emerald-500 bg-emerald-500/5">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-sm">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[var(--text-main)]">Bosh Ekranga O'rnatish</div>
+              <div class="text-[10px] text-[var(--text-muted)]">Brauzersiz to'liq ilova</div>
+            </div>
+          </div>
+          <button onclick="triggerPwaInstallPrompt()" class="w-full py-2 rounded-xl bg-emerald-500 text-slate-950 text-xs font-black hover:bg-emerald-400 transition flex items-center justify-center space-x-1.5 shadow-md">
+            <i class="fa-solid fa-download text-xs"></i>
+            <span>Telefonga O'rnatish</span>
+          </button>
+        </div>
+
+        <!-- Ma'lumotlar Zaxirasi & Kesh -->
+        <div class="erp-card p-3 space-y-2">
+          <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
+            <i class="fa-solid fa-database text-rose-400"></i>
+            <span>Zaxira va Kesh</span>
+          </div>
+          <div class="space-y-1.5">
+            <button onclick="exportAllDataJson()" class="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-download text-xs text-rose-400"></i>
+              <span>Zaxira yuklash (JSON)</span>
+            </button>
+            <button onclick="clearAppCacheAndReload()" class="w-full py-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-rotate text-xs"></i>
+              <span>Keshni tozalash va yangilash</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SUPER ADMIN (FARRUX UCHUN) -->
+        <div id="superAdminSettingsCard" class="hidden erp-card p-3 space-y-2.5 border-l-4 border-l-rose-500 bg-gradient-to-r from-rose-500/10 via-slate-900/40 to-indigo-500/10 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-xs shadow-lg">
+                <i class="fa-solid fa-crown"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-black text-white">Bosh Admin Nazorati</h4>
+                <p class="text-[9px] text-stone-400">Ulangan qurilmalarni boshqarish</p>
+              </div>
+            </div>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-black border border-rose-500/30">FARRUX</span>
+          </div>
+
+          <button onclick="closeSettingsModal(); openMasterAdminConsole();" class="w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 to-indigo-600 text-white font-black text-xs hover:opacity-90 transition flex items-center justify-center space-x-2 shadow-md">
+            <i class="fa-solid fa-sliders text-xs"></i>
+            <span>Mijozlar Boshqaruv Markazi</span>
+          </button>
+
+          <!-- Tezkor Kalit Generatori -->
+          <div class="pt-1.5 border-t border-white/10 space-y-1.5 text-xs">
+            <label class="block text-[var(--text-muted)] text-[10px]">Tezkor kalit yaratish (DEV-XXXXX):</label>
+            <div class="flex space-x-2">
+              <input type="text" id="adminGenDeviceIdInput" placeholder="DEV-XXXXX" class="flex-1 p-1.5 glass-input font-mono font-bold text-xs uppercase">
+              <button onclick="adminGenerateClientKey()" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition shrink-0 flex items-center space-x-1">
+                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+                <span>Kalit</span>
+              </button>
+            </div>
+            <div id="adminGenResultBox" class="hidden p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-1">
+              <div class="flex items-center justify-between">
+                <span id="adminGenResultKey" class="font-mono text-xs font-black text-white tracking-wider">KEY-XXXXXX</span>
+                <button onclick="copyGeneratedKey()" class="px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-900 font-bold text-[9px]">
+                  Nusxa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASTKI CHIQISH VA SHARTNOMANI TUGATISH -->
+        <div class="pt-2 space-y-2 pb-8">
+          <button onclick="closeSettingsModal(); handleAuthLogout();" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-stone-300 text-xs font-bold hover:bg-white/10 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-lock text-xs text-rose-400"></i>
+            <span>Dasturni Qulflash</span>
+          </button>
+
+          <button onclick="closeSettingsModal(); openContractTerminationModal();" class="w-full py-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-ban text-xs text-rose-400"></i>
+            <span>Shartnomani Tugatish</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 1. Factory Profile Edit Modal -->
   <div id="factoryModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
@@ -2851,6 +2894,11 @@
       if (nameEl) nameEl.innerText = factoryProfile?.name || "Mening Qandolat Fabrikam";
       if (cloudStatusEl) cloudStatusEl.innerText = currentUser ? "Faol (Sinxronlangan)" : "Oflayn / Lokal rejim";
 
+      const pCount = document.getElementById('profileProductsCount');
+      if (pCount) pCount.innerText = (sweetProducts ? sweetProducts.length : 0) + " xil";
+      const sCount = document.getElementById('profileShopsCount');
+      if (sCount) sCount.innerText = (shops ? shops.length : 0) + " ta";
+
       applyLanguage(currentLang);
     }
 
@@ -3264,6 +3312,15 @@
           sIcon.classList.remove('hidden');
         }
       }
+    }
+
+    function openSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function openFactoryDialog() {
@@ -5392,6 +5449,13 @@
       }
 
       if ('serviceWorker' in navigator) {
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
         navigator.serviceWorker.register('./sw.js').then(reg => {
           reg.update();
         }).catch(() => {});
@@ -5454,7 +5518,7 @@
         </button>
         <button onclick="switchTabFromQuick('profile')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 flex items-center space-x-2.5 text-[var(--text-main)] font-bold transition">
           <i class="fa-solid fa-circle-user text-rose-400 w-5"></i>
-          <span>Fabrika Profili & Sozlamalar</span>
+          <span>Mening Profilim</span>
         </button>
       </div>
     </div>
