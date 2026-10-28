@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T13:56:12.150Z",
+  "updated_at": "2026-10-28T09:40:00Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -11,105 +11,6 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
-    },
-    {
-      "id": "CLI-9474",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-Q9NL6",
-      "key": "KEY-R3PGML",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 08:57"
-    },
-    {
-      "id": "CLI-8784",
-      "name": "Farrux",
-      "phone": "+998",
-      "deviceId": "DEV-2ZJ22",
-      "key": "KEY-VO6F1B",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 09:44"
-    },
-    {
-      "id": "CLI-2218",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-92A3W",
-      "key": "KEY-UDWO7D",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 09:08"
-    },
-    {
-      "id": "CLI-5751",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-5CCM9",
-      "key": "KEY-YGIHTU",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 09:09"
-    },
-    {
-      "id": "CLI-1711",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-UWG9C",
-      "key": "KEY-A9U018",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 09:17"
-    },
-    {
-      "id": "CLI-1488",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-QTQGH",
-      "key": "KEY-RKEJP0",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 09:18"
-    },
-    {
-      "id": "CLI-1202",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-GDXMH",
-      "key": "KEY-SN4UBX",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 09:39"
-    },
-    {
-      "id": "CLI-8931",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-NW23C",
-      "key": "KEY-EI4EVQ",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 13:55"
-    },
-    {
-      "id": "CLI-1966",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-QGX7F",
-      "key": "KEY-LQFNXU",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 13:56"
     }
   ]
 }
