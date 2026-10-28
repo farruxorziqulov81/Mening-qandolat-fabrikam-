@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T07:59:34.769Z",
+  "updated_at": "2026-10-28T09:40:00Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -11,50 +11,6 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
-    },
-    {
-      "id": "CLI-3166",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-7M3FJ",
-      "key": "KEY-VEGCV2",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 07:45"
-    },
-    {
-      "id": "CLI-7782",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-9CVQB",
-      "key": "KEY-QDS7FE",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 07:46"
-    },
-    {
-      "id": "CLI-8349",
-      "name": "Farrux",
-      "phone": "+998",
-      "deviceId": "DEV-2ZJ22",
-      "key": "KEY-VO6F1B",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 07:50"
-    },
-    {
-      "id": "CLI-7805",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-EPEZ9",
-      "key": "KEY-1OLID2",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 07:59"
     }
   ]
 }
