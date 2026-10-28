@@ -267,7 +267,7 @@
 
       <!-- Activation Input -->
       <div class="space-y-2">
-        <input type="text" id="lockScreenKeyInput" placeholder="Aktivatsiya kaliti: KEY-XXXXXX" class="w-full p-3 rounded-xl border border-white/15 bg-white/5 text-center font-mono font-bold text-sm text-white uppercase placeholder-stone-500 focus:outline-none focus:border-rose-500">
+        <input type="text" id="lockScreenKeyInput" placeholder="Aktivatsiya kaliti yoki Farrux PIN kodi" class="w-full p-3 rounded-xl border border-white/15 bg-white/5 text-center font-mono font-bold text-sm text-white uppercase placeholder-stone-500 focus:outline-none focus:border-rose-500">
         <button onclick="submitLicenseActivation()" class="w-full py-3 rounded-xl macaron-btn text-xs font-black shadow-lg">
           <i class="fa-solid fa-key mr-1.5"></i> Dasturni Faollashtirish
         </button>
@@ -1838,9 +1838,15 @@
       if (isMatch) {
         localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
         localStorage.setItem('app_is_licensed', 'true');
+        if (enteredUpper === 'FARRUX2010.' || enteredUpper === 'FARRUX2010' || rawEntered === 'Farrux2010.' || rawEntered === 'Farrux2010' || enteredUpper === MASTER_ADMIN_KEY) {
+          isMasterAdminAuthenticated = true;
+          localStorage.setItem('farrux_is_master_admin', 'true');
+          const adminCard = document.getElementById('superAdminSettingsCard');
+          if (adminCard) adminCard.classList.remove('hidden');
+        }
         const lockModal = document.getElementById('licenseLockModal');
         if (lockModal) lockModal.classList.add('hidden');
-        showToast("Dastur muvaffaqiyatli faollashtirildi! Xush kelibsiz!", "success");
+        showToast("Dastur muvaffaqiyatli ochildi! Xush kelibsiz, Farrux!", "success");
       } else {
         alert("Kiritilgan kalit yoki parol noto'g'ri! Iltimos, muallif Farrux Orziqulov (+998 95 797 27 97) bilan bog'lanib, to'g'ri kalitni oling.");
       }
@@ -2130,12 +2136,17 @@
       if (entered === currentPin || entered === MASTER_ADMIN_PIN || entered === MASTER_ADMIN_KEY || entered.toUpperCase() === 'FARRUX2010.' || entered.toUpperCase() === 'FARRUX2010') {
         isMasterAdminAuthenticated = true;
         localStorage.setItem('farrux_is_master_admin', 'true');
+        localStorage.setItem('app_is_licensed', 'true');
+        localStorage.setItem('app_license_key', MASTER_ADMIN_KEY);
         const adminCard = document.getElementById('superAdminSettingsCard');
         if (adminCard) adminCard.classList.remove('hidden');
 
+        // Immediately close lock screen
+        const lockModal = document.getElementById('licenseLockModal');
+        if (lockModal) lockModal.classList.add('hidden');
+
         closeMasterAdminAuthModal();
-        showMasterAdminModal();
-        showToast("Bosh Admin boshqaruviga xush kelibsiz, Farrux!", "success");
+        showToast("Bosh Admin sifatida xush kelibsiz, Farrux!", "success");
       } else {
         alert("Noto'g'ri maxfiy PIN kod!");
       }
