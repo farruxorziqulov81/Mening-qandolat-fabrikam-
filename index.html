@@ -1989,7 +1989,14 @@
     // Har qanday yangi qurilma kirganda uni avtomatik Bosh Admin ro'yxatiga qo'shish
     async function autoRegisterDeviceToCloud() {
       const devId = getOrCreateDeviceId();
-      const currentName = (factoryProfile && factoryProfile.name) || 'Yangi Qurilma';
+      let devicePlatform = "Telefon";
+      const ua = navigator.userAgent;
+      if (/android/i.test(ua)) devicePlatform = "Android";
+      else if (/iphone/i.test(ua)) devicePlatform = "iPhone";
+      else if (/windows/i.test(ua)) devicePlatform = "Kompyuter";
+
+      const userEmailPart = currentUser && currentUser.email ? currentUser.email.split('@')[0] : '';
+      const currentName = (factoryProfile && factoryProfile.name && factoryProfile.name !== 'Mening Fabrikam' ? factoryProfile.name : '') || userEmailPart || `Qurilma (${devicePlatform})`;
       const currentPhone = (factoryProfile && factoryProfile.phone) || '';
 
       if (devId === 'DEV-FARRUX') return;
@@ -2026,10 +2033,11 @@
           });
           needsUpdate = true;
         } else {
-          if (existing.name !== currentName && currentName !== 'Yangi Qurilma') {
+          existing.lastSeen = new Date().toISOString().replace('T', ' ').substring(0, 16);
+          if ((!existing.name || existing.name === 'Yangi Qurilma') && currentName !== 'Yangi Qurilma') {
             existing.name = currentName;
-            needsUpdate = true;
           }
+          needsUpdate = true;
         }
 
         if (needsUpdate) {
@@ -2143,22 +2151,45 @@
 
       // Pull fresh registry from GitHub so newly connected devices appear immediately
       try {
-        const remoteUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/license_registry.json?t=` + Date.now();
-        const res = await fetch(remoteUrl, { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && Array.isArray(data.clients)) {
-            adminClientsRegistry = data.clients;
+        let registryData = null;
+        try {
+          const apiRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
+            headers: {
+              'Authorization': 'token ' + GH_TOKEN,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          if (apiRes.ok) {
+            const fData = await apiRes.json();
+            if (fData && fData.content) {
+              registryData = JSON.parse(decodeURIComponent(escape(atob(fData.content))));
+            }
+          }
+        } catch(apiErr) {}
+
+        if (!registryData) {
+          const remoteUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/license_registry.json?t=` + Date.now();
+          const res = await fetch(remoteUrl, { cache: 'no-store' });
+          if (res.ok) {
+            registryData = await res.json();
+          }
+        }
+
+        if (registryData) {
+          if (Array.isArray(registryData.clients)) {
+            adminClientsRegistry = registryData.clients;
             saveStorage('admin_clients', adminClientsRegistry);
           }
-          if (data && Array.isArray(data.blocked_devices)) {
-            adminBlockedDevices = data.blocked_devices;
+          if (Array.isArray(registryData.blocked_devices)) {
+            adminBlockedDevices = registryData.blocked_devices;
             saveStorage('admin_blocked_devices', adminBlockedDevices);
           }
           updateAdminStats();
           renderAdminClientsList();
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Pull live clients error:", e);
+      }
     }
 
     function closeMasterAdminModal() {
@@ -5497,9 +5528,13 @@
           <i class="fa-solid fa-user-plus text-[10px]"></i>
           <span>Yangi Mijoz Qo'shish</span>
         </button>
+        <button onclick="showMasterAdminModal()" title="Bulutdagi qurilmalar ro'yxatini yangilash" class="py-2 px-3 rounded-xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-bold text-xs hover:bg-indigo-500/30 transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-rotate text-[10px]"></i>
+          <span>Yangilash</span>
+        </button>
         <button onclick="toggleChangePinForm()" class="py-2 px-3 rounded-xl bg-white/5 border border-white/10 text-stone-300 font-bold text-xs hover:bg-white/10 transition flex items-center space-x-1.5">
           <i class="fa-solid fa-key text-[10px] text-amber-400"></i>
-          <span>PIN Almashtirish</span>
+          <span>PIN</span>
         </button>
       </div>
 
