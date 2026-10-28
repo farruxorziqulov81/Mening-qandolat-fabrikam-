@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sweet-factory-v36';
+const CACHE_NAME = 'sweet-factory-v37';
 const urlsToCache = [
   './',
   './index.html',
