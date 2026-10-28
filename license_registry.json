@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T09:40:00Z",
+  "updated_at": "2026-10-28T06:40:31.297Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -11,6 +11,17 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
+    },
+    {
+      "id": "CLI-5384",
+      "name": "Abdumalik",
+      "phone": "+998",
+      "deviceId": "DEV-4CHRZ",
+      "key": "KEY-QCFTXA",
+      "status": "active",
+      "plan": "Ulangan Qurilma",
+      "createdAt": "2026-10-28",
+      "lastSeen": "2026-10-28 06:40"
     }
   ]
 }
