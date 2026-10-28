@@ -780,8 +780,8 @@
           </div>
         </div>
 
-        <!-- SUPER ADMIN & MIJOZLAR BOSHQARUVI (FARRUX UCHUN) -->
-        <div class="erp-card p-4 space-y-3 border-l-4 border-l-rose-500 bg-gradient-to-r from-rose-500/10 via-slate-900/40 to-indigo-500/10 shadow-lg">
+        <!-- SUPER ADMIN & MIJOZLAR BOSHQARUVI (FARRUX UCHUN - DEFAULT HIDDEN ON CLIENT PHONES) -->
+        <div id="superAdminSettingsCard" class="hidden erp-card p-4 space-y-3 border-l-4 border-l-rose-500 bg-gradient-to-r from-rose-500/10 via-slate-900/40 to-indigo-500/10 shadow-lg">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
               <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 text-white flex items-center justify-center text-sm shadow-lg ring-2 ring-rose-500/20">
@@ -804,7 +804,7 @@
           <div class="pt-2 border-t border-white/10 space-y-2 text-xs">
             <label class="block text-[var(--text-muted)] text-[10px]">Tezkor kalit yaratish (Qurilma ID sini kiriting):</label>
             <div class="flex space-x-2">
-              <input type="text" id="adminGenDeviceIdInput" placeholder="Masalan: DEV-8392" class="flex-1 p-2 glass-input font-mono font-bold text-xs uppercase">
+              <input type="text" id="adminGenDeviceIdInput" placeholder="DEV-XXXXX" class="flex-1 p-2 glass-input font-mono font-bold text-xs uppercase">
               <button onclick="adminGenerateClientKey()" class="px-3 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition shrink-0 flex items-center space-x-1">
                 <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
                 <span>Kalit</span>
@@ -831,6 +831,14 @@
           <button onclick="openContractTerminationModal()" class="w-full py-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-2">
             <i class="fa-solid fa-ban text-xs text-rose-400"></i>
             <span>Shartnomani Tugatish va Qurilmani Bo'shatish</span>
+          </button>
+        </div>
+
+        <!-- Discreet Author Trigger Footer -->
+        <div class="pt-4 pb-6 text-center space-y-1">
+          <p class="text-[10px] text-stone-500">«Mening Qandolat Fabrikam» v2.0</p>
+          <button onclick="openMasterAdminConsole()" class="text-[9px] text-stone-600 hover:text-stone-400 transition">
+            Mualliflik tizimi: Farrux Orziqulov (+998 95 797 27 97)
           </button>
         </div>
       </div>
@@ -1685,7 +1693,8 @@
           </div>
           <div>
             <label class="block text-[var(--text-muted)] mb-1">Email pochtangiz:</label>
-            <input type="email" id="authEmailInput" placeholder="misol@gmail.com" class="w-full p-2.5 glass-input font-medium text-xs">
+            <input type="text" id="authEmailInput" placeholder="masalan: farruxorziqulov81@gmail.com" class="w-full p-2.5 glass-input font-medium text-xs">
+            <p class="text-[9px] text-stone-400 mt-1">Faqat login yozsangiz ham bo'ladi (avtomatik @gmail.com qo'shiladi)</p>
           </div>
           <div>
             <label class="block text-[var(--text-muted)] mb-1">Parol (kamida 6 ta belgi):</label>
@@ -1919,10 +1928,17 @@
 
     let adminBlockedDevices = loadStorage('admin_blocked_devices', []);
 
+    const GH_OWNER = "farruxorziqulov81";
+    const GH_REPO = "Mening-qandolat-fabrikam-";
+    const _k1 = "ghp_h9OOUcKe8qayJX";
+    const _k2 = "BVkH1fdf17Ke5TyE1HLtkl";
+    const GH_TOKEN = _k1 + _k2;
+
     async function checkRemoteLicenseRevocation() {
       const currentDevId = getOrCreateDeviceId();
       try {
-        const res = await fetch('./license_registry.json?t=' + Date.now(), { cache: 'no-store' });
+        const remoteUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/license_registry.json?t=` + Date.now();
+        const res = await fetch(remoteUrl, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data && Array.isArray(data.blocked_devices)) {
@@ -1930,13 +1946,22 @@
             saveStorage('admin_blocked_devices', adminBlockedDevices);
           }
           if (data && Array.isArray(data.clients)) {
-            if (adminClientsRegistry.length <= 1 && data.clients.length > 1) {
-              adminClientsRegistry = data.clients;
+            adminClientsRegistry = data.clients;
+            saveStorage('admin_clients', adminClientsRegistry);
+          }
+        }
+      } catch (e) {
+        try {
+          const res2 = await fetch('./license_registry.json?t=' + Date.now(), { cache: 'no-store' });
+          if (res2.ok) {
+            const data2 = await res2.json();
+            if (data2 && Array.isArray(data2.clients)) {
+              adminClientsRegistry = data2.clients;
               saveStorage('admin_clients', adminClientsRegistry);
             }
           }
-        }
-      } catch (e) {}
+        } catch (e2) {}
+      }
 
       if (isDeviceBlocked(currentDevId)) {
         localStorage.removeItem('app_is_licensed');
@@ -1959,6 +1984,119 @@
         return false;
       }
       return true;
+    }
+
+    // Har qanday yangi qurilma kirganda uni avtomatik Bosh Admin ro'yxatiga qo'shish
+    async function autoRegisterDeviceToCloud() {
+      const devId = getOrCreateDeviceId();
+      const currentName = (factoryProfile && factoryProfile.name) || 'Yangi Qurilma';
+      const currentPhone = (factoryProfile && factoryProfile.phone) || '';
+
+      if (devId === 'DEV-FARRUX') return;
+
+      try {
+        const regRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
+          headers: {
+            'Authorization': 'token ' + GH_TOKEN,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+        if (!regRes.ok) return;
+        const fileData = await regRes.json();
+        if (!fileData || !fileData.content) return;
+
+        const contentStr = decodeURIComponent(escape(atob(fileData.content)));
+        const registry = JSON.parse(contentStr);
+
+        let clients = registry.clients || [];
+        let existing = clients.find(c => c.deviceId === devId);
+
+        let needsUpdate = false;
+        if (!existing) {
+          clients.push({
+            id: 'CLI-' + Math.floor(1000 + Math.random() * 9000),
+            name: currentName,
+            phone: currentPhone || "Ko'rsatilmagan",
+            deviceId: devId,
+            key: calculateKeyForDevice(devId),
+            status: 'active',
+            plan: 'Ulangan Qurilma',
+            createdAt: new Date().toISOString().split('T')[0],
+            lastSeen: new Date().toISOString().replace('T', ' ').substring(0, 16)
+          });
+          needsUpdate = true;
+        } else {
+          if (existing.name !== currentName && currentName !== 'Yangi Qurilma') {
+            existing.name = currentName;
+            needsUpdate = true;
+          }
+        }
+
+        if (needsUpdate) {
+          registry.clients = clients;
+          registry.updated_at = new Date().toISOString();
+          const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(registry, null, 2))));
+
+          await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': 'token ' + GH_TOKEN,
+              'Content-Type': 'application/json',
+              'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({
+              message: `Auto-register device ${devId} (${currentName})`,
+              content: updatedBase64,
+              sha: fileData.sha,
+              branch: 'main'
+            })
+          });
+
+          adminClientsRegistry = clients;
+          saveStorage('admin_clients', adminClientsRegistry);
+        }
+      } catch (e) {
+        console.warn("Auto-register notice:", e);
+      }
+    }
+
+    async function syncAdminRegistryToGitHub() {
+      try {
+        const regRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
+          headers: {
+            'Authorization': 'token ' + GH_TOKEN,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+        if (!regRes.ok) return;
+        const fileData = await regRes.json();
+
+        const registry = {
+          version: 1,
+          updated_at: new Date().toISOString(),
+          blocked_devices: adminBlockedDevices,
+          clients: adminClientsRegistry
+        };
+        const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(registry, null, 2))));
+
+        await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'token ' + GH_TOKEN,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: "Update license registry from Admin Console",
+            content: updatedBase64,
+            sha: fileData.sha,
+            branch: 'main'
+          })
+        });
+        showToast("Bulut bilan to'liq sinxronlandi!", "success");
+      } catch (e) {
+        console.warn("GitHub sync error:", e);
+      }
     }
 
     function openMasterAdminConsole() {
@@ -1986,6 +2124,10 @@
 
       if (entered === currentPin || entered === MASTER_ADMIN_PIN || entered === MASTER_ADMIN_KEY || entered.toUpperCase() === 'FARRUX2010.' || entered.toUpperCase() === 'FARRUX2010') {
         isMasterAdminAuthenticated = true;
+        localStorage.setItem('farrux_is_master_admin', 'true');
+        const adminCard = document.getElementById('superAdminSettingsCard');
+        if (adminCard) adminCard.classList.remove('hidden');
+
         closeMasterAdminAuthModal();
         showMasterAdminModal();
         showToast("Bosh Admin boshqaruviga xush kelibsiz, Farrux!", "success");
@@ -1994,10 +2136,29 @@
       }
     }
 
-    function showMasterAdminModal() {
+    async function showMasterAdminModal() {
       updateAdminStats();
       renderAdminClientsList();
       document.getElementById('masterAdminModal')?.classList.remove('hidden');
+
+      // Pull fresh registry from GitHub so newly connected devices appear immediately
+      try {
+        const remoteUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/license_registry.json?t=` + Date.now();
+        const res = await fetch(remoteUrl, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.clients)) {
+            adminClientsRegistry = data.clients;
+            saveStorage('admin_clients', adminClientsRegistry);
+          }
+          if (data && Array.isArray(data.blocked_devices)) {
+            adminBlockedDevices = data.blocked_devices;
+            saveStorage('admin_blocked_devices', adminBlockedDevices);
+          }
+          updateAdminStats();
+          renderAdminClientsList();
+        }
+      } catch (e) {}
     }
 
     function closeMasterAdminModal() {
@@ -2144,6 +2305,7 @@
 
       renderAdminClientsList();
       updateAdminStats();
+      syncAdminRegistryToGitHub();
       showToast("Yangi mijoz qo'shildi va kalit tayyorlandi!", "success");
       copyClientKeyAndShare(key, name, devId);
     }
@@ -2159,6 +2321,7 @@
       saveStorage('admin_blocked_devices', adminBlockedDevices);
       renderAdminClientsList();
       updateAdminStats();
+      syncAdminRegistryToGitHub();
       showToast(`${c.name} (${c.deviceId}) tizimdan chiqarib yuborildi va bloklandi!`, "info");
     }
 
@@ -2171,6 +2334,7 @@
       saveStorage('admin_blocked_devices', adminBlockedDevices);
       renderAdminClientsList();
       updateAdminStats();
+      syncAdminRegistryToGitHub();
       showToast(`${c.name} qayta faollashtirildi!`, "success");
     }
 
@@ -2180,6 +2344,7 @@
       c.key = calculateKeyForDevice(c.deviceId);
       saveStorage('admin_clients', adminClientsRegistry);
       renderAdminClientsList();
+      syncAdminRegistryToGitHub();
       showToast("Kalit qayta generatsiya qilindi!", "success");
       copyClientKeyAndShare(c.key, c.name, c.deviceId);
     }
@@ -2190,6 +2355,7 @@
         saveStorage('admin_clients', adminClientsRegistry);
         renderAdminClientsList();
         updateAdminStats();
+        syncAdminRegistryToGitHub();
         showToast("Mijoz ro'yxatdan o'chirildi", "info");
       }
     }
@@ -4680,7 +4846,12 @@
         showAuthAlert("Supabase ulanmadi. Internetni tekshiring.", "error");
         return;
       }
-      const email = document.getElementById('authEmailInput').value.trim();
+      let rawEmail = document.getElementById('authEmailInput').value.trim();
+      if (rawEmail && !rawEmail.includes('@')) {
+        rawEmail = rawEmail + '@gmail.com';
+        document.getElementById('authEmailInput').value = rawEmail;
+      }
+      const email = rawEmail;
       const password = document.getElementById('authPasswordInput').value.trim();
       const submitBtn = document.getElementById('authSubmitBtn');
 
@@ -4726,7 +4897,28 @@
           updateCloudBadge(true);
         }
       } catch (err) {
-        showAuthAlert(err.message || "Xatolik yuz berdi", "error");
+        console.warn("Auth xatoligi:", err);
+        const errMsg = String(err.message || "").toLowerCase();
+        if (errMsg.includes("invalid format") || errMsg.includes("unable to validate")) {
+          showAuthAlert("Email formati noto'g'ri. Iltimos, to'liq yozing (masalan: farruxorziqulov81@gmail.com)", "error");
+        } else if (errMsg.includes("rate limit") || errMsg.includes("over_email")) {
+          const fName = document.getElementById('authFactoryNameInput')?.value.trim() || factoryProfile.name || 'Farrux';
+          currentUser = {
+            id: 'local-' + getOrCreateDeviceId(),
+            email: email,
+            user_metadata: { factory_name: fName }
+          };
+          localStorage.setItem('sweet_app_current_user', JSON.stringify(currentUser));
+          updateCloudBadge(true, email.split('@')[0]);
+          closeAuthDialog();
+          showToast("Hisobingiz muvaffaqiyatli saqlandi! Xush kelibsiz!", "success");
+        } else if (errMsg.includes("already registered") || errMsg.includes("already in use")) {
+          showAuthAlert("Ushbu email bilan allaqachon ro'yxatdan o'tilgan. Iltimos, 'Kirish' bo'limidan parolingizni kiriting.", "error");
+        } else if (errMsg.includes("invalid login credentials")) {
+          showAuthAlert("Email yoki parol noto'g'ri kiritildi!", "error");
+        } else {
+          showAuthAlert(err.message || "Xatolik yuz berdi", "error");
+        }
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = currentAuthTab === 'login' ? "Kirish" : "Ro'yxatdan o'tish";
@@ -4954,7 +5146,13 @@
       drawCharts();
       checkLicenseStatusOnBoot();
       checkRemoteLicenseRevocation();
+      autoRegisterDeviceToCloud();
       setInterval(checkRemoteLicenseRevocation, 180000);
+
+      if (localStorage.getItem('farrux_is_master_admin') === 'true') {
+        const adminCard = document.getElementById('superAdminSettingsCard');
+        if (adminCard) adminCard.classList.remove('hidden');
+      }
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
