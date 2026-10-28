@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T07:46:13.014Z",
+  "updated_at": "2026-10-28T07:50:06.732Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -33,6 +33,17 @@
       "plan": "Ulangan Qurilma",
       "createdAt": "2026-10-28",
       "lastSeen": "2026-10-28 07:46"
+    },
+    {
+      "id": "CLI-8349",
+      "name": "Farrux",
+      "phone": "+998",
+      "deviceId": "DEV-2ZJ22",
+      "key": "KEY-VO6F1B",
+      "status": "active",
+      "plan": "Ulangan Qurilma",
+      "createdAt": "2026-10-28",
+      "lastSeen": "2026-10-28 07:50"
     }
   ]
 }
