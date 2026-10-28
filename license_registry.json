@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T14:18:48.334Z",
+  "updated_at": "2026-10-28T09:40:00Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -11,39 +11,6 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
-    },
-    {
-      "id": "CLI-6298",
-      "name": "Farrux",
-      "phone": "+998",
-      "deviceId": "DEV-2ZJ22",
-      "key": "KEY-VO6F1B",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 14:18"
-    },
-    {
-      "id": "CLI-7720",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-GJ546",
-      "key": "KEY-MGYKJZ",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 14:15"
-    },
-    {
-      "id": "CLI-8412",
-      "name": "Mening Qandolat Fabrikam",
-      "phone": "+998",
-      "deviceId": "DEV-E4URA",
-      "key": "KEY-E71MK2",
-      "status": "active",
-      "plan": "Ulangan Qurilma",
-      "createdAt": "2026-10-28",
-      "lastSeen": "2026-10-28 14:16"
     }
   ]
 }
