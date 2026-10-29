@@ -1,8 +1,5 @@
-const CACHE_NAME = 'sweet-factory-v37';
+const CACHE_NAME = 'sweet-factory-v38';
 const urlsToCache = [
-  './',
-  './index.html',
-  './sweet_factory_app.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
@@ -18,9 +15,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
-      keys.map(k => {
-        if (k !== CACHE_NAME) return caches.delete(k);
-      })
+      keys.map(k => caches.delete(k))
     )).then(() => self.clients.claim())
   );
 });
@@ -32,9 +27,9 @@ self.addEventListener('fetch', event => {
     (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'));
 
   if (isHtml) {
-    // Network-first for HTML: always get fresh updates immediately
+    // Fresh network-first for HTML
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-store' })
         .then(networkResponse => {
           if (networkResponse && networkResponse.status === 200) {
             const respClone = networkResponse.clone();
