@@ -572,13 +572,31 @@
 
           <!-- Section 1: Sweet Products Catalog (Primary view) -->
           <div id="secProdCatalog" class="space-y-2.5">
-            <div class="flex items-center justify-between">
+            
+            <!-- ACTION: BUGUNGI ISHLAB CHIQARISHNI KIRITISH -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500/20 via-pink-500/15 to-purple-500/20 border-2 border-rose-500/40 p-3 shadow-md flex items-center justify-between gap-2">
+              <div class="flex items-center space-x-2.5 min-w-0">
+                <div class="w-8 h-8 rounded-xl bg-rose-500/25 text-rose-400 flex items-center justify-center text-xs font-black shrink-0">
+                  <i class="fa-solid fa-cake-candles"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="text-xs font-black text-[var(--text-main)] truncate">Bugungi ishlab chiqarish</h4>
+                  <p class="text-[9px] text-[var(--text-muted)]">Bugungi buyurtma va xomashyo chiqimini hisoblash</p>
+                </div>
+              </div>
+              <button onclick="openDailyProductionBatchModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white text-[11px] font-black shadow-md transition flex items-center space-x-1 shrink-0 active:scale-95">
+                <i class="fa-solid fa-plus text-[10px]"></i>
+                <span>Kiritish</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
               <div>
-                <h2 class="text-xs font-bold text-[var(--text-main)]">Shirinliklar katalogi</h2>
-                <p class="text-[10px] text-[var(--text-muted)]">Fabrikangiz ishlab chiqaradigan mahsulotlar va narxlari</p>
+                <h2 class="text-xs font-bold text-[var(--text-main)]">Shirinliklar katalogi (Menyu)</h2>
+                <p class="text-[10px] text-[var(--text-muted)]">Fabrikangizda pishiriladigan barcha shirinliklar va narxlari</p>
               </div>
               <button onclick="openAddProductDialog()" class="text-xs macaron-btn px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 shadow-md">
-                <i class="fa-solid fa-plus text-[10px]"></i> <span>+ Shirinlik qo'shish</span>
+                <i class="fa-solid fa-plus text-[10px]"></i> <span>+ Yangi tur</span>
               </button>
             </div>
 
@@ -6162,7 +6180,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=38').then(reg => {
           reg.update();
         }).catch(() => {});
       }
