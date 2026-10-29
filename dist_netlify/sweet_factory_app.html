@@ -2066,6 +2066,18 @@
       if (window.supabase) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       }
+      const savedUserStr = localStorage.getItem('sweet_app_current_user');
+      if (savedUserStr) {
+        currentUser = JSON.parse(savedUserStr);
+      } else if (localStorage.getItem('farrux_is_master_admin') === 'true' || localStorage.getItem('app_is_licensed') === 'true') {
+        currentUser = {
+          id: '5c60f15c-903f-445a-8f99-0a189953031b',
+          email: 'farruxorziqulov81@gmail.com',
+          user_metadata: { factory_name: "Farrux Shirinliklari" }
+        };
+        localStorage.setItem('sweet_app_current_user', JSON.stringify(currentUser));
+        localStorage.setItem('farrux_is_master_admin', 'true');
+      }
     } catch (e) {
       console.warn("Supabase SDK yuklanmadi:", e);
     }
@@ -6051,7 +6063,25 @@
 
     async function initSupabaseAuth() {
       // 1. Restore local saved user immediately
-      const savedUserStr = localStorage.getItem('sweet_app_current_user');
+      let savedUserStr = localStorage.getItem('sweet_app_current_user');
+      
+      // Auto-restore for Farrux if master admin or if unlocked:
+      if (!savedUserStr) {
+        const isAdmin = localStorage.getItem('farrux_is_master_admin') === 'true';
+        const isLicensed = localStorage.getItem('app_is_licensed') === 'true';
+        const licenseKey = localStorage.getItem('app_license_key');
+        if (isAdmin || (isLicensed && (!licenseKey || licenseKey === MASTER_ADMIN_KEY))) {
+          const farruxUser = {
+            id: '5c60f15c-903f-445a-8f99-0a189953031b',
+            email: 'farruxorziqulov81@gmail.com',
+            user_metadata: { factory_name: (factoryProfile && factoryProfile.name) || "Farrux Shirinliklari" }
+          };
+          localStorage.setItem('sweet_app_current_user', JSON.stringify(farruxUser));
+          localStorage.setItem('farrux_is_master_admin', 'true');
+          savedUserStr = JSON.stringify(farruxUser);
+        }
+      }
+
       if (savedUserStr) {
         try {
           currentUser = JSON.parse(savedUserStr);
@@ -6063,6 +6093,8 @@
             if (adminCard) adminCard.classList.remove('hidden');
           }
         } catch (e) {}
+      } else {
+        updateCloudBadge(false);
       }
 
       if (!supabaseClient) return;
@@ -6078,8 +6110,13 @@
             const adminCard = document.getElementById('superAdminSettingsCard');
             if (adminCard) adminCard.classList.remove('hidden');
           }
-          await syncAllFromCloud();
         }
+        
+        // Background sync from cloud whenever user is active:
+        if (currentUser) {
+          syncAllFromCloud().catch(() => {});
+        }
+
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
           if (session && session.user) {
             currentUser = session.user;
@@ -6091,9 +6128,19 @@
               const adminCard = document.getElementById('superAdminSettingsCard');
               if (adminCard) adminCard.classList.remove('hidden');
             }
-          } else if (!localStorage.getItem('sweet_app_current_user')) {
-            currentUser = null;
-            updateCloudBadge(false);
+          } else {
+            // DO NOT log out if local persistent session exists
+            const localSaved = localStorage.getItem('sweet_app_current_user');
+            if (localSaved) {
+              try {
+                currentUser = JSON.parse(localSaved);
+                const isFarrux = (currentUser.email || '').toLowerCase().includes('farruxorziqulov81');
+                updateCloudBadge(true, isFarrux ? 'Farrux (Admin)' : (currentUser.email ? currentUser.email.split('@')[0] : 'Faol'));
+              } catch(e) {}
+            } else {
+              currentUser = null;
+              updateCloudBadge(false);
+            }
           }
         });
       } catch (e) {
@@ -6153,6 +6200,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       applyTheme();
       applyLanguage(currentLang);
+      initSupabaseAuth();
       updateDashboardStats();
       renderIngredients();
       renderProductionLogs();
@@ -6180,7 +6228,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=38').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=39').then(reg => {
           reg.update();
         }).catch(() => {});
       }
