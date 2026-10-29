@@ -3358,43 +3358,7 @@
       logo: ""
     });
 
-    let sweetProducts = loadStorage('products', [
-      { id: 1, name: "Medovik Asalli Tort", category: "Tortlar", price: 85000, unit: "dona" },
-      { id: 2, name: "Napoleon Qatlamali Tort", category: "Tortlar", price: 90000, unit: "dona" },
-      { id: 3, name: "Shokoladli Biskvit Tort", category: "Tortlar", price: 95000, unit: "dona" },
-      { id: 4, name: "Klassik Qozon Paxlava", category: "Sharq shirinliklari", price: 75000, unit: "kg" },
-      { id: 5, name: "Asalli Chak-Chak", category: "Sharq shirinliklari", price: 45000, unit: "kg" },
-      { id: 6, name: "Krem-bryule Ekler", category: "Pirojniylar", price: 8000, unit: "dona" },
-      { id: 7, name: "Qandolat Pryanigi", category: "Pechenye", price: 28000, unit: "kg" },
-      { id: 8, name: "Shokoladli Vafli", category: "Vafli", price: 32000, unit: "kg" },
-      { id: 9, name: "Shokoladli Kruassan", category: "Pishiriqlar", price: 12000, unit: "dona" },
-      { id: 10, name: "Qumli Pechenye (Kurabiye)", category: "Pechenye", price: 30000, unit: "kg" },
-      { id: 11, name: "Mevali Biskvit Rulet", category: "Ruletlar", price: 40000, unit: "dona" },
-      { id: 12, name: "Keks (Muffin)", category: "Kekslar", price: 6000, unit: "dona" },
-      { id: 13, name: "Vanilli Zefir", category: "Zefir", price: 35000, unit: "kg" },
-      { id: 14, name: "Quyultirilgan sutli Trubochka", category: "Pirojniylar", price: 7000, unit: "dona" },
-      { id: 15, name: "Qandolat Pechenyesi (Assorti)", category: "Pechenye", price: 35000, unit: "kg" }
-    ]);
-    if (!sweetProducts || sweetProducts.length === 0) {
-      sweetProducts = [
-        { id: 1, name: "Medovik Asalli Tort", category: "Tortlar", price: 85000, unit: "dona" },
-        { id: 2, name: "Napoleon Qatlamali Tort", category: "Tortlar", price: 90000, unit: "dona" },
-        { id: 3, name: "Shokoladli Biskvit Tort", category: "Tortlar", price: 95000, unit: "dona" },
-        { id: 4, name: "Klassik Qozon Paxlava", category: "Sharq shirinliklari", price: 75000, unit: "kg" },
-        { id: 5, name: "Asalli Chak-Chak", category: "Sharq shirinliklari", price: 45000, unit: "kg" },
-        { id: 6, name: "Krem-bryule Ekler", category: "Pirojniylar", price: 8000, unit: "dona" },
-        { id: 7, name: "Qandolat Pryanigi", category: "Pechenye", price: 28000, unit: "kg" },
-        { id: 8, name: "Shokoladli Vafli", category: "Vafli", price: 32000, unit: "kg" },
-        { id: 9, name: "Shokoladli Kruassan", category: "Pishiriqlar", price: 12000, unit: "dona" },
-        { id: 10, name: "Qumli Pechenye (Kurabiye)", category: "Pechenye", price: 30000, unit: "kg" },
-        { id: 11, name: "Mevali Biskvit Rulet", category: "Ruletlar", price: 40000, unit: "dona" },
-        { id: 12, name: "Keks (Muffin)", category: "Kekslar", price: 6000, unit: "dona" },
-        { id: 13, name: "Vanilli Zefir", category: "Zefir", price: 35000, unit: "kg" },
-        { id: 14, name: "Quyultirilgan sutli Trubochka", category: "Pirojniylar", price: 7000, unit: "dona" },
-        { id: 15, name: "Qandolat Pechenyesi (Assorti)", category: "Pechenye", price: 35000, unit: "kg" }
-      ];
-      saveStorage('products', sweetProducts);
-    }
+    let sweetProducts = loadStorage('products', []);
     let productionLogs = loadStorage('logs', []);
     let transactions = loadStorage('transactions', []);
     let debts = loadStorage('debts', []);
