@@ -882,117 +882,87 @@
 
   <!-- ================= EDIT MODALS (TAHRIRLASH OYNALARI) ================= -->
 
-  <!-- Daily Production Batch Modal (Bugungi buyurtmalar va ishlab chiqarish) -->
+  <!-- Daily Production Batch Modal (Bugungi ishlab chiqarish - SODDA VA TOZA) -->
   <div id="dailyProductionBatchModal" class="fixed inset-0 bg-black/85 z-[99999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeDailyProductionBatchModal()">
-    <div class="confectionery-card w-full max-w-lg rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[88vh] flex flex-col my-auto border border-white/10" onclick="event.stopPropagation()">
+    <div class="confectionery-card w-full max-w-sm rounded-[24px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10 bg-[#161a24]" onclick="event.stopPropagation()">
       
       <!-- Modal Header -->
-      <div class="flex justify-between items-center border-b border-white/10 pb-2.5 shrink-0">
-        <div class="flex items-center space-x-2.5">
-          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-sm font-black shadow-md">
-            <i class="fa-solid fa-cake-candles"></i>
-          </div>
-          <div>
-            <h3 class="font-black text-xs text-[var(--text-main)]">Bugungi Buyurtmalar & Ishlab Chiqarish</h3>
-            <p class="text-[10px] text-[var(--text-muted)]">Chiqarilgan shirinliklar va sarflangan xomashyo hisobi</p>
-          </div>
+      <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
+        <div class="flex items-center space-x-2">
+          <span class="text-base">🍰</span>
+          <h3 class="font-bold text-sm text-white">Bugungi Ishlab Chiqarish</h3>
         </div>
-        <button onclick="closeDailyProductionBatchModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
+        <button onclick="closeDailyProductionBatchModal()" class="w-8 h-8 rounded-xl bg-white/5 text-stone-400 hover:text-white flex items-center justify-center text-lg transition">&times;</button>
       </div>
+
+      <!-- Yashirin sozlamalar (JS uchun) -->
+      <input type="date" id="batchDateInput" class="hidden">
+      <input type="checkbox" id="batchAutoDeduct" checked class="hidden">
+      <input type="checkbox" id="batchAutoExpense" checked class="hidden">
+      <span id="batchSumQty" class="hidden"></span>
+      <span id="batchSumVal" class="hidden"></span>
 
       <!-- Scrollable Body -->
-      <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs pb-6" style="-webkit-overflow-scrolling: touch;">
+      <div class="flex-1 overflow-y-auto space-y-3 pr-0.5 text-xs" style="-webkit-overflow-scrolling: touch;">
         
-        <!-- Partiya sanasi -->
-        <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10">
-          <span class="text-[11px] font-bold text-[var(--text-main)] flex items-center space-x-1.5">
-            <i class="fa-solid fa-calendar-day text-rose-400"></i>
-            <span>Partiya sanasi:</span>
-          </span>
-          <input type="date" id="batchDateInput" class="px-2.5 py-1 text-xs rounded-xl glass-input font-bold text-[var(--text-main)] border border-white/10">
-        </div>
-
-        <!-- 1-Qism: Chiqarilgan shirinliklar -->
-        <div class="space-y-2">
+        <!-- 1. Shirinliklar -->
+        <div class="space-y-1.5">
           <div class="flex items-center justify-between">
-            <h4 class="text-xs font-black text-rose-400 flex items-center space-x-1.5">
+            <span class="text-xs font-bold text-rose-400 flex items-center space-x-1.5">
               <i class="fa-solid fa-cake-candles text-[11px]"></i>
-              <span>1. Chiqarilgan shirinliklar (Nechta chiqdi?)</span>
-            </h4>
-            <span id="batchSelectedProductsBadge" class="text-[10px] font-bold text-rose-300">0 ta tanlandi</span>
+              <span>Pishirilgan shirinlik:</span>
+            </span>
+            <span id="batchSelectedProductsBadge" class="text-[10px] text-stone-400 font-medium"></span>
           </div>
 
-          <!-- Tanlangan shirinliklar ro'yxati -->
-          <div id="batchSelectedProductsContainer" class="space-y-1.5"></div>
+          <!-- Tanlangan shirinliklar -->
+          <div id="batchSelectedProductsContainer" class="space-y-1"></div>
 
-          <!-- SHIRINLIKLAR RO'YXATIDAN TANLASH TUGMASI -->
-          <button type="button" onclick="openSweetPickerModal()" class="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-rose-500/15 via-pink-500/10 to-rose-500/15 border-2 border-dashed border-rose-500/40 hover:bg-rose-500/25 text-rose-300 font-black text-xs flex items-center justify-center space-x-2 transition active:scale-95 shadow-sm">
-            <i class="fa-solid fa-list-check text-sm text-rose-400"></i>
-            <span>Shirinliklarni pitechka bilan tanlash</span>
+          <!-- Shirinlik tanlash tugmasi -->
+          <button type="button" onclick="openSweetPickerModal()" class="w-full py-2.5 px-3 rounded-xl bg-rose-500/15 border border-rose-500/30 hover:bg-rose-500/25 text-rose-300 font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Shirinlik tanlash</span>
           </button>
         </div>
 
-        <!-- 2-Qism: Ombordan sarflangan xomashyolar -->
-        <div class="space-y-2 pt-2 border-t border-white/10">
+        <!-- 2. Masalliqlar -->
+        <div class="space-y-1.5 pt-2 border-t border-white/10">
           <div class="flex items-center justify-between">
-            <h4 class="text-xs font-black text-amber-400 flex items-center space-x-1.5">
+            <span class="text-xs font-bold text-amber-400 flex items-center space-x-1.5">
               <i class="fa-solid fa-boxes-stacked text-[11px]"></i>
-              <span>2. Ombordan sarflangan xomashyo (Qancha ketdi?)</span>
-            </h4>
-            <span id="batchSelectedIngredientsBadge" class="text-[10px] font-bold text-amber-300">0 ta tanlandi</span>
+              <span>Ishlatilgan masalliq:</span>
+            </span>
+            <span id="batchSelectedIngredientsBadge" class="text-[10px] text-stone-400 font-medium"></span>
           </div>
 
-          <!-- Tanlangan xomashyolar ro'yxati -->
-          <div id="batchSelectedIngredientsContainer" class="space-y-1.5"></div>
+          <!-- Tanlangan masalliqlar -->
+          <div id="batchSelectedIngredientsContainer" class="space-y-1"></div>
 
-          <!-- OMBOR MAHSULOTLARIDAN TANLASH TUGMASI -->
-          <button type="button" onclick="openIngredientPickerModal()" class="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border-2 border-dashed border-amber-500/40 hover:bg-amber-500/25 text-amber-300 font-black text-xs flex items-center justify-center space-x-2 transition active:scale-95 shadow-sm">
-            <i class="fa-solid fa-list-check text-sm text-amber-400"></i>
-            <span>Ombor mahsulotlarini pitechka bilan tanlash</span>
+          <!-- Masalliq tanlash tugmasi -->
+          <button type="button" onclick="openIngredientPickerModal()" class="w-full py-2.5 px-3 rounded-xl bg-amber-500/15 border border-amber-500/30 hover:bg-amber-500/25 text-amber-300 font-bold text-xs flex items-center justify-center space-x-2 transition active:scale-95">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Masalliq tanlash</span>
           </button>
         </div>
 
-        <!-- 3-Qism: Yakuniy hisob-kitob -->
-        <div class="p-3 rounded-2xl bg-gradient-to-br from-rose-500/10 via-amber-500/10 to-emerald-500/10 border border-white/10 space-y-2">
-          <div class="flex justify-between items-center text-[11px]">
-            <span class="text-[var(--text-muted)] font-medium">Jami tayyorlangan mahsulot:</span>
-            <b id="batchSumQty" class="text-white font-black">0 dona</b>
-          </div>
-          <div class="flex justify-between items-center text-[11px]">
-            <span class="text-[var(--text-muted)] font-medium">Tayyor mahsulot sotish qiymati:</span>
-            <b id="batchSumVal" class="text-emerald-400 font-black">0 so'm</b>
-          </div>
-          <div class="flex justify-between items-center text-[11px] pt-1.5 border-t border-white/10">
-            <span class="text-rose-300 font-bold">Xomashyo chiqimi (Xarajat):</span>
-            <b id="batchSumCost" class="text-rose-400 font-black text-sm">0 so'm</b>
-          </div>
-
-          <div class="pt-2 space-y-1.5 border-t border-white/10 text-[10px]">
-            <label class="flex items-center space-x-2 cursor-pointer text-[var(--text-main)]">
-              <input type="checkbox" id="batchAutoDeduct" checked class="w-3.5 h-3.5 rounded accent-rose-500">
-              <span>Ombordagi xomashyolardan ketgan miqdor avtomatik ayirilsin</span>
-            </label>
-            <label class="flex items-center space-x-2 cursor-pointer text-[var(--text-main)]">
-              <input type="checkbox" id="batchAutoExpense" checked class="w-3.5 h-3.5 rounded accent-rose-500">
-              <span>Moliya bo'limiga «Xomashyo xarajati» deb Chiqim yozilsin</span>
-            </label>
-          </div>
+        <!-- 3. Chiqim xulosasi -->
+        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs mt-2">
+          <span class="text-stone-400 font-medium">Xomashyo chiqimi:</span>
+          <b id="batchSumCost" class="text-rose-400 font-black text-sm">0 so'm</b>
         </div>
 
       </div>
 
-      <!-- Modal Footer -->
-      <div class="flex items-center justify-end space-x-2 pt-2.5 border-t border-white/10 shrink-0">
-        <button onclick="closeDailyProductionBatchModal()" class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[var(--text-muted)] font-bold text-xs transition">
-          Bekor qilish
-        </button>
-        <button onclick="confirmSaveProductionBatch()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white font-black text-xs shadow-lg transition flex items-center space-x-1.5 active:scale-95">
-          <i class="fa-solid fa-check"></i>
-          <span>Saqlash va Chiqimni Tasdiqlash</span>
+      <!-- Modal Footer (Bitta qulay Saqlash tugmasi) -->
+      <div class="pt-2 border-t border-white/10 shrink-0">
+        <button onclick="confirmSaveProductionBatch()" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white font-black text-xs shadow-lg transition flex items-center justify-center space-x-2 active:scale-95">
+          <i class="fa-solid fa-check text-sm"></i>
+          <span>Saqlash</span>
         </button>
       </div>
 
     </div>
+  </div>
   </div>
 
   <!-- Sweet Picker Modal (Shirinliklar ro'yxatidan tanlash - Vertikal jadvalcha pitechka bilan) -->
@@ -3950,16 +3920,11 @@
     function renderSelectedBatchProducts() {
       const container = document.getElementById('batchSelectedProductsContainer');
       const badge = document.getElementById('batchSelectedProductsBadge');
-      if (badge) badge.innerText = `${currentBatchProducts.length} ta tanlandi`;
+      if (badge) badge.innerText = currentBatchProducts.length > 0 ? `(${currentBatchProducts.length} ta)` : '';
       if (!container) return;
 
       if (currentBatchProducts.length === 0) {
-        container.innerHTML = `
-          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
-            <i class="fa-solid fa-cake-candles mb-1 text-sm text-rose-400 opacity-60 block"></i>
-            Hali shirinlik tanlanmadi. Pastdagi tugma orqali pitechka bilan belgilang.
-          </div>
-        `;
+        container.innerHTML = '';
         return;
       }
 
@@ -4109,16 +4074,11 @@
     function renderSelectedBatchIngredients() {
       const container = document.getElementById('batchSelectedIngredientsContainer');
       const badge = document.getElementById('batchSelectedIngredientsBadge');
-      if (badge) badge.innerText = `${currentBatchIngredients.length} ta tanlandi`;
+      if (badge) badge.innerText = currentBatchIngredients.length > 0 ? `(${currentBatchIngredients.length} ta)` : '';
       if (!container) return;
 
       if (currentBatchIngredients.length === 0) {
-        container.innerHTML = `
-          <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
-            <i class="fa-solid fa-boxes-stacked mb-1 text-sm text-amber-400 opacity-60 block"></i>
-            Hali xomashyo tanlanmadi. Pastdagi tugma orqali pitechka bilan belgilang.
-          </div>
-        `;
+        container.innerHTML = '';
         return;
       }
 
@@ -6233,7 +6193,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=41').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=42').then(reg => {
           reg.update();
         }).catch(() => {});
       }
