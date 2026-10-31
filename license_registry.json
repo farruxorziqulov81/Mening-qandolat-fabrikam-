@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T09:40:00Z",
+  "updated_at": "2026-10-31T14:04:30.132Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -11,6 +11,17 @@
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
       "createdAt": "2026-10-26"
+    },
+    {
+      "id": "CLI-4914",
+      "name": "Mening Qandolat Fabrikam",
+      "phone": "+998",
+      "deviceId": "DEV-2RTDN",
+      "key": "KEY-O68AV9",
+      "status": "active",
+      "plan": "Ulangan Qurilma",
+      "createdAt": "2026-10-31",
+      "lastSeen": "2026-10-31 14:04"
     }
   ]
 }
