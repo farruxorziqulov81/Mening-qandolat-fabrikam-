@@ -1151,20 +1151,20 @@
           </button>
         </div>
 
-        <!-- Ma'lumotlar Zaxirasi & Kesh -->
+        <!-- Dasturni yangilash va Zaxira -->
         <div class="erp-card p-3 space-y-2">
           <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
-            <i class="fa-solid fa-database text-rose-400"></i>
-            <span>Zaxira va Kesh</span>
+            <i class="fa-solid fa-cloud-arrow-down text-emerald-400"></i>
+            <span>Dasturni yangilash va Zaxira</span>
           </div>
           <div class="space-y-1.5">
+            <button onclick="refreshAppClean()" class="w-full py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1.5 active:scale-95">
+              <i class="fa-solid fa-arrows-rotate text-xs"></i>
+              <span>Dasturni yangilash</span>
+            </button>
             <button onclick="exportAllDataJson()" class="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
               <i class="fa-solid fa-download text-xs text-rose-400"></i>
               <span>Zaxira yuklash (JSON)</span>
-            </button>
-            <button onclick="clearAppCacheAndReload()" class="w-full py-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-rotate text-xs"></i>
-              <span>Keshni tozalash va yangilash</span>
             </button>
           </div>
         </div>
@@ -3312,21 +3312,34 @@
       event.target.value = '';
     }
 
-    function clearAppCacheAndReload() {
-      if ('caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => caches.delete(name));
-        });
+    async function refreshAppClean() {
+      showToast("Dastur yangilanmoqda, ma'lumotlar saqlanmoqda...", "info");
+      
+      // 1. Agar bulutga ulangan bo'lsa, barcha ma'lumotlarni bulutga saqlaymiz
+      if (typeof syncAllToCloud === 'function' && supabaseClient && currentUser) {
+        try {
+          await syncAllToCloud();
+        } catch(e) {}
       }
+
+      // 2. Yangi versiyani tekshiramiz (hech qanday ma'lumot yoki profil o'chirilmaydi)
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(regs => {
-          regs.forEach(r => r.unregister());
-        });
+        try {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (let r of regs) {
+            await r.update();
+          }
+        } catch(e) {}
       }
-      showToast("Kesh tozalandi, sahifa yangilanmoqda...", "info");
+
+      // 3. Xavfsiz qayta yuklash (rasmlar va ismlar 100% joyida qoladi)
       setTimeout(() => {
-        window.location.reload(true);
-      }, 500);
+        window.location.reload();
+      }, 350);
+    }
+
+    function clearAppCacheAndReload() {
+      refreshAppClean();
     }
 
     // ==========================================
@@ -3692,15 +3705,16 @@
       document.getElementById('factoryModal').classList.add('hidden');
     }
     function saveFactoryProfile() {
-      factoryProfile.name = document.getElementById('modalFactoryName').value.trim() || "Mening Qandolat Fabrikam";
-      factoryProfile.address = document.getElementById('modalFactoryAddr').value.trim() || "Manzil";
-      factoryProfile.phone = document.getElementById('modalFactoryPhone').value.trim() || "+998";
-      factoryProfile.director = document.getElementById('modalFactoryDirector').value.trim() || "Rahbar";
-      factoryProfile.logo = tempLogoData || "";
+      factoryProfile.name = document.getElementById('modalFactoryName').value.trim() || factoryProfile.name || "Mening Qandolat Fabrikam";
+      factoryProfile.address = document.getElementById('modalFactoryAddr').value.trim() || factoryProfile.address || "Manzil";
+      factoryProfile.phone = document.getElementById('modalFactoryPhone').value.trim() || factoryProfile.phone || "+998";
+      factoryProfile.director = document.getElementById('modalFactoryDirector').value.trim() || factoryProfile.director || "Rahbar";
+      factoryProfile.logo = tempLogoData || factoryProfile.logo || "";
 
       saveStorage('profile', factoryProfile);
       updateDashboardStats();
       updateLogoDisplays();
+      updateSettingsUI();
       closeFactoryDialog();
       showToast("Fabrika ma'lumotlari va logotipi saqlandi!", "success");
     }
@@ -4135,6 +4149,36 @@
       }).join('');
     }
 
+    function getActualIngredientUsage(item) {
+      if (!item) return { qtyInBase: 0, cost: 0, displayUnit: 'kg', displayQty: 0 };
+      const rawQty = parseFloat(String(item.usedQty || '').replace(',', '.')) || 0;
+      if (rawQty <= 0) {
+        return {
+          qtyInBase: 0,
+          cost: 0,
+          displayUnit: item.selectedUnit || item.unit || 'kg',
+          displayQty: 0
+        };
+      }
+
+      const unit = (item.selectedUnit || item.unit || '').toLowerCase().trim();
+      let qtyInBase = rawQty;
+
+      if (unit === 'gr' || unit === 'gram' || unit === 'г') {
+        qtyInBase = rawQty / 1000;
+      } else if (unit === 'ml' || unit === 'мл') {
+        qtyInBase = rawQty / 1000;
+      }
+
+      const cost = Math.round(qtyInBase * (item.price || 0));
+      return {
+        qtyInBase: Math.round(qtyInBase * 10000) / 10000,
+        cost,
+        displayUnit: item.selectedUnit || item.unit,
+        displayQty: rawQty
+      };
+    }
+
     function toggleIngredientInPicker(id) {
       const iId = parseInt(id);
       const idx = currentBatchIngredients.findIndex(x => x.id === iId);
@@ -4143,17 +4187,67 @@
       } else {
         const ing = (ingredients || []).find(x => x.id === iId);
         if (ing) {
+          const rawUnit = (ing.unit || 'kg').toLowerCase().trim();
+          let baseUnit = ing.unit || 'kg';
+          let subUnit = 'gr';
+          let hasSubUnit = false;
+
+          if (rawUnit === 'kg' || rawUnit === 'kilogram' || rawUnit === 'кг') {
+            baseUnit = 'kg';
+            subUnit = 'gr';
+            hasSubUnit = true;
+          } else if (rawUnit === 'litr' || rawUnit === 'l' || rawUnit === 'литр' || rawUnit === 'л') {
+            baseUnit = 'litr';
+            subUnit = 'ml';
+            hasSubUnit = true;
+          }
+
           currentBatchIngredients.push({
             id: ing.id,
             name: ing.name,
             qty: ing.qty,
             unit: ing.unit,
+            baseUnit: baseUnit,
+            subUnit: subUnit,
+            hasSubUnit: hasSubUnit,
+            selectedUnit: baseUnit,
             price: ing.price,
             usedQty: ''
           });
         }
       }
       renderIngPickerList();
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+    }
+
+    function setBatchIngUnit(id, unitName) {
+      const item = currentBatchIngredients.find(x => x.id === id);
+      if (!item) return;
+      if (item.selectedUnit === unitName) return;
+
+      const oldUnit = (item.selectedUnit || item.unit || '').toLowerCase().trim();
+      const newUnit = (unitName || '').toLowerCase().trim();
+      item.selectedUnit = unitName;
+
+      // Agar oldindan son yozilgan bo'lsa, uni avtomat aylantirib beramiz
+      const currentVal = parseFloat(String(item.usedQty || '').replace(',', '.'));
+      if (!isNaN(currentVal) && currentVal > 0) {
+        if ((newUnit === 'gr' || newUnit === 'gram') && (oldUnit === 'kg' || oldUnit === 'kilogram')) {
+          // 0.2 kg -> 200 gr
+          item.usedQty = Math.round(currentVal * 1000 * 100) / 100;
+        } else if ((newUnit === 'kg' || newUnit === 'kilogram') && (oldUnit === 'gr' || oldUnit === 'gram')) {
+          // 200 gr -> 0.2 kg
+          item.usedQty = Math.round((currentVal / 1000) * 10000) / 10000;
+        } else if (newUnit === 'ml' && (oldUnit === 'litr' || oldUnit === 'l')) {
+          // 0.5 litr -> 500 ml
+          item.usedQty = Math.round(currentVal * 1000 * 100) / 100;
+        } else if ((newUnit === 'litr' || newUnit === 'l') && oldUnit === 'ml') {
+          // 500 ml -> 0.5 litr
+          item.usedQty = Math.round((currentVal / 1000) * 10000) / 10000;
+        }
+      }
+
       renderSelectedBatchIngredients();
       calculateBatchTotals();
     }
@@ -4180,6 +4274,11 @@
       if (item) {
         item.usedQty = val;
       }
+      const usage = getActualIngredientUsage(item);
+      const costEl = document.getElementById('batch_ing_cost_' + id);
+      if (costEl) {
+        costEl.innerHTML = usage.cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(usage.cost)}</span>` : '';
+      }
       calculateBatchTotals();
     }
 
@@ -4197,7 +4296,13 @@
       container.innerHTML = `
         <div class="rounded-2xl border border-white/10 bg-black/20 divide-y divide-white/5 overflow-hidden">
           ${currentBatchIngredients.map(ing => {
-            const cost = (parseFloat(ing.usedQty) || 0) * (ing.price || 0);
+            const usage = getActualIngredientUsage(ing);
+            const rawUnit = (ing.unit || 'kg').toLowerCase().trim();
+            const baseUnit = ing.baseUnit || (rawUnit === 'litr' || rawUnit === 'l' ? 'litr' : 'kg');
+            const subUnit = ing.subUnit || (baseUnit === 'litr' ? 'ml' : 'gr');
+            const hasSubUnit = ing.hasSubUnit !== undefined ? ing.hasSubUnit : (baseUnit === 'kg' || baseUnit === 'litr');
+            const selectedUnit = ing.selectedUnit || baseUnit;
+
             return `
               <div class="p-2.5 flex items-center justify-between gap-2 hover:bg-white/5 transition">
                 <div class="flex items-center space-x-2.5 min-w-0 flex-1">
@@ -4208,14 +4313,27 @@
                     <h4 class="text-xs font-bold text-white truncate">${ing.name}</h4>
                     <div class="text-[10px] text-stone-400">
                       Omborda: <b class="text-white">${ing.qty} ${ing.unit}</b>
-                      ${cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(cost)}</span>` : ''}
+                      <span id="batch_ing_cost_${ing.id}">
+                        ${usage.cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(usage.cost)}</span>` : ''}
+                      </span>
                     </div>
                   </div>
                 </div>
                 <div class="flex items-center space-x-1.5 shrink-0">
-                  <div class="relative w-24">
-                    <input type="number" min="0" step="any" id="batch_ing_${ing.id}" value="${ing.usedQty !== '' ? ing.usedQty : ''}" oninput="updateBatchIngredientQty(${ing.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/15 focus:border-amber-500">
-                    <span class="absolute right-2 top-2 text-[10px] text-stone-400 font-medium pointer-events-none">${ing.unit}</span>
+                  ${hasSubUnit ? `
+                    <div class="flex items-center bg-black/40 p-0.5 rounded-xl border border-white/10 text-[10px] font-bold">
+                      <button type="button" onclick="setBatchIngUnit(${ing.id}, '${baseUnit}')" class="px-2 py-1 rounded-lg transition ${selectedUnit === baseUnit ? 'bg-amber-500 text-stone-900 font-black shadow-xs' : 'text-stone-400 hover:text-white'}">
+                        ${baseUnit}
+                      </button>
+                      <button type="button" onclick="setBatchIngUnit(${ing.id}, '${subUnit}')" class="px-2 py-1 rounded-lg transition ${selectedUnit === subUnit ? 'bg-amber-500 text-stone-900 font-black shadow-xs' : 'text-stone-400 hover:text-white'}">
+                        ${subUnit}
+                      </button>
+                    </div>
+                  ` : `
+                    <span class="text-[10px] text-stone-400 font-bold px-1">${ing.unit}</span>
+                  `}
+                  <div class="w-20">
+                    <input type="number" min="0" step="any" id="batch_ing_${ing.id}" value="${ing.usedQty !== '' ? ing.usedQty : ''}" oninput="updateBatchIngredientQty(${ing.id}, this.value)" placeholder="0" class="w-full text-right px-2.5 py-1.5 text-xs font-black glass-input rounded-xl border border-white/15 focus:border-amber-500">
                   </div>
                   <button type="button" onclick="removeSelectedBatchIng(${ing.id})" class="w-7 h-7 rounded-lg text-stone-400 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition" title="O'chirish">
                     <i class="fa-solid fa-xmark text-sm"></i>
@@ -4267,10 +4385,8 @@
       });
 
       currentBatchIngredients.forEach(i => {
-        const q = parseFloat(i.usedQty) || 0;
-        if (q > 0) {
-          totalExpenseCost += (q * (i.price || 0));
-        }
+        const usage = getActualIngredientUsage(i);
+        totalExpenseCost += usage.cost;
       });
 
       const qtyEl = document.getElementById('batchSumQty');
@@ -4290,7 +4406,10 @@
       const autoExpense = document.getElementById('batchAutoExpense')?.checked ?? true;
 
       const validProducts = currentBatchProducts.filter(p => (parseFloat(p.qty) || 0) > 0);
-      const validIngredients = currentBatchIngredients.filter(i => (parseFloat(i.usedQty) || 0) > 0);
+      const validIngredients = currentBatchIngredients.filter(i => {
+        const usage = getActualIngredientUsage(i);
+        return usage.qtyInBase > 0;
+      });
 
       if (validProducts.length === 0 && validIngredients.length === 0) {
         showToast("Kamida bitta shirinlik yoki sarflangan xomashyo miqdorini kiriting!", "warning");
@@ -4333,8 +4452,8 @@
 
       let totalExpenseCost = 0;
       validIngredients.forEach(i => {
-        const q = parseFloat(i.usedQty) || 0;
-        totalExpenseCost += (q * (i.price || 0));
+        const usage = getActualIngredientUsage(i);
+        totalExpenseCost += usage.cost;
       });
 
       let totalProducedQty = 0;
@@ -4350,8 +4469,9 @@
         validIngredients.forEach(u => {
           const ing = ingredients.find(i => i.id === u.id);
           if (ing) {
-            const used = parseFloat(u.usedQty) || 0;
-            ing.qty = Math.max(0, Math.round((ing.qty - used) * 100) / 100);
+            const usage = getActualIngredientUsage(u);
+            const used = usage.qtyInBase;
+            ing.qty = Math.max(0, Math.round((ing.qty - used) * 1000) / 1000);
           }
         });
         saveStorage('ingredients', ingredients);
@@ -4360,7 +4480,10 @@
 
       // 2. Add expense transaction to finance if autoExpense
       if (autoExpense && totalExpenseCost > 0) {
-        const desc = "Ishlab chiqarish uchun sarflangan xomashyo: " + validIngredients.map(u => `${u.name} (${u.usedQty} ${u.unit})`).join(', ');
+        const desc = "Ishlab chiqarish uchun sarflangan xomashyo: " + validIngredients.map(u => {
+          const usage = getActualIngredientUsage(u);
+          return `${u.name} (${usage.displayQty} ${usage.displayUnit})`;
+        }).join(', ');
         const tx = {
           id: Date.now(),
           type: 'CHIQIM',
@@ -4455,7 +4578,18 @@
         shopName: destinationShopName || "Fabrika ombori",
         paymentType: destinationShopName ? batchSelectedPaymentType : null,
         producedItems: validProducts,
-        usedIngredients: validIngredients,
+        usedIngredients: validIngredients.map(u => {
+          const usage = getActualIngredientUsage(u);
+          return {
+            id: u.id,
+            name: u.name,
+            enteredQty: usage.displayQty,
+            enteredUnit: usage.displayUnit,
+            deductedQty: usage.qtyInBase,
+            deductedUnit: u.unit,
+            cost: usage.cost
+          };
+        }),
         totalQty: totalProducedQty,
         totalVal: totalProducedVal,
         totalExpense: totalExpenseCost,
@@ -6182,7 +6316,15 @@
         if (error) throw error;
         if (data && data.length > 0) {
           data.forEach(item => {
-            if (item.key === 'profile') factoryProfile = item.value;
+            if (item.key === 'profile') {
+              if (item.value) {
+                const mergedProfile = { ...factoryProfile, ...item.value };
+                if (factoryProfile && factoryProfile.logo && !item.value.logo) {
+                  mergedProfile.logo = factoryProfile.logo;
+                }
+                factoryProfile = mergedProfile;
+              }
+            }
             else if (item.key === 'ingredients') ingredients = item.value;
             else if (item.key === 'products') sweetProducts = item.value;
             else if (item.key === 'logs') productionLogs = item.value;
@@ -6192,7 +6334,7 @@
             else if (item.key === 'returns') returns = item.value;
             else if (item.key === 'invoices') invoices = item.value;
             else if (item.key === 'botSettings') botSettings = item.value;
-            localStorage.setItem('sweet_app_' + item.key, JSON.stringify(item.value));
+            localStorage.setItem('sweet_app_' + item.key, JSON.stringify(item.key === 'profile' ? factoryProfile : item.value));
           });
           updateDashboardStats();
           renderIngredients();
@@ -6202,6 +6344,7 @@
           renderFinance();
           renderShops();
           drawCharts();
+          updateSettingsUI();
           if (showNotify) showToast("Ma'lumotlar bulutdan yangilandi!", "success");
         } else {
           await syncAllToCloud();
@@ -6410,7 +6553,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=43').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=44').then(reg => {
           reg.update();
         }).catch(() => {});
       }
