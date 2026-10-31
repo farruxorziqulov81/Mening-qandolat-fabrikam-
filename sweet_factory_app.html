@@ -927,8 +927,8 @@
 
           <!-- SHIRINLIKLAR RO'YXATIDAN TANLASH TUGMASI -->
           <button type="button" onclick="openSweetPickerModal()" class="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-rose-500/15 via-pink-500/10 to-rose-500/15 border-2 border-dashed border-rose-500/40 hover:bg-rose-500/25 text-rose-300 font-black text-xs flex items-center justify-center space-x-2 transition active:scale-95 shadow-sm">
-            <i class="fa-solid fa-circle-plus text-sm text-rose-400"></i>
-            <span>Shirinliklar ro'yxatidan tanlash</span>
+            <i class="fa-solid fa-list-check text-sm text-rose-400"></i>
+            <span>Shirinliklarni pitechka bilan tanlash</span>
           </button>
         </div>
 
@@ -947,8 +947,8 @@
 
           <!-- OMBOR MAHSULOTLARIDAN TANLASH TUGMASI -->
           <button type="button" onclick="openIngredientPickerModal()" class="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border-2 border-dashed border-amber-500/40 hover:bg-amber-500/25 text-amber-300 font-black text-xs flex items-center justify-center space-x-2 transition active:scale-95 shadow-sm">
-            <i class="fa-solid fa-circle-plus text-sm text-amber-400"></i>
-            <span>Ombor mahsulotlaridan tanlash</span>
+            <i class="fa-solid fa-list-check text-sm text-amber-400"></i>
+            <span>Ombor mahsulotlarini pitechka bilan tanlash</span>
           </button>
         </div>
 
@@ -995,17 +995,17 @@
     </div>
   </div>
 
-  <!-- Sweet Picker Modal (Shirinliklar ro'yxatidan tanlash) -->
+  <!-- Sweet Picker Modal (Shirinliklar ro'yxatidan tanlash - Vertikal jadvalcha pitechka bilan) -->
   <div id="sweetPickerModal" class="fixed inset-0 bg-black/85 z-[999999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeSweetPickerModal()">
-    <div class="confectionery-card w-full max-w-md rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10" onclick="event.stopPropagation()">
+    <div class="confectionery-card w-full max-w-sm rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10 bg-[#161a24]" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
         <div class="flex items-center space-x-2">
           <div class="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs font-bold">
             <i class="fa-solid fa-cake-candles"></i>
           </div>
           <div>
-            <h3 class="text-xs font-black text-[var(--text-main)]">Shirinliklar Ro'yxatidan Tanlash</h3>
-            <p class="text-[9px] text-[var(--text-muted)]">Bugun ishlab chiqargan shirinligingizni tanlang</p>
+            <h3 class="text-xs font-black text-[var(--text-main)]">Shirinliklarni Tanlash</h3>
+            <p class="text-[9px] text-[var(--text-muted)]">Kerakli shirinliklarni pitechka bilan belgilang</p>
           </div>
         </div>
         <button onclick="closeSweetPickerModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
@@ -1017,33 +1017,34 @@
         <input type="text" id="sweetPickerSearchInput" oninput="renderSweetPickerList()" placeholder="Shirinlik nomini qidirish..." class="w-full pl-8 pr-3 py-2 text-xs glass-input rounded-xl border border-white/10 font-medium">
       </div>
 
-      <!-- Shirinliklar ro'yxati -->
-      <div id="sweetPickerListContainer" class="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-64" style="-webkit-overflow-scrolling: touch;"></div>
+      <!-- Shirinliklar vertikal jadvali (Pitechkali) -->
+      <div id="sweetPickerListContainer" class="flex-1 overflow-y-auto max-h-72 rounded-2xl border border-white/10 bg-slate-900/60 divide-y divide-white/5 shadow-inner" style="-webkit-overflow-scrolling: touch;"></div>
 
       <!-- Modal Footer -->
       <div class="flex items-center justify-between pt-2 border-t border-white/10 shrink-0 text-xs">
         <button onclick="loadDefaultSweetsCatalog()" class="text-[10px] text-rose-400 hover:underline flex items-center space-x-1 font-bold">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
-          <span>15 xil shirinlikni yuklash</span>
+          <span>15 xil yuklash</span>
         </button>
-        <button onclick="closeSweetPickerModal()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[var(--text-main)] font-bold text-xs transition">
-          Yopish
+        <button type="button" onclick="closeSweetPickerModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white font-black text-xs shadow-md transition flex items-center space-x-1.5 active:scale-95">
+          <i class="fa-solid fa-check"></i>
+          <span id="sweetPickerConfirmBtnText">Tayyor (0 ta)</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Ingredient Picker Modal (Ombor mahsulotlaridan tanlash) -->
+  <!-- Ingredient Picker Modal (Ombor mahsulotlaridan tanlash - Vertikal jadvalcha pitechka bilan) -->
   <div id="ingredientPickerModal" class="fixed inset-0 bg-black/85 z-[999999999] flex items-center justify-center p-3 hidden backdrop-blur-md" onclick="if(event.target === this) closeIngredientPickerModal()">
-    <div class="confectionery-card w-full max-w-md rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10" onclick="event.stopPropagation()">
+    <div class="confectionery-card w-full max-w-sm rounded-[28px] p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col my-auto border border-white/10 bg-[#161a24]" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
         <div class="flex items-center space-x-2">
           <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold">
             <i class="fa-solid fa-boxes-stacked"></i>
           </div>
           <div>
-            <h3 class="text-xs font-black text-[var(--text-main)]">Ombor Mahsulotlaridan Tanlash</h3>
-            <p class="text-[9px] text-[var(--text-muted)]">Bugun ishlatilgan xomashyoni tanlang</p>
+            <h3 class="text-xs font-black text-[var(--text-main)]">Ombor Xomashyolarini Tanlash</h3>
+            <p class="text-[9px] text-[var(--text-muted)]">Ishlatilgan mahsulotlarni pitechka bilan belgilang</p>
           </div>
         </div>
         <button onclick="closeIngredientPickerModal()" class="w-7 h-7 rounded-lg bg-white/5 text-[var(--text-muted)] hover:text-white flex items-center justify-center text-sm transition">&times;</button>
@@ -1055,13 +1056,14 @@
         <input type="text" id="ingPickerSearchInput" oninput="renderIngPickerList()" placeholder="Xomashyo izlash (un, shakar, yog')..." class="w-full pl-8 pr-3 py-2 text-xs glass-input rounded-xl border border-white/10 font-medium">
       </div>
 
-      <!-- Xomashyolar ro'yxati -->
-      <div id="ingPickerListContainer" class="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-64" style="-webkit-overflow-scrolling: touch;"></div>
+      <!-- Xomashyolar vertikal jadvali (Pitechkali) -->
+      <div id="ingPickerListContainer" class="flex-1 overflow-y-auto max-h-72 rounded-2xl border border-white/10 bg-slate-900/60 divide-y divide-white/5 shadow-inner" style="-webkit-overflow-scrolling: touch;"></div>
 
       <!-- Modal Footer -->
       <div class="flex items-center justify-end pt-2 border-t border-white/10 shrink-0 text-xs">
-        <button onclick="closeIngredientPickerModal()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[var(--text-main)] font-bold text-xs transition">
-          Yopish
+        <button type="button" onclick="closeIngredientPickerModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-black text-xs shadow-md transition flex items-center space-x-1.5 active:scale-95">
+          <i class="fa-solid fa-check"></i>
+          <span id="ingPickerConfirmBtnText">Tayyor (0 ta)</span>
         </button>
       </div>
     </div>
@@ -3851,6 +3853,10 @@
 
     function renderSweetPickerList() {
       const container = document.getElementById('sweetPickerListContainer');
+      const confirmBtnText = document.getElementById('sweetPickerConfirmBtnText');
+      if (confirmBtnText) {
+        confirmBtnText.innerText = `Tayyor (${currentBatchProducts.length} ta)`;
+      }
       if (!container) return;
 
       const searchVal = (document.getElementById('sweetPickerSearchInput')?.value || '').toLowerCase();
@@ -3858,7 +3864,8 @@
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="p-4 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl">
+          <div class="p-6 text-center text-xs text-stone-400">
+            <i class="fa-solid fa-cake-candles text-lg text-rose-400/50 mb-2 block"></i>
             Shirinlik topilmadi.
           </div>
         `;
@@ -3866,62 +3873,69 @@
       }
 
       container.innerHTML = filtered.map(p => {
-        const isAlreadyAdded = currentBatchProducts.some(x => x.id === p.id);
+        const isSelected = currentBatchProducts.some(x => x.id === p.id);
         return `
-          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-rose-500/30 transition">
-            <div class="min-w-0 flex-1">
-              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${p.name}</h4>
-              <div class="text-[10px] text-[var(--text-muted)]">${p.category || 'Shirinlik'} • <span class="text-emerald-400 font-bold">${fmtCur(p.price)} / ${p.unit || 'dona'}</span></div>
+          <div onclick="toggleSweetInPicker(${p.id})" class="flex items-center justify-between py-3 px-3.5 hover:bg-white/5 active:bg-white/10 cursor-pointer transition select-none ${isSelected ? 'bg-rose-500/10' : ''}">
+            <div class="min-w-0 flex-1 pr-3">
+              <div class="text-xs font-bold text-white truncate">${p.name}</div>
+              <div class="text-[10px] text-stone-400 mt-0.5">
+                <span class="text-rose-400/90 font-medium">${p.category || 'Shirinlik'}</span> • 
+                <span class="text-emerald-400 font-bold">${fmtCur(p.price)} / ${p.unit || 'dona'}</span>
+              </div>
             </div>
-            <button type="button" onclick="selectSweetFromPicker(${p.id})" class="px-3 py-1.5 rounded-xl ${isAlreadyAdded ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md active:scale-95'} font-black text-xs transition flex items-center space-x-1 shrink-0">
-              <i class="fa-solid ${isAlreadyAdded ? 'fa-check' : 'fa-plus'} text-[10px]"></i>
-              <span>${isAlreadyAdded ? 'Tanlangan' : 'Tanlash'}</span>
-            </button>
+            <div class="shrink-0 flex items-center justify-center">
+              ${isSelected ? `
+                <div class="w-6 h-6 rounded-full border-2 border-rose-500 flex items-center justify-center bg-rose-500/20 shadow-sm transition-all scale-105">
+                  <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                </div>
+              ` : `
+                <div class="w-6 h-6 rounded-full border-2 border-stone-500/50 flex items-center justify-center bg-transparent transition-all">
+                </div>
+              `}
+            </div>
           </div>
         `;
       }).join('');
     }
 
+    function toggleSweetInPicker(id) {
+      const pId = parseInt(id);
+      const idx = currentBatchProducts.findIndex(x => x.id === pId);
+      if (idx >= 0) {
+        currentBatchProducts.splice(idx, 1);
+      } else {
+        const p = (sweetProducts || []).find(x => x.id === pId);
+        if (p) {
+          currentBatchProducts.push({
+            id: p.id,
+            name: p.name,
+            category: p.category,
+            price: p.price,
+            unit: p.unit || 'dona',
+            qty: ''
+          });
+        }
+      }
+      renderSweetPickerList();
+      renderSelectedBatchProducts();
+      calculateBatchTotals();
+    }
+
     function selectSweetFromPicker(id) {
-      addSelectedProductToBatch(id);
-      closeSweetPickerModal();
+      toggleSweetInPicker(id);
     }
 
     function addSelectedProductToBatch(prodId) {
-      if (!prodId) return;
-      const id = parseInt(prodId);
-      const p = (sweetProducts || []).find(x => x.id === id);
-      if (!p) return;
-
-      const existing = currentBatchProducts.find(x => x.id === id);
-      if (existing) {
-        const el = document.getElementById(`batch_prod_${id}`);
-        if (el) el.focus();
-        return;
-      }
-
-      currentBatchProducts.push({
-        id: p.id,
-        name: p.name,
-        category: p.category,
-        price: p.price,
-        unit: p.unit || 'dona',
-        qty: ''
-      });
-
-      renderSelectedBatchProducts();
-      calculateBatchTotals();
-
-      setTimeout(() => {
-        const el = document.getElementById(`batch_prod_${id}`);
-        if (el) el.focus();
-      }, 50);
+      toggleSweetInPicker(prodId);
     }
 
     function removeSelectedBatchProduct(id) {
       currentBatchProducts = currentBatchProducts.filter(x => x.id !== id);
       renderSelectedBatchProducts();
       calculateBatchTotals();
+      if (!document.getElementById('sweetPickerModal')?.classList.contains('hidden')) {
+        renderSweetPickerList();
+      }
     }
 
     function updateBatchProductQty(id, val) {
@@ -3942,35 +3956,44 @@
         container.innerHTML = `
           <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
             <i class="fa-solid fa-cake-candles mb-1 text-sm text-rose-400 opacity-60 block"></i>
-            Hali shirinlik tanlanmadi. Pastdagi tugma orqali ro'yxatdan tanlang.
+            Hali shirinlik tanlanmadi. Pastdagi tugma orqali pitechka bilan belgilang.
           </div>
         `;
         return;
       }
 
-      container.innerHTML = currentBatchProducts.map(prod => {
-        const subtotal = (parseFloat(prod.qty) || 0) * (prod.price || 0);
-        return `
-          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-rose-500/30 transition">
-            <div class="min-w-0 flex-1">
-              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${prod.name}</h4>
-              <div class="text-[10px] text-[var(--text-muted)]">
-                Narxi: <span class="text-emerald-400 font-semibold">${fmtCur(prod.price)} / ${prod.unit}</span>
-                ${subtotal > 0 ? `• Jami: <span class="text-white font-bold">${fmtCur(subtotal)}</span>` : ''}
+      container.innerHTML = `
+        <div class="rounded-2xl border border-white/10 bg-black/20 divide-y divide-white/5 overflow-hidden">
+          ${currentBatchProducts.map(prod => {
+            const subtotal = (parseFloat(prod.qty) || 0) * (prod.price || 0);
+            return `
+              <div class="p-2.5 flex items-center justify-between gap-2 hover:bg-white/5 transition">
+                <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                  <div class="w-5 h-5 rounded-full border-2 border-rose-500 flex items-center justify-center shrink-0 bg-rose-500/20">
+                    <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-xs font-bold text-white truncate">${prod.name}</h4>
+                    <div class="text-[10px] text-stone-400">
+                      ${fmtCur(prod.price)} / ${prod.unit}
+                      ${subtotal > 0 ? `• Jami: <span class="text-emerald-400 font-bold">${fmtCur(subtotal)}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-1.5 shrink-0">
+                  <div class="relative w-24">
+                    <input type="number" min="0" step="any" id="batch_prod_${prod.id}" value="${prod.qty !== '' ? prod.qty : ''}" oninput="updateBatchProductQty(${prod.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/15 focus:border-rose-500">
+                    <span class="absolute right-2 top-2 text-[10px] text-stone-400 font-medium pointer-events-none">${prod.unit}</span>
+                  </div>
+                  <button type="button" onclick="removeSelectedBatchProduct(${prod.id})" class="w-7 h-7 rounded-lg text-stone-400 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition" title="O'chirish">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="flex items-center space-x-1.5 shrink-0">
-              <div class="relative w-28">
-                <input type="number" min="0" step="any" id="batch_prod_${prod.id}" value="${prod.qty !== '' ? prod.qty : ''}" oninput="updateBatchProductQty(${prod.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-rose-500">
-                <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${prod.unit}</span>
-              </div>
-              <button type="button" onclick="removeSelectedBatchProduct(${prod.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition" title="O'chirish">
-                <i class="fa-solid fa-trash-can text-[11px]"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
     // --- Ombor Xomashyolari Picker Modali & Ro'yxatidan tanlash ---
@@ -3989,6 +4012,10 @@
 
     function renderIngPickerList() {
       const container = document.getElementById('ingPickerListContainer');
+      const confirmBtnText = document.getElementById('ingPickerConfirmBtnText');
+      if (confirmBtnText) {
+        confirmBtnText.innerText = `Tayyor (${currentBatchIngredients.length} ta)`;
+      }
       if (!container) return;
 
       const searchVal = (document.getElementById('ingPickerSearchInput')?.value || '').toLowerCase();
@@ -3996,7 +4023,8 @@
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="p-4 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl">
+          <div class="p-6 text-center text-xs text-stone-400">
+            <i class="fa-solid fa-boxes-stacked text-lg text-amber-400/50 mb-2 block"></i>
             Xomashyo topilmadi.
           </div>
         `;
@@ -4004,65 +4032,69 @@
       }
 
       container.innerHTML = filtered.map(i => {
-        const isAlreadyAdded = currentBatchIngredients.some(x => x.id === i.id);
+        const isSelected = currentBatchIngredients.some(x => x.id === i.id);
         return `
-          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-amber-500/30 transition">
-            <div class="min-w-0 flex-1">
-              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${i.name}</h4>
-              <div class="text-[10px] text-[var(--text-muted)]">
+          <div onclick="toggleIngredientInPicker(${i.id})" class="flex items-center justify-between py-3 px-3.5 hover:bg-white/5 active:bg-white/10 cursor-pointer transition select-none ${isSelected ? 'bg-amber-500/10' : ''}">
+            <div class="min-w-0 flex-1 pr-3">
+              <div class="text-xs font-bold text-white truncate">${i.name}</div>
+              <div class="text-[10px] text-stone-400 mt-0.5">
                 Omborda: <b class="text-white">${i.qty} ${i.unit}</b> • 
-                Tan narxi: <span class="text-rose-400 font-semibold">${fmtCur(i.price)}/${i.unit}</span>
+                <span class="text-amber-400 font-semibold">${fmtCur(i.price)}/${i.unit}</span>
               </div>
             </div>
-            <button type="button" onclick="selectIngredientFromPicker(${i.id})" class="px-3 py-1.5 rounded-xl ${isAlreadyAdded ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 shadow-md active:scale-95'} font-black text-xs transition flex items-center space-x-1 shrink-0">
-              <i class="fa-solid ${isAlreadyAdded ? 'fa-check' : 'fa-plus'} text-[10px]"></i>
-              <span>${isAlreadyAdded ? 'Tanlangan' : 'Tanlash'}</span>
-            </button>
+            <div class="shrink-0 flex items-center justify-center">
+              ${isSelected ? `
+                <div class="w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center bg-amber-400/20 shadow-sm transition-all scale-105">
+                  <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                </div>
+              ` : `
+                <div class="w-6 h-6 rounded-full border-2 border-stone-500/50 flex items-center justify-center bg-transparent transition-all">
+                </div>
+              `}
+            </div>
           </div>
         `;
       }).join('');
     }
 
+    function toggleIngredientInPicker(id) {
+      const iId = parseInt(id);
+      const idx = currentBatchIngredients.findIndex(x => x.id === iId);
+      if (idx >= 0) {
+        currentBatchIngredients.splice(idx, 1);
+      } else {
+        const ing = (ingredients || []).find(x => x.id === iId);
+        if (ing) {
+          currentBatchIngredients.push({
+            id: ing.id,
+            name: ing.name,
+            qty: ing.qty,
+            unit: ing.unit,
+            price: ing.price,
+            usedQty: ''
+          });
+        }
+      }
+      renderIngPickerList();
+      renderSelectedBatchIngredients();
+      calculateBatchTotals();
+    }
+
     function selectIngredientFromPicker(id) {
-      addSelectedIngredientToBatch(id);
-      closeIngredientPickerModal();
+      toggleIngredientInPicker(id);
     }
 
     function addSelectedIngredientToBatch(ingId) {
-      if (!ingId) return;
-      const id = parseInt(ingId);
-      const ing = (ingredients || []).find(x => x.id === id);
-      if (!ing) return;
-
-      const existing = currentBatchIngredients.find(x => x.id === id);
-      if (existing) {
-        const el = document.getElementById(`batch_ing_${id}`);
-        if (el) el.focus();
-        return;
-      }
-
-      currentBatchIngredients.push({
-        id: ing.id,
-        name: ing.name,
-        qty: ing.qty,
-        unit: ing.unit,
-        price: ing.price,
-        usedQty: ''
-      });
-
-      renderSelectedBatchIngredients();
-      calculateBatchTotals();
-
-      setTimeout(() => {
-        const el = document.getElementById(`batch_ing_${id}`);
-        if (el) el.focus();
-      }, 50);
+      toggleIngredientInPicker(ingId);
     }
 
     function removeSelectedBatchIng(id) {
       currentBatchIngredients = currentBatchIngredients.filter(x => x.id !== id);
       renderSelectedBatchIngredients();
       calculateBatchTotals();
+      if (!document.getElementById('ingredientPickerModal')?.classList.contains('hidden')) {
+        renderIngPickerList();
+      }
     }
 
     function updateBatchIngredientQty(id, val) {
@@ -4083,36 +4115,44 @@
         container.innerHTML = `
           <div class="p-3 text-center text-xs text-[var(--text-muted)] bg-white/5 rounded-2xl border border-dashed border-white/10">
             <i class="fa-solid fa-boxes-stacked mb-1 text-sm text-amber-400 opacity-60 block"></i>
-            Hali xomashyo tanlanmadi. Pastdagi tugma orqali ro'yxatdan tanlang.
+            Hali xomashyo tanlanmadi. Pastdagi tugma orqali pitechka bilan belgilang.
           </div>
         `;
         return;
       }
 
-      container.innerHTML = currentBatchIngredients.map(ing => {
-        const cost = (parseFloat(ing.usedQty) || 0) * (ing.price || 0);
-        return `
-          <div class="erp-card p-2.5 flex items-center justify-between gap-2 border border-white/5 hover:border-amber-500/30 transition">
-            <div class="min-w-0 flex-1">
-              <h4 class="text-xs font-bold text-[var(--text-main)] truncate">${ing.name}</h4>
-              <div class="text-[10px] text-[var(--text-muted)]">
-                Omborda: <b class="text-white">${ing.qty} ${ing.unit}</b> • 
-                Narx: <span class="text-rose-400 font-semibold">${fmtCur(ing.price)}/${ing.unit}</span>
-                ${cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(cost)}</span>` : ''}
+      container.innerHTML = `
+        <div class="rounded-2xl border border-white/10 bg-black/20 divide-y divide-white/5 overflow-hidden">
+          ${currentBatchIngredients.map(ing => {
+            const cost = (parseFloat(ing.usedQty) || 0) * (ing.price || 0);
+            return `
+              <div class="p-2.5 flex items-center justify-between gap-2 hover:bg-white/5 transition">
+                <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                  <div class="w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center shrink-0 bg-amber-400/20">
+                    <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-xs font-bold text-white truncate">${ing.name}</h4>
+                    <div class="text-[10px] text-stone-400">
+                      Omborda: <b class="text-white">${ing.qty} ${ing.unit}</b>
+                      ${cost > 0 ? `• Chiqim: <span class="text-rose-400 font-bold">${fmtCur(cost)}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-1.5 shrink-0">
+                  <div class="relative w-24">
+                    <input type="number" min="0" step="any" id="batch_ing_${ing.id}" value="${ing.usedQty !== '' ? ing.usedQty : ''}" oninput="updateBatchIngredientQty(${ing.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/15 focus:border-amber-500">
+                    <span class="absolute right-2 top-2 text-[10px] text-stone-400 font-medium pointer-events-none">${ing.unit}</span>
+                  </div>
+                  <button type="button" onclick="removeSelectedBatchIng(${ing.id})" class="w-7 h-7 rounded-lg text-stone-400 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition" title="O'chirish">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="flex items-center space-x-1.5 shrink-0">
-              <div class="relative w-28">
-                <input type="number" min="0" step="any" id="batch_ing_${ing.id}" value="${ing.usedQty !== '' ? ing.usedQty : ''}" oninput="updateBatchIngredientQty(${ing.id}, this.value)" placeholder="0" class="w-full text-right pr-9 pl-2 py-1.5 text-xs font-black glass-input rounded-xl border border-white/10 focus:border-amber-500">
-                <span class="absolute right-2 top-2 text-[10px] text-[var(--text-muted)] font-medium pointer-events-none">${ing.unit}</span>
-              </div>
-              <button type="button" onclick="removeSelectedBatchIng(${ing.id})" class="w-7 h-7 rounded-xl bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 flex items-center justify-center transition" title="O'chirish">
-                <i class="fa-solid fa-trash-can text-[11px]"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
     function loadDefaultSweetsCatalog() {
@@ -6192,7 +6232,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=39').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=41').then(reg => {
           reg.update();
         }).catch(() => {});
       }
