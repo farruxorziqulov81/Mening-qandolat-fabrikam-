@@ -945,7 +945,50 @@
           </button>
         </div>
 
-        <!-- 3. Chiqim xulosasi -->
+        <!-- 3. Qaysi do'konga berildi -->
+        <div class="space-y-1.5 pt-2 border-t border-white/10">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-sky-400 flex items-center space-x-1.5">
+              <i class="fa-solid fa-store text-[11px]"></i>
+              <span>Qaysi do'konga berildi:</span>
+            </span>
+            <span id="batchShopBadge" class="text-[10px] text-stone-400 font-medium">Ixtiyoriy</span>
+          </div>
+
+          <div class="relative">
+            <select id="batchShopSelect" onchange="onBatchShopSelectChange()" class="w-full py-2.5 px-3 text-xs font-bold rounded-xl border border-white/10 focus:border-sky-500 text-white bg-[#191e2b] appearance-none pr-8">
+              <option value="0">🏬 Fabrika ombori / Vitrina (Do'konga berilmadi)</option>
+            </select>
+            <div class="absolute right-3 top-3 pointer-events-none text-stone-400 text-[10px]">
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+
+          <!-- Yangi do'kon yozish maydoni (agar tanlansa ochiladi) -->
+          <div id="batchCustomShopWrap" class="hidden pt-1">
+            <input type="text" id="batchCustomShopName" placeholder="Do'kon nomini yozing (masalan: Baraka market)..." class="w-full p-2.5 text-xs font-semibold rounded-xl border border-sky-500/40 focus:border-sky-400 text-white placeholder-stone-500 bg-white/5 outline-none">
+          </div>
+
+          <!-- Agar do'kon tanlansa: To'lov holati (Nasiya / Naqd) -->
+          <div id="batchShopPaymentWrap" class="hidden pt-1 space-y-1.5 bg-white/5 p-2.5 rounded-xl border border-white/10">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-stone-300 font-medium">Yetkazma summasi:</span>
+              <b id="batchDeliveryTotalVal" class="text-emerald-400 font-black text-sm">0 so'm</b>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button type="button" id="btnPayDebt" onclick="setBatchPaymentType('NASIYA')" class="py-2 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 bg-rose-500/20 border-rose-500 text-rose-300 shadow-sm">
+                <i class="fa-solid fa-clock-rotate-left text-[11px]"></i>
+                <span>Nasiya (Qarz)</span>
+              </button>
+              <button type="button" id="btnPayCash" onclick="setBatchPaymentType('NAQD')" class="py-2 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 bg-white/5 border-white/10 text-stone-400 hover:text-white">
+                <i class="fa-solid fa-money-bill-wave text-[11px]"></i>
+                <span>Naqd to'landi</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Chiqim xulosasi -->
         <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs mt-2">
           <span class="text-stone-400 font-medium">Xomashyo chiqimi:</span>
           <b id="batchSumCost" class="text-rose-400 font-black text-sm">0 so'm</b>
@@ -3783,6 +3826,7 @@
     // ==========================================
     let currentBatchProducts = [];
     let currentBatchIngredients = [];
+    let batchSelectedPaymentType = 'NASIYA';
 
     function openDailyProductionBatchModal() {
       const modal = document.getElementById('dailyProductionBatchModal');
@@ -3796,11 +3840,79 @@
       currentBatchProducts = [];
       currentBatchIngredients = [];
 
+      populateBatchShopSelect();
       renderSelectedBatchProducts();
       renderSelectedBatchIngredients();
       calculateBatchTotals();
 
       modal.classList.remove('hidden');
+    }
+
+    function populateBatchShopSelect() {
+      const sel = document.getElementById('batchShopSelect');
+      if (!sel) return;
+
+      let options = `<option value="0">🏬 Fabrika ombori / Vitrina (Do'konga berilmadi)</option>`;
+      if (Array.isArray(shops) && shops.length > 0) {
+        options += shops.map(s => `<option value="${s.id}">🏪 ${s.name}${s.contact ? ' (' + s.contact + ')' : ''}</option>`).join('');
+      }
+      options += `<option value="__NEW__">✍️ Boshqa do'kon (Nomini yozish)...</option>`;
+      sel.innerHTML = options;
+      sel.value = "0";
+
+      const customWrap = document.getElementById('batchCustomShopWrap');
+      if (customWrap) customWrap.classList.add('hidden');
+      const customInput = document.getElementById('batchCustomShopName');
+      if (customInput) customInput.value = '';
+
+      const payWrap = document.getElementById('batchShopPaymentWrap');
+      if (payWrap) payWrap.classList.add('hidden');
+
+      batchSelectedPaymentType = 'NASIYA';
+      updateBatchPaymentButtons();
+    }
+
+    function onBatchShopSelectChange() {
+      const sel = document.getElementById('batchShopSelect');
+      const customWrap = document.getElementById('batchCustomShopWrap');
+      const payWrap = document.getElementById('batchShopPaymentWrap');
+      if (!sel) return;
+
+      const val = sel.value;
+      if (val === '__NEW__') {
+        if (customWrap) customWrap.classList.remove('hidden');
+        if (payWrap) payWrap.classList.remove('hidden');
+        setTimeout(() => {
+          const inp = document.getElementById('batchCustomShopName');
+          if (inp) inp.focus();
+        }, 50);
+      } else if (val === '0' || !val) {
+        if (customWrap) customWrap.classList.add('hidden');
+        if (payWrap) payWrap.classList.add('hidden');
+      } else {
+        if (customWrap) customWrap.classList.add('hidden');
+        if (payWrap) payWrap.classList.remove('hidden');
+      }
+      calculateBatchTotals();
+    }
+
+    function setBatchPaymentType(type) {
+      batchSelectedPaymentType = type;
+      updateBatchPaymentButtons();
+    }
+
+    function updateBatchPaymentButtons() {
+      const btnDebt = document.getElementById('btnPayDebt');
+      const btnCash = document.getElementById('btnPayCash');
+      if (!btnDebt || !btnCash) return;
+
+      if (batchSelectedPaymentType === 'NASIYA') {
+        btnDebt.className = "py-2 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 bg-rose-500/20 border-rose-500 text-rose-300 shadow-sm";
+        btnCash.className = "py-2 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 bg-white/5 border-white/10 text-stone-400 hover:text-white";
+      } else {
+        btnCash.className = "py-2 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-sm";
+        btnDebt.className = "py-2 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 bg-white/5 border-white/10 text-stone-400 hover:text-white";
+      }
     }
 
     function closeDailyProductionBatchModal() {
@@ -4164,10 +4276,12 @@
       const qtyEl = document.getElementById('batchSumQty');
       const valEl = document.getElementById('batchSumVal');
       const costEl = document.getElementById('batchSumCost');
+      const deliveryTotalEl = document.getElementById('batchDeliveryTotalVal');
 
       if (qtyEl) qtyEl.innerText = `${totalProducedQty} dona/kg`;
       if (valEl) valEl.innerText = fmtCur(totalProducedVal);
       if (costEl) costEl.innerText = fmtCur(totalExpenseCost);
+      if (deliveryTotalEl) deliveryTotalEl.innerText = fmtCur(totalProducedVal);
     }
 
     function confirmSaveProductionBatch() {
@@ -4181,6 +4295,40 @@
       if (validProducts.length === 0 && validIngredients.length === 0) {
         showToast("Kamida bitta shirinlik yoki sarflangan xomashyo miqdorini kiriting!", "warning");
         return;
+      }
+
+      // 0. Do'kon tanlash tekshiruvi
+      const shopSelectVal = document.getElementById('batchShopSelect')?.value || '0';
+      let destinationShopName = "";
+      let targetShopId = null;
+
+      if (shopSelectVal === '__NEW__') {
+        const customName = document.getElementById('batchCustomShopName')?.value.trim();
+        if (!customName) {
+          showToast("Iltimos, do'kon nomini yozing yoki omborni tanlang!", "warning");
+          document.getElementById('batchCustomShopName')?.focus();
+          return;
+        }
+        destinationShopName = customName;
+        const newShop = {
+          id: Date.now(),
+          name: customName,
+          contact: "",
+          phone: "",
+          addr: "",
+          debt: 0
+        };
+        shops.push(newShop);
+        saveStorage('shops', shops);
+        renderShops();
+        targetShopId = newShop.id;
+      } else if (shopSelectVal !== '0' && shopSelectVal !== '') {
+        const sId = parseInt(shopSelectVal);
+        const foundShop = shops.find(s => s.id === sId);
+        if (foundShop) {
+          destinationShopName = foundShop.name;
+          targetShopId = foundShop.id;
+        }
       }
 
       let totalExpenseCost = 0;
@@ -4235,16 +4383,77 @@
           unit: p.unit || 'dona',
           date: batchDate,
           staff: "Qandolat sexi",
-          notes: "Bugungi ishlab chiqarish partiyasi"
+          notes: destinationShopName ? `"${destinationShopName}" do'koniga berildi` : "Fabrika ombori / Vitrina"
         });
       });
       saveStorage('logs', productionLogs);
 
-      // 4. Save batch history record
+      // 4. Do'konga berilgan bo'lsa moliya va qarz/kirim yozish
+      if (destinationShopName && totalProducedVal > 0) {
+        if (batchSelectedPaymentType === 'NASIYA') {
+          debts.unshift({
+            id: Date.now(),
+            shop: destinationShopName,
+            total: totalProducedVal,
+            paid: 0,
+            due: "Kelishilgan muddatda",
+            status: "Kutilmoqda",
+            date: batchDate,
+            note: validProducts.map(p => `${p.name} (${p.qty} ${p.unit})`).join(', ')
+          });
+          saveStorage('debts', debts);
+
+          if (targetShopId) {
+            const sObj = shops.find(s => s.id === targetShopId);
+            if (sObj) {
+              sObj.debt = (parseFloat(sObj.debt) || 0) + totalProducedVal;
+              saveStorage('shops', shops);
+              renderShops();
+            }
+          }
+          renderFinance();
+        } else if (batchSelectedPaymentType === 'NAQD') {
+          transactions.unshift({
+            id: Date.now(),
+            type: 'KIRIM',
+            category: 'Savdo tushumi',
+            amount: totalProducedVal,
+            date: batchDate,
+            desc: `"${destinationShopName}" do'koniga yetkazma uchun naqd to'lov`
+          });
+          saveStorage('transactions', transactions);
+          renderFinance();
+        }
+
+        // Yuk xati (invoices) ga ham qo'shish
+        const invNo = String(Date.now()).slice(-5);
+        invoices.unshift({
+          id: Date.now(),
+          invoiceNo: invNo,
+          shop: destinationShopName,
+          shopId: targetShopId,
+          dateTime: batchDate + ' ' + new Date().toTimeString().slice(0, 5),
+          payStatus: batchSelectedPaymentType === 'NASIYA' ? "Nasiyaga yozildi" : "Naqd to'landi",
+          isDebt: batchSelectedPaymentType === 'NASIYA',
+          items: validProducts.map(p => ({
+            product: p.name,
+            qty: parseFloat(p.qty) || 0,
+            price: p.price || 0,
+            sum: (parseFloat(p.qty) || 0) * (p.price || 0)
+          })),
+          totalSum: totalProducedVal
+        });
+        saveStorage('invoices', invoices);
+      }
+
+      // 5. Save batch history record
       let batches = loadStorage('productionBatches', []);
       batches.unshift({
         id: Date.now(),
         date: batchDate,
+        shopId: targetShopId || null,
+        shopName: destinationShopName || "Fabrika ombori",
+        paymentType: destinationShopName ? batchSelectedPaymentType : null,
         producedItems: validProducts,
         usedIngredients: validIngredients,
         totalQty: totalProducedQty,
@@ -4261,7 +4470,15 @@
       }
 
       closeDailyProductionBatchModal();
-      showToast(`Bugungi partiya saqlandi! Chiqim: ${fmtCur(totalExpenseCost)}`, "success");
+      if (destinationShopName) {
+        showToast(`"${destinationShopName}" ga berilgan partiya saqlandi! (${fmtCur(totalProducedVal)})`, "success");
+      } else {
+        showToast(`Bugungi partiya omborga saqlandi! Chiqim: ${fmtCur(totalExpenseCost)}`, "success");
+      }
+    }
+
+    function renderProductionLogs() {
+      // Safe placeholder function
     }
 
     // New Production
@@ -6193,7 +6410,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=42').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=43').then(reg => {
           reg.update();
         }).catch(() => {});
       }
