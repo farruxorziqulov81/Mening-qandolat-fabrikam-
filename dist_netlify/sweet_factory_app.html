@@ -3877,14 +3877,14 @@
         const isSelected = currentBatchProducts.some(x => x.id === p.id);
         return `
           <div onclick="toggleSweetInPicker(${p.id})" class="flex items-center justify-between py-3 px-3.5 hover:bg-white/5 active:bg-white/10 cursor-pointer transition select-none ${isSelected ? 'bg-rose-500/10' : ''}">
-            <div class="min-w-0 flex-1 pr-3">
+            <div class="min-w-0 flex-1 pr-3 pointer-events-none">
               <div class="text-xs font-bold text-white truncate">${p.name}</div>
               <div class="text-[10px] text-stone-400 mt-0.5">
                 <span class="text-rose-400/90 font-medium">${p.category || 'Shirinlik'}</span> • 
                 <span class="text-emerald-400 font-bold">${fmtCur(p.price)} / ${p.unit || 'dona'}</span>
               </div>
             </div>
-            <div class="shrink-0 flex items-center justify-center">
+            <div class="shrink-0 flex items-center justify-center pointer-events-none">
               ${isSelected ? `
                 <div class="w-6 h-6 rounded-full border-2 border-rose-500 flex items-center justify-center bg-rose-500/20 shadow-sm transition-all scale-105">
                   <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
@@ -4036,14 +4036,14 @@
         const isSelected = currentBatchIngredients.some(x => x.id === i.id);
         return `
           <div onclick="toggleIngredientInPicker(${i.id})" class="flex items-center justify-between py-3 px-3.5 hover:bg-white/5 active:bg-white/10 cursor-pointer transition select-none ${isSelected ? 'bg-amber-500/10' : ''}">
-            <div class="min-w-0 flex-1 pr-3">
+            <div class="min-w-0 flex-1 pr-3 pointer-events-none">
               <div class="text-xs font-bold text-white truncate">${i.name}</div>
               <div class="text-[10px] text-stone-400 mt-0.5">
                 Omborda: <b class="text-white">${i.qty} ${i.unit}</b> • 
                 <span class="text-amber-400 font-semibold">${fmtCur(i.price)}/${i.unit}</span>
               </div>
             </div>
-            <div class="shrink-0 flex items-center justify-center">
+            <div class="shrink-0 flex items-center justify-center pointer-events-none">
               ${isSelected ? `
                 <div class="w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center bg-amber-400/20 shadow-sm transition-all scale-105">
                   <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
