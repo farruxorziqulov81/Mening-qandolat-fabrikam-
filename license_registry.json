@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-31T14:09:26.954Z",
+  "updated_at": "2026-10-31T16:38:01.844Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -21,7 +21,7 @@
       "status": "active",
       "plan": "Ulangan Qurilma",
       "createdAt": "2026-10-31",
-      "lastSeen": "2026-10-31 14:09"
+      "lastSeen": "2026-10-31 16:38"
     }
   ]
 }
