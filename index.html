@@ -368,14 +368,14 @@
             </div>
           </div>
 
-          <!-- 4. Sof Foyda -->
+          <!-- 4. Do'konlar qarzi (Nasiya) -->
           <div class="erp-ticker-chip">
             <div class="w-8 h-8 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center text-xs shrink-0 shadow-xs font-black">
-              <i class="fa-solid fa-coins"></i>
+              <i class="fa-solid fa-hand-holding-dollar"></i>
             </div>
             <div class="min-w-0 flex-1">
-              <div class="text-[9px] text-[var(--text-muted)] font-semibold truncate uppercase tracking-wider">Sof Foyda</div>
-              <div id="statNetProfit" class="text-xs font-black text-[var(--text-main)] truncate">0 so'm</div>
+              <div class="text-[9px] text-[var(--text-muted)] font-semibold truncate uppercase tracking-wider">Do'konlar qarzi</div>
+              <div id="statTotalDebts" class="text-xs font-black text-amber-500 dark:text-amber-400 truncate">0 so'm</div>
             </div>
           </div>
         </div>
@@ -397,6 +397,43 @@
               <span>Kiritish</span>
             </button>
           </div>
+        </div>
+
+        <!-- ================= DO'KONLAR NASIYASI (QARZLAR DAFTARI) ================= -->
+        <div class="erp-card p-3.5 space-y-3 border-l-4 border-l-amber-500 shadow-md">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-sm shadow-xs font-bold">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <h3 class="text-xs font-black text-[var(--text-main)]">Do'konlar qarzi (Nasiya)</h3>
+                  <span id="dashDebtsCountBadge" class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold">0 ta</span>
+                </div>
+                <p class="text-[10px] text-[var(--text-muted)]">Do'konlardan qaytishi kerak bo'lgan pullar</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <button onclick="openPdfModal()" class="px-2.5 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-stone-300 font-bold text-xs flex items-center space-x-1 transition" title="Oylik hisobotni PDF yuklash">
+                <i class="fa-solid fa-file-pdf text-rose-400 text-[10px]"></i>
+                <span>PDF</span>
+              </button>
+              <button onclick="openAddDebtDialog()" class="px-2.5 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center space-x-1 hover:bg-amber-500/25 transition active:scale-95">
+                <i class="fa-solid fa-plus text-[10px]"></i>
+                <span>+ Nasiya</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Jami kutilayotgan nasiyalar qatori -->
+          <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
+            <span class="text-stone-400 font-medium">Jami kutilayotgan nasiyalar:</span>
+            <b id="dashTotalPendingDebt" class="text-amber-400 font-black text-sm">0 so'm</b>
+          </div>
+
+          <!-- Nasiyalar ro'yxati -->
+          <div id="debtsContainer" class="space-y-2 pt-1"></div>
         </div>
 
         <!-- SiSTEMERP PASTEL MODULE TILES GRID (8 Core Modules) -->
@@ -640,66 +677,7 @@
 
         </div>
 
-        <!-- ================= TAB 3: MOLIYA & NASIYA (FINANCE & DEBTS) ================= -->
-        <div id="tab-finance" class="hidden space-y-3">
-          
-          <!-- Back Bar -->
-          <div class="flex items-center justify-between pb-0.5">
-            <button onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-400/40 text-sky-700 dark:text-sky-300 text-xs font-bold flex items-center space-x-1.5 hover:bg-sky-500/20 transition">
-              <i class="fa-solid fa-arrow-left text-xs"></i>
-              <span>Boshqaruv menyusiga qaytish</span>
-            </button>
-          </div>
 
-          <!-- PDF Export Action Banner -->
-          <div class="gradient-header border border-[var(--border-soft)] rounded-[22px] p-3 flex items-center justify-between shadow-xs">
-            <div>
-              <div class="text-xs font-bold text-[var(--choco-dark)] flex items-center space-x-1.5">
-                <i class="fa-solid fa-file-pdf text-red-500"></i>
-                <span>Oylik Hisobot (PDF)</span>
-              </div>
-              <div class="text-[10px] text-stone-500">Kirim, chiqim va nasiyalar rasmiy hujjati</div>
-            </div>
-            <button onclick="openPdfModal()" class="px-3 py-1.5 macaron-btn rounded-xl text-xs font-bold flex items-center space-x-1 shadow-xs">
-              <i class="fa-solid fa-download text-[10px]"></i>
-              <span>PDF Hisobot</span>
-            </button>
-          </div>
-
-          <!-- Sub Tabs: Kirim-Chiqim vs Nasiyalar -->
-          <div class="flex bg-black/5 p-1 rounded-2xl text-xs">
-            <button onclick="setFinanceSubTab(0)" id="btnFinTab0" class="flex-1 py-1.5 rounded-xl font-bold bg-white text-[var(--choco-dark)] shadow-xs transition">Kirim-Chiqim</button>
-            <button onclick="setFinanceSubTab(1)" id="btnFinTab1" class="flex-1 py-1.5 rounded-xl text-stone-500 transition">Nasiyalar (Qarzlar)</button>
-          </div>
-
-          <!-- Section 1: Transactions -->
-          <div id="subTabTransactions" class="space-y-2.5">
-            <div class="flex justify-between items-center">
-              <div>
-                <span class="text-xs font-bold text-[var(--choco-dark)]">Kirim va Chiqimlar</span>
-                <p class="text-[10px] text-stone-400">Tahrirlash uchun qalam belgisini bosing</p>
-              </div>
-              <button onclick="openAddTransactionDialog()" class="text-xs macaron-btn px-2.5 py-1.5 rounded-xl font-bold">
-                + Operatsiya
-              </button>
-            </div>
-            <div id="transactionsContainer" class="space-y-2"></div>
-          </div>
-
-          <!-- Section 2: Debts -->
-          <div id="subTabDebts" class="hidden space-y-2.5">
-            <div class="flex justify-between items-center">
-              <div>
-                <span class="text-xs font-bold text-[var(--choco-dark)]">Nasiyalar daftari</span>
-                <p class="text-[10px] text-stone-400"><i class="fa-solid fa-circle-check text-emerald-400"></i> To'langan • <i class="fa-solid fa-circle-exclamation text-amber-400"></i> Kutilmoqda • <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Muddati o'tgan</p>
-              </div>
-              <button onclick="openAddDebtDialog()" class="text-xs macaron-btn px-2.5 py-1.5 rounded-xl font-bold">
-                + Nasiya
-              </button>
-            </div>
-            <div id="debtsContainer" class="space-y-2"></div>
-          </div>
-        </div>
 
         <!-- ================= TAB 4: DO'KONLAR (SHOPS & GPS) ================= -->
         <div id="tab-shops" class="hidden space-y-3">
@@ -866,10 +844,6 @@
       <button onclick="switchTab('shops')" id="navBtn-shops" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-store text-sm"></i>
         <span class="text-[9px] font-bold mt-1" data-i18n="nav_shops">Do'konlar</span>
-      </button>
-      <button onclick="switchTab('finance')" id="navBtn-finance" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
-        <i class="fa-solid fa-wallet text-sm"></i>
-        <span class="text-[9px] font-bold mt-1" data-i18n="nav_finance">Moliya</span>
       </button>
       <button onclick="switchTab('profile')" id="navBtn-profile" class="relative flex flex-col items-center flex-1 py-1 text-[var(--text-muted)] hover:text-rose-400 transition font-medium">
         <i class="fa-solid fa-circle-user text-sm"></i>
@@ -3452,8 +3426,9 @@
 
     function switchTab(tab) {
       if (tab === 'settings') tab = 'profile';
+      if (tab === 'finance') tab = 'dashboard';
       activeTab = tab;
-      const allTabs = ['dashboard', 'warehouse', 'production', 'shops', 'finance', 'profile'];
+      const allTabs = ['dashboard', 'warehouse', 'production', 'shops', 'profile'];
 
       allTabs.forEach(t => {
         const screen = document.getElementById('tab-' + t);
@@ -3490,10 +3465,9 @@
       } else if (tab === 'production') {
         setProdSubTab(0);
         renderSweetProducts();
-      } else if (tab === 'finance') {
-        renderFinance();
       } else if (tab === 'dashboard') {
         updateDashboardStats();
+        renderDebts();
         setTimeout(drawCharts, 50);
       }
 
@@ -3513,18 +3487,7 @@
     }
 
     function setFinanceSubTab(idx) {
-      switchTab('finance');
-      if (idx === 0) {
-        document.getElementById('subTabTransactions').classList.remove('hidden');
-        document.getElementById('subTabDebts').classList.add('hidden');
-        document.getElementById('btnFinTab0').className = "flex-1 py-1.5 rounded-xl font-bold bg-white dark:bg-stone-800 text-sky-600 dark:text-sky-400 shadow-xs transition";
-        document.getElementById('btnFinTab1').className = "flex-1 py-1.5 rounded-xl text-stone-500 transition";
-      } else {
-        document.getElementById('subTabTransactions').classList.add('hidden');
-        document.getElementById('subTabDebts').classList.remove('hidden');
-        document.getElementById('btnFinTab0').className = "flex-1 py-1.5 rounded-xl text-stone-500 transition";
-        document.getElementById('btnFinTab1').className = "flex-1 py-1.5 rounded-xl font-bold bg-white dark:bg-stone-800 text-sky-600 dark:text-sky-400 shadow-xs transition";
-      }
+      switchTab('dashboard');
     }
 
     // Refresh Dashboard Stats
@@ -3535,14 +3498,31 @@
       const totalExpense = transactions.filter(t => t.type === 'CHIQIM').reduce((sum, t) => sum + (t.amount || 0), 0);
       const netProfit = totalIncome - totalExpense;
 
+      // Debts stats
+      const totalPendingDebt = (debts || []).reduce((sum, d) => sum + Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0)), 0);
+      const pendingDebtsCount = (debts || []).filter(d => ((parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0)) > 0).length;
+
       // Returns totals
       const totalReturnsQty = returns.reduce((sum, r) => sum + (r.qty || 0), 0);
       const totalReturnsLoss = returns.reduce((sum, r) => sum + (r.loss || 0), 0);
 
-      document.getElementById('statTodayCount').innerText = todayCount + " dona";
-      document.getElementById('statTotalIncome').innerText = fmtCur(totalIncome);
-      document.getElementById('statTotalExpense').innerText = fmtCur(totalExpense);
-      document.getElementById('statNetProfit').innerText = fmtCur(netProfit);
+      const countEl = document.getElementById('statTodayCount');
+      if (countEl) countEl.innerText = todayCount + " dona";
+      const inEl = document.getElementById('statTotalIncome');
+      if (inEl) inEl.innerText = fmtCur(totalIncome);
+      const exEl = document.getElementById('statTotalExpense');
+      if (exEl) exEl.innerText = fmtCur(totalExpense);
+      const npEl = document.getElementById('statNetProfit');
+      if (npEl) npEl.innerText = fmtCur(netProfit);
+
+      const statDebtEl = document.getElementById('statTotalDebts');
+      if (statDebtEl) statDebtEl.innerText = fmtCur(totalPendingDebt);
+
+      const dashPendingEl = document.getElementById('dashTotalPendingDebt');
+      if (dashPendingEl) dashPendingEl.innerText = fmtCur(totalPendingDebt);
+
+      const dashCountEl = document.getElementById('dashDebtsCountBadge');
+      if (dashCountEl) dashCountEl.innerText = pendingDebtsCount + " ta do'kon";
 
       // Telegram preview card updates
       const tgCountEl = document.getElementById('tgPrevCount');
@@ -4745,68 +4725,80 @@
         }).join('');
       }
 
-      // Debts
+    // Debts render (Asosiy oynadagi Nasiyalar daftari)
+    function renderDebts() {
       const debtContainer = document.getElementById('debtsContainer');
-      if (debts.length === 0) {
+      if (!debtContainer) return;
+
+      if (!debts || debts.length === 0) {
         debtContainer.innerHTML = `
-          <div class="confectionery-card rounded-[22px] p-6 text-center space-y-3">
-            <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto text-xl shadow-xs">
-              <i class="fa-solid fa-handshake"></i>
+          <div class="p-5 text-center space-y-2 rounded-2xl bg-white/5 border border-white/5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto text-base">
+              <i class="fa-solid fa-circle-check"></i>
             </div>
-            <div class="font-bold text-xs text-[var(--choco-dark)]">Hali nasiyalar yozilmagan</div>
-            <p class="text-[11px] text-stone-400">Do'konlarga berilgan nasiya qarzlarini qo'shing</p>
-            <button onclick="openAddDebtDialog()" class="px-4 py-2 macaron-btn rounded-xl text-xs font-bold inline-flex items-center space-x-1.5">
-              <i class="fa-solid fa-plus text-[10px]"></i> <span>Nasiya yozish</span>
-            </button>
+            <div class="font-bold text-xs text-white">Do'konlarda qarz yo'q</div>
+            <p class="text-[10px] text-stone-400">Barcha berilgan shirinliklar to'lovi qabul qilingan</p>
           </div>
         `;
-      } else {
-        debtContainer.innerHTML = debts.map(debt => {
-          const remaining = (debt.total || 0) - (debt.paid || 0);
-          let badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
-          let badgeText = "Kutilmoqda";
-
-          if (debt.status === "PAID" || remaining <= 0) {
-            badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
-            badgeText = "To'langan";
-          } else if (debt.status === "OVERDUE") {
-            badgeClass = "bg-red-100 text-red-700 border-red-200";
-            badgeText = "Muddati o'tgan";
-          }
-
-          return `
-            <div class="confectionery-card rounded-[22px] p-3.5 space-y-2 border">
-              <div class="flex justify-between items-start">
-                <div>
-                  <h4 class="text-xs font-bold text-[var(--choco-dark)]">${debt.shop}</h4>
-                  <div class="text-[10px] text-stone-400">Muddat: ${debt.due}</div>
-                </div>
-                <div class="flex items-center space-x-1.5">
-                  <span class="text-[10px] px-2 py-0.5 rounded-full font-bold border ${badgeClass}">${badgeText}</span>
-                  <button onclick="openEditDebtModal(${debt.id})" title="Tahrirlash" class="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center text-[var(--choco-dark)]">
-                    <i class="fa-solid fa-pen text-[9px]"></i>
-                  </button>
-                  <button onclick="deleteDebt(${debt.id})" title="O'chirish" class="w-6 h-6 rounded-lg bg-red-50 text-red-500 flex items-center justify-center">
-                    <i class="fa-solid fa-trash text-[9px]"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="flex justify-between text-[11px] pt-1">
-                <div>Jami: <b>${fmtCur(debt.total)}</b></div>
-                <div>To'langan: <b class="text-emerald-700">${fmtCur(debt.paid)}</b></div>
-                <div>Qoldiq: <b class="${remaining > 0 ? 'text-red-600' : 'text-emerald-700'}">${fmtCur(remaining)}</b></div>
-              </div>
-              ${remaining > 0 ? `
-                <div class="text-right pt-1.5 border-t border-[var(--border-soft)]">
-                  <button onclick="quickPayDebt(${debt.id})" class="px-3 py-1 bg-emerald-600 text-white rounded-xl text-[10px] font-bold shadow-xs">
-                    To'lov qabul qilish
-                  </button>
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
+        return;
       }
+
+      debtContainer.innerHTML = debts.map(debt => {
+        const remaining = Math.max(0, (parseFloat(debt.total) || 0) - (parseFloat(debt.paid) || 0));
+        const isPaid = debt.status === "PAID" || remaining <= 0;
+        let badgeClass = isPaid 
+          ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" 
+          : "bg-amber-500/15 text-amber-300 border-amber-500/30";
+        let badgeText = isPaid ? "✓ To'langan" : "Kutilmoqda";
+
+        return `
+          <div class="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:bg-white/[0.08] transition">
+            <div class="flex justify-between items-start">
+              <div class="min-w-0 flex-1 pr-2">
+                <div class="flex items-center space-x-1.5">
+                  <i class="fa-solid fa-store text-sky-400 text-xs"></i>
+                  <h4 class="text-xs font-black text-white truncate">${debt.shop}</h4>
+                </div>
+                <div class="text-[10px] text-stone-400 mt-0.5">
+                  ${debt.date || ''} ${debt.note ? '• ' + debt.note : ''}
+                </div>
+              </div>
+              <div class="flex items-center space-x-1.5 shrink-0">
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border ${badgeClass}">${badgeText}</span>
+                <button onclick="openEditDebtModal(${debt.id})" title="Tahrirlash" class="w-6 h-6 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-stone-300 transition">
+                  <i class="fa-solid fa-pen text-[9px]"></i>
+                </button>
+                <button onclick="deleteDebt(${debt.id})" title="O'chirish" class="w-6 h-6 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 flex items-center justify-center transition">
+                  <i class="fa-solid fa-trash text-[9px]"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5">
+              <span class="text-stone-400">Jami: <b class="text-white">${fmtCur(debt.total)}</b></span>
+              <span class="text-stone-400">To'langan: <b class="text-emerald-400">${fmtCur(debt.paid)}</b></span>
+              <span class="font-bold ${remaining > 0 ? 'text-rose-400' : 'text-emerald-400'}">
+                Qarz: <b>${fmtCur(remaining)}</b>
+              </span>
+            </div>
+
+            ${remaining > 0 ? `
+              <div class="pt-1 flex justify-end">
+                <button onclick="quickPayDebt(${debt.id})" class="py-1.5 px-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white rounded-xl text-xs font-black shadow-sm flex items-center space-x-1.5 transition active:scale-95">
+                  <i class="fa-solid fa-check text-[10px]"></i>
+                  <span>Pulini qabul qilish</span>
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderFinance() {
+      renderDebts();
+      updateDashboardStats();
+    }
     }
 
     // Add Transaction
@@ -4951,16 +4943,37 @@
     }
     function quickPayDebt(id) {
       const d = debts.find(x => x.id === id);
-      const rem = d.total - d.paid;
-      const amt = prompt(`${d.shop} uchun to'lov summasini kiriting:`, rem);
-      if (amt && !isNaN(amt) && parseFloat(amt) > 0) {
-        d.paid += parseFloat(amt);
+      if (!d) return;
+      const rem = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+      const amtInput = prompt(`${d.shop} uchun to'lov summasini kiriting:`, rem);
+      if (amtInput && !isNaN(amtInput) && parseFloat(amtInput) > 0) {
+        const amt = parseFloat(amtInput);
+        d.paid = (parseFloat(d.paid) || 0) + amt;
         if (d.paid >= d.total) d.status = "PAID";
-        transactions.unshift({ id: Date.now(), type: "KIRIM", cat: "Nasiya to'lovi", amount: parseFloat(amt), date: "Hozirgina", note: `${d.shop} qarz to'lovi` });
+
+        transactions.unshift({ 
+          id: Date.now(), 
+          type: "KIRIM", 
+          category: "Nasiya to'lovi", 
+          amount: amt, 
+          date: new Date().toISOString().split('T')[0], 
+          desc: `${d.shop} nasiya qarzini to'ladi` 
+        });
+
+        if (Array.isArray(shops)) {
+          const shopObj = shops.find(s => s.name === d.shop || s.id === d.shopId);
+          if (shopObj) {
+            shopObj.debt = Math.max(0, (parseFloat(shopObj.debt) || 0) - amt);
+            saveStorage('shops', shops);
+            renderShops();
+          }
+        }
+
         saveStorage('debts', debts);
         saveStorage('transactions', transactions);
-        renderFinance();
+        renderDebts();
         updateDashboardStats();
+        showToast(`${d.shop} dan ${fmtCur(amt)} to'lov qabul qilindi!`, "success");
       }
     }
 
@@ -6553,7 +6566,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=44').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=45').then(reg => {
           reg.update();
         }).catch(() => {});
       }
@@ -6609,10 +6622,7 @@
           <i class="fa-solid fa-store text-emerald-400 w-5"></i>
           <span>Hamkor Do'konlar & GPS</span>
         </button>
-        <button onclick="switchTabFromQuick('finance')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 flex items-center space-x-2.5 text-[var(--text-main)] font-bold transition">
-          <i class="fa-solid fa-wallet text-violet-400 w-5"></i>
-          <span>Moliya & Kassa</span>
-        </button>
+
         <button onclick="switchTabFromQuick('profile')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 flex items-center space-x-2.5 text-[var(--text-main)] font-bold transition">
           <i class="fa-solid fa-circle-user text-rose-400 w-5"></i>
           <span>Mening Profilim</span>
