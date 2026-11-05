@@ -331,7 +331,7 @@
     <div id="newVersionBanner" class="hidden px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between text-xs font-bold shadow-lg z-30">
       <div class="flex items-center space-x-2">
         <i class="fa-solid fa-arrows-rotate text-amber-300 animate-spin"></i>
-        <span>Yangi versiya tayyor (<span id="newVersionText">v48</span>)!</span>
+        <span>Yangi versiya tayyor (<span id="newVersionText">v49</span>)!</span>
       </div>
       <button onclick="refreshAppClean()" class="px-2.5 py-1 rounded-lg bg-white text-emerald-950 font-black text-[11px] shadow hover:bg-emerald-50 active:scale-95 transition">
         Hozir yangilash
@@ -441,6 +441,18 @@
           <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
             <span class="text-stone-400 font-medium">Jami kutilayotgan nasiyalar:</span>
             <b id="dashTotalPendingDebt" class="text-amber-400 font-black text-sm">0 so'm</b>
+          </div>
+
+          <!-- Nasiyalar filtri: Faol (Kutilmoqda) vs Yopilganlar (Tarix) -->
+          <div class="flex p-0.5 rounded-xl bg-white/5 border border-white/10 text-xs">
+            <button id="btnDebtFilterActive" type="button" onclick="switchDebtFilter('active')" class="flex-1 py-1.5 rounded-lg font-black bg-amber-500/20 text-amber-300 transition text-[11px] flex items-center justify-center space-x-1">
+              <span>Faol Nasiyalar</span>
+              <span id="dashActiveDebtsCount" class="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-[10px]">0</span>
+            </button>
+            <button id="btnDebtFilterPaid" type="button" onclick="switchDebtFilter('paid')" class="flex-1 py-1.5 rounded-lg font-bold text-stone-400 hover:text-white transition text-[11px] flex items-center justify-center space-x-1">
+              <span>Yopilganlar (Tarix)</span>
+              <span id="dashPaidDebtsCount" class="px-1.5 py-0.2 rounded-full bg-white/10 text-[10px]">0</span>
+            </button>
           </div>
 
           <!-- Nasiyalar ro'yxati -->
@@ -837,7 +849,7 @@
             <div>
               <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
                 <span>Dastur Versiyasi:</span>
-                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v48 (Eng yangi)</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v49 (Eng yangi)</span>
               </div>
               <div class="text-[10px] text-[var(--text-muted)]">Qarzlar, Do'konlar va Yangi qulayliklar</div>
             </div>
@@ -1156,22 +1168,18 @@
           </button>
         </div>
 
-        <!-- Dasturni yangilash va Zaxira -->
+        <!-- Dasturni yangilash -->
         <div class="erp-card p-3 space-y-2">
           <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
             <i class="fa-solid fa-cloud-arrow-down text-emerald-400"></i>
-            <span>Dasturni yangilash va Zaxira</span>
+            <span>Dasturni yangilash</span>
           </div>
           <div class="space-y-1.5">
             <button onclick="refreshAppClean()" class="w-full py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1.5 active:scale-95 shadow-sm">
               <i class="fa-solid fa-arrows-rotate text-xs"></i>
-              <span>Dasturni yangilash (v48)</span>
+              <span>Dasturni yangilash (v49)</span>
             </button>
             <p class="text-[9px] text-center text-emerald-400/80 font-medium"><i class="fa-solid fa-shield-check mr-1"></i>Ma'lumotlar, rasm va do'konlar 100% saqlanadi</p>
-            <button onclick="exportAllDataJson()" class="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-download text-xs text-rose-400"></i>
-              <span>Zaxira yuklash (JSON)</span>
-            </button>
           </div>
         </div>
 
@@ -1216,13 +1224,8 @@
           </div>
         </div>
 
-        <!-- PASTKI CHIQISH VA SHARTNOMANI TUGATISH -->
-        <div class="pt-2 space-y-2 pb-8">
-          <button onclick="closeSettingsModal(); handleAuthLogout();" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-stone-300 text-xs font-bold hover:bg-white/10 transition flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-lock text-xs text-rose-400"></i>
-            <span>Dasturni Qulflash</span>
-          </button>
-
+        <!-- PASTKI SHARTNOMANI TUGATISH -->
+        <div class="pt-2 pb-8">
           <button onclick="closeSettingsModal(); openContractTerminationModal();" class="w-full py-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-2">
             <i class="fa-solid fa-ban text-xs text-rose-400"></i>
             <span>Shartnomani Tugatish</span>
@@ -1675,21 +1678,92 @@
           <input type="number" id="newDebtAmount" placeholder="Masalan: 1500000" autocomplete="off" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
         </div>
         <div>
-          <label class="block text-stone-500 mb-1">To'lov muddati:</label>
-          <input type="text" id="newDebtDueDays" placeholder="Masalan: 7 kun" value="7 kun" autocomplete="off" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
-          <div class="flex items-center space-x-1.5 pt-1.5 flex-wrap gap-y-1">
-            <span class="text-[10px] text-stone-400">Tezkor:</span>
-            <button type="button" onclick="setDebtDuePreset('3 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">3 kun</button>
-            <button type="button" onclick="setDebtDuePreset('7 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">7 kun</button>
-            <button type="button" onclick="setDebtDuePreset('10 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">10 kun</button>
-            <button type="button" onclick="setDebtDuePreset('15 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">15 kun</button>
-            <button type="button" onclick="setDebtDuePreset('1 oy')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">1 oy</button>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-stone-500 font-bold text-[11px]">To'lov sharti / muddati:</label>
+            <span class="text-[9px] text-emerald-400 font-bold">Realizatsiya</span>
+          </div>
+          <input type="text" id="newDebtDueDays" placeholder="Masalan: Sotilgandan so'ng" value="Sotilgandan so'ng (Realizatsiya)" autocomplete="off" class="w-full p-2.5 border rounded-xl bg-transparent font-medium text-xs">
+          <div class="flex items-center space-x-1.5 pt-1.5 flex-wrap gap-1">
+            <button type="button" onclick="setDebtDuePreset('Sotilgandan so\'ng (Realizatsiya)')" class="px-2 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-bold text-emerald-300 active:scale-95">
+              <i class="fa-solid fa-store mr-1"></i>Sotilgach (Realizatsiya)
+            </button>
+            <button type="button" onclick="setDebtDuePreset('Keyingi zakazda')" class="px-2 py-1 rounded-lg bg-sky-500/15 border border-sky-500/30 text-[10px] font-bold text-sky-300 active:scale-95">
+              <i class="fa-solid fa-truck mr-1"></i>Keyingi zakazda
+            </button>
+            <button type="button" onclick="setDebtDuePreset('7 kunda')" class="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] font-bold text-stone-300 active:scale-95">
+              7 kunda
+            </button>
+            <button type="button" onclick="setDebtDuePreset('15 kunda')" class="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] font-bold text-stone-300 active:scale-95">
+              15 kunda
+            </button>
           </div>
         </div>
       </div>
       <div class="flex space-x-2 pt-2">
         <button onclick="closeAddDebtModal()" class="flex-1 py-2.5 rounded-xl border text-stone-600 text-xs font-semibold">Bekor qilish</button>
         <button onclick="confirmAddDebt()" class="flex-1 py-2.5 rounded-xl macaron-btn text-xs font-bold">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11b. Pay Debt Modal (Nasiya to'lovini qabul qilish va qarzni yopish) -->
+  <div id="payDebtModal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+    <div class="erp-card w-full max-w-sm rounded-2xl p-4 space-y-3.5 shadow-2xl border border-[var(--card-border)] bg-[var(--bg-main)]">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2">
+        <div class="flex items-center space-x-2 min-w-0">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold shrink-0">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-xs font-black text-white truncate">Nasiya To'lovini Qabul Qilish</h3>
+            <p id="payDebtShopName" class="text-[10px] text-stone-400 truncate">Do'kon</p>
+          </div>
+        </div>
+        <button onclick="closePayDebtModal()" class="text-stone-400 hover:text-white text-lg">&times;</button>
+      </div>
+
+      <!-- Summa tafsilotlari -->
+      <div class="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1.5 text-xs">
+        <div class="flex justify-between text-stone-400">
+          <span>Jami nasiya:</span>
+          <b id="payDebtTotalAmt" class="text-white">0 so'm</b>
+        </div>
+        <div class="flex justify-between text-stone-400">
+          <span>Avval to'langan:</span>
+          <b id="payDebtPaidAmt" class="text-emerald-400">0 so'm</b>
+        </div>
+        <div class="flex justify-between text-sm font-black pt-1.5 border-t border-white/10">
+          <span class="text-amber-400">Qolgan qarz:</span>
+          <b id="payDebtRemainingAmt" class="text-rose-400">0 so'm</b>
+        </div>
+      </div>
+
+      <!-- Tezkor tugmalar: To'liq yopish yoki Qisman to'lov -->
+      <div class="space-y-2">
+        <button onclick="submitFullDebtPayment()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs transition shadow-lg flex items-center justify-center space-x-2 active:scale-95">
+          <i class="fa-solid fa-circle-check text-sm"></i>
+          <span id="payDebtFullBtnText">To'liq to'landi (Qarzni yopish)</span>
+        </button>
+
+        <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 space-y-1.5">
+          <label class="block text-[11px] text-stone-400 font-semibold">Yoki qisman to'lov summasi:</label>
+          <div class="flex space-x-2">
+            <input type="number" id="payDebtPartialInput" placeholder="Masalan: 500000" class="flex-1 p-2 rounded-lg bg-black/30 border border-white/15 text-white font-bold text-xs focus:outline-none focus:border-emerald-500">
+            <button onclick="submitPartialDebtPayment()" class="px-3 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs hover:bg-emerald-500/30 transition shrink-0 active:scale-95">
+              Qabul qilish
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-1 flex justify-between items-center text-[10px]">
+        <button onclick="deleteCurrentDebtFromPayModal()" class="text-rose-400/80 hover:text-rose-400 hover:underline flex items-center space-x-1">
+          <i class="fa-solid fa-trash-can text-[9px]"></i>
+          <span>Ushbu nasiyani butunlay o'chirish</span>
+        </button>
+        <button onclick="closePayDebtModal()" class="px-3 py-1 rounded-lg bg-white/5 text-stone-400 hover:text-white transition">
+          Yopish
+        </button>
       </div>
     </div>
   </div>
@@ -3327,7 +3401,7 @@
       event.target.value = '';
     }
 
-    const APP_CURRENT_VERSION = 'v48';
+    const APP_CURRENT_VERSION = 'v49';
 
     async function refreshAppClean() {
       showToast("🚀 Yangi versiya yuklanmoqda... Ma'lumotlaringiz xavfsiz!", "info");
@@ -4578,7 +4652,7 @@
             shop: destinationShopName,
             total: totalProducedVal,
             paid: 0,
-            due: "Kelishilgan muddatda",
+            due: "Sotilgandan so'ng (Realizatsiya)",
             status: "Kutilmoqda",
             date: batchDate,
             note: validProducts.map(p => `${p.name} (${p.qty} ${p.unit})`).join(', ')
@@ -4740,89 +4814,85 @@
       }
     }
 
-    // Finance Sub Tabs
-    function setFinanceSubTab(idx) {
-      if (idx === 0) {
-        document.getElementById('subTabTransactions').classList.remove('hidden');
-        document.getElementById('subTabDebts').classList.add('hidden');
-        document.getElementById('btnFinTab0').className = "flex-1 py-1.5 rounded-xl font-bold bg-white text-[var(--choco-dark)] shadow-xs transition";
-        document.getElementById('btnFinTab1').className = "flex-1 py-1.5 rounded-xl text-stone-500 transition";
-      } else {
-        document.getElementById('subTabTransactions').classList.add('hidden');
-        document.getElementById('subTabDebts').classList.remove('hidden');
-        document.getElementById('btnFinTab0').className = "flex-1 py-1.5 rounded-xl text-stone-500 transition";
-        document.getElementById('btnFinTab1').className = "flex-1 py-1.5 rounded-xl font-bold bg-white text-[var(--choco-dark)] shadow-xs transition";
-      }
-    }
 
-    // Render Finance
-    function renderFinance() {
-      const txContainer = document.getElementById('transactionsContainer');
-      if (transactions.length === 0) {
-        txContainer.innerHTML = `
-          <div class="confectionery-card rounded-[22px] p-6 text-center space-y-3">
-            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-xl shadow-xs">
-              <i class="fa-solid fa-receipt"></i>
-            </div>
-            <div class="font-bold text-xs text-[var(--choco-dark)]">Hali operatsiyalar kiritilmagan</div>
-            <p class="text-[11px] text-stone-400">Kirim va chiqimlarni o'zingiz kiritib boring</p>
-            <button onclick="openAddTransactionDialog()" class="px-4 py-2 macaron-btn rounded-xl text-xs font-bold inline-flex items-center space-x-1.5">
-              <i class="fa-solid fa-plus text-[10px]"></i> <span>Operatsiya qo'shish</span>
-            </button>
-          </div>
-        `;
+
+    let currentDebtFilter = 'active'; // 'active' yoki 'paid'
+
+    function switchDebtFilter(type) {
+      currentDebtFilter = type;
+      const btnActive = document.getElementById('btnDebtFilterActive');
+      const btnPaid = document.getElementById('btnDebtFilterPaid');
+      if (type === 'active') {
+        if (btnActive) btnActive.className = "flex-1 py-1.5 rounded-lg font-black bg-amber-500/20 text-amber-300 transition text-[11px] flex items-center justify-center space-x-1";
+        if (btnPaid) btnPaid.className = "flex-1 py-1.5 rounded-lg font-bold text-stone-400 hover:text-white transition text-[11px] flex items-center justify-center space-x-1";
       } else {
-        txContainer.innerHTML = transactions.map(tx => {
-          const isInc = tx.type === 'KIRIM';
-          return `
-            <div class="confectionery-card rounded-[20px] p-3 flex items-center justify-between">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-xl ${isInc ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'} flex items-center justify-center text-xs shadow-xs">
-                  <i class="fa-solid ${isInc ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
-                </div>
-                <div>
-                  <div class="text-xs font-bold text-[var(--choco-dark)]">${tx.cat}</div>
-                  <div class="text-[10px] text-stone-400">${tx.note || tx.date}</div>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2">
-                <div class="text-right">
-                  <div class="text-xs font-bold ${isInc ? 'text-emerald-600' : 'text-red-500'}">
-                    ${isInc ? '+' : '-'}${fmtCur(tx.amount)}
-                  </div>
-                  <div class="text-[9px] text-stone-400">${tx.date}</div>
-                </div>
-                <button onclick="openEditTxModal(${tx.id})" title="Tahrirlash" class="w-7 h-7 rounded-lg bg-black/5 hover:bg-black/10 flex items-center justify-center text-[var(--choco-dark)]">
-                  <i class="fa-solid fa-pen text-[10px]"></i>
-                </button>
-                <button onclick="deleteTx(${tx.id})" title="O'chirish" class="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center">
-                  <i class="fa-solid fa-trash text-[10px]"></i>
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('');
+        if (btnActive) btnActive.className = "flex-1 py-1.5 rounded-lg font-bold text-stone-400 hover:text-white transition text-[11px] flex items-center justify-center space-x-1";
+        if (btnPaid) btnPaid.className = "flex-1 py-1.5 rounded-lg font-black bg-emerald-500/20 text-emerald-300 transition text-[11px] flex items-center justify-center space-x-1";
       }
+      renderDebts();
+    }
 
     // Debts render (Asosiy oynadagi Nasiyalar daftari)
     function renderDebts() {
       const debtContainer = document.getElementById('debtsContainer');
       if (!debtContainer) return;
 
-      if (!debts || debts.length === 0) {
-        debtContainer.innerHTML = `
-          <div class="p-5 text-center space-y-2 rounded-2xl bg-white/5 border border-white/5">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto text-base">
-              <i class="fa-solid fa-circle-check"></i>
+      if (!debts) debts = [];
+
+      let activeCount = 0;
+      let paidCount = 0;
+      let totalPendingSum = 0;
+
+      debts.forEach(d => {
+        const remaining = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+        if (remaining > 0 && d.status !== 'PAID') {
+          activeCount++;
+          totalPendingSum += remaining;
+        } else {
+          paidCount++;
+        }
+      });
+
+      const dashPending = document.getElementById('dashTotalPendingDebt');
+      if (dashPending) dashPending.textContent = fmtCur(totalPendingSum);
+
+      const activeBadge = document.getElementById('dashActiveDebtsCount');
+      if (activeBadge) activeBadge.textContent = activeCount;
+
+      const paidBadge = document.getElementById('dashPaidDebtsCount');
+      if (paidBadge) paidBadge.textContent = paidCount;
+
+      const totalBadge = document.getElementById('dashDebtsCountBadge');
+      if (totalBadge) totalBadge.textContent = activeCount + ' ta';
+
+      const filteredDebts = debts.filter(d => {
+        const remaining = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+        const isPaid = (d.status === 'PAID' || remaining <= 0);
+        return currentDebtFilter === 'active' ? !isPaid : isPaid;
+      });
+
+      if (filteredDebts.length === 0) {
+        if (currentDebtFilter === 'active') {
+          debtContainer.innerHTML = `
+            <div class="p-5 text-center space-y-2 rounded-2xl bg-white/5 border border-white/5">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto text-base">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="font-bold text-xs text-white">Do'konlarda faol qarz yo'q!</div>
+              <p class="text-[10px] text-stone-400">Barcha berilgan shirinliklar to'lovi to'liq qabul qilingan</p>
             </div>
-            <div class="font-bold text-xs text-white">Do'konlarda qarz yo'q</div>
-            <p class="text-[10px] text-stone-400">Barcha berilgan shirinliklar to'lovi qabul qilingan</p>
-          </div>
-        `;
+          `;
+        } else {
+          debtContainer.innerHTML = `
+            <div class="p-4 text-center space-y-1 rounded-2xl bg-white/5 border border-white/5 text-stone-400 text-xs">
+              <div>Yopilgan nasiyalar tarixi bo'sh</div>
+            </div>
+          `;
+        }
         return;
       }
 
-      debtContainer.innerHTML = debts.map(debt => {
+      debtContainer.innerHTML = filteredDebts.map(debt => {
         const remaining = Math.max(0, (parseFloat(debt.total) || 0) - (parseFloat(debt.paid) || 0));
         const isPaid = debt.status === "PAID" || remaining <= 0;
         let badgeClass = isPaid 
@@ -4841,6 +4911,10 @@
                 <div class="text-[10px] text-stone-400 mt-0.5">
                   ${debt.date || ''} ${debt.note ? '• ' + debt.note : ''}
                 </div>
+                <div class="text-[10px] text-emerald-400/90 font-medium mt-0.5 flex items-center space-x-1">
+                  <i class="fa-solid fa-tag text-[9px]"></i>
+                  <span>Shart: <b>${debt.due || "Sotilgandan so'ng (Realizatsiya)"}</b></span>
+                </div>
               </div>
               <div class="flex items-center space-x-1.5 shrink-0">
                 <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border ${badgeClass}">${badgeText}</span>
@@ -4853,7 +4927,7 @@
               </div>
             </div>
 
-            <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5">
+            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-white/5">
               <span class="text-stone-400">Jami: <b class="text-white">${fmtCur(debt.total)}</b></span>
               <span class="text-stone-400">To'langan: <b class="text-emerald-400">${fmtCur(debt.paid)}</b></span>
               <span class="font-bold ${remaining > 0 ? 'text-rose-400' : 'text-emerald-400'}">
@@ -4863,12 +4937,19 @@
 
             ${remaining > 0 ? `
               <div class="pt-1 flex justify-end">
-                <button onclick="quickPayDebt(${debt.id})" class="py-1.5 px-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white rounded-xl text-xs font-black shadow-sm flex items-center space-x-1.5 transition active:scale-95">
-                  <i class="fa-solid fa-check text-[10px]"></i>
-                  <span>Pulini qabul qilish</span>
+                <button onclick="openPayDebtModal(${debt.id})" class="py-1.5 px-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl text-xs shadow-md flex items-center space-x-1.5 transition active:scale-95">
+                  <i class="fa-solid fa-hand-holding-dollar text-[11px]"></i>
+                  <span>Pulini olish (To'lash)</span>
                 </button>
               </div>
-            ` : ''}
+            ` : `
+              <div class="pt-1 flex justify-between items-center text-[10px] text-emerald-400/80">
+                <span><i class="fa-solid fa-circle-check mr-1"></i>To'liq yopilgan</span>
+                <button onclick="deleteDebt(${debt.id})" class="text-stone-500 hover:text-rose-400 text-[10px] transition">
+                  Tarixdan tozalash
+                </button>
+              </div>
+            `}
           </div>
         `;
       }).join('');
@@ -4877,7 +4958,6 @@
     function renderFinance() {
       renderDebts();
       updateDashboardStats();
-    }
     }
 
     // Add Transaction
@@ -4970,7 +5050,7 @@
       }
       document.getElementById('newDebtShop').value = '';
       document.getElementById('newDebtAmount').value = '';
-      document.getElementById('newDebtDueDays').value = '7 kun';
+      document.getElementById('newDebtDueDays').value = "Sotilgandan so'ng (Realizatsiya)";
       document.getElementById('addDebtModal').classList.remove('hidden');
     }
     function closeAddDebtModal() {
@@ -4979,7 +5059,7 @@
     function confirmAddDebt() {
       const shop = document.getElementById('newDebtShop').value.trim();
       const amt = parseFloat(document.getElementById('newDebtAmount').value) || 0;
-      const due = document.getElementById('newDebtDueDays').value.trim() || "7 kun";
+      const due = document.getElementById('newDebtDueDays').value.trim() || "Sotilgandan so'ng (Realizatsiya)";
       if (!shop || amt <= 0) {
         alert("Do'kon nomi va qarz summasini kiriting!");
         return;
@@ -4991,11 +5071,27 @@
         total: amt,
         paid: 0,
         due: due,
-        status: "UPCOMING"
+        status: "UPCOMING",
+        date: new Date().toISOString().split('T')[0]
       });
 
+      // Update shop debt if shop exists
+      if (Array.isArray(shops)) {
+        const sObj = shops.find(s => s.name === shop);
+        if (sObj) {
+          sObj.debt = (parseFloat(sObj.debt) || 0) + amt;
+          saveStorage('shops', shops);
+          renderShops();
+        }
+      }
+
       saveStorage('debts', debts);
-      renderFinance();
+      renderDebts();
+      updateDashboardStats();
+      closeAddDebtModal();
+      document.getElementById('newDebtShop').value = '';
+      document.getElementById('newDebtAmount').value = '';
+      showToast(`${shop} uchun nasiya muvaffaqiyatli yozildi!`, "success");
       closeAddDebtModal();
       document.getElementById('newDebtShop').value = '';
       document.getElementById('newDebtAmount').value = '';
@@ -5026,46 +5122,183 @@
       closeEditDebtModal();
     }
     function deleteDebt(id) {
-      if (confirm("Ushbu nasiya yozuvini o'chirishni tasdiqlaysizmi?")) {
-        debts = debts.filter(d => d.id !== id);
+      const d = debts.find(x => x.id === id);
+      const shopName = d ? d.shop : "Ushbu";
+      if (confirm(`"${shopName}" do'konining ushbu nasiya yozuvini o'chirishni tasdiqlaysizmi?`)) {
+        if (d && Array.isArray(shops)) {
+          const remaining = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+          if (remaining > 0) {
+            const sObj = shops.find(s => s.name === d.shop || s.id === d.shopId);
+            if (sObj) {
+              sObj.debt = Math.max(0, (parseFloat(sObj.debt) || 0) - remaining);
+              saveStorage('shops', shops);
+              renderShops();
+            }
+          }
+        }
+        debts = debts.filter(x => x.id !== id);
         saveStorage('debts', debts);
-        renderFinance();
+        renderDebts();
+        updateDashboardStats();
+        showToast("Nasiya yozuvi o'chirildi!", "info");
       }
     }
-    function quickPayDebt(id) {
+    let currentPayingDebtId = null;
+
+    function openPayDebtModal(id) {
+      currentPayingDebtId = id;
       const d = debts.find(x => x.id === id);
       if (!d) return;
-      const rem = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
-      const amtInput = prompt(`${d.shop} uchun to'lov summasini kiriting:`, rem);
-      if (amtInput && !isNaN(amtInput) && parseFloat(amtInput) > 0) {
-        const amt = parseFloat(amtInput);
-        d.paid = (parseFloat(d.paid) || 0) + amt;
-        if (d.paid >= d.total) d.status = "PAID";
 
-        transactions.unshift({ 
-          id: Date.now(), 
-          type: "KIRIM", 
-          category: "Nasiya to'lovi", 
-          amount: amt, 
-          date: new Date().toISOString().split('T')[0], 
-          desc: `${d.shop} nasiya qarzini to'ladi` 
-        });
+      const total = parseFloat(d.total) || 0;
+      const paid = parseFloat(d.paid) || 0;
+      const remaining = Math.max(0, total - paid);
 
-        if (Array.isArray(shops)) {
-          const shopObj = shops.find(s => s.name === d.shop || s.id === d.shopId);
-          if (shopObj) {
-            shopObj.debt = Math.max(0, (parseFloat(shopObj.debt) || 0) - amt);
+      const shopNameEl = document.getElementById('payDebtShopName');
+      if (shopNameEl) shopNameEl.textContent = d.shop + (d.note ? ' • ' + d.note : '');
+
+      const totalAmtEl = document.getElementById('payDebtTotalAmt');
+      if (totalAmtEl) totalAmtEl.textContent = fmtCur(total);
+
+      const paidAmtEl = document.getElementById('payDebtPaidAmt');
+      if (paidAmtEl) paidAmtEl.textContent = fmtCur(paid);
+
+      const remainingAmtEl = document.getElementById('payDebtRemainingAmt');
+      if (remainingAmtEl) remainingAmtEl.textContent = fmtCur(remaining);
+
+      const fullBtnText = document.getElementById('payDebtFullBtnText');
+      if (fullBtnText) fullBtnText.textContent = `To'liq to'landi (${fmtCur(remaining)}) — Nasiyani yopish`;
+
+      const partialInput = document.getElementById('payDebtPartialInput');
+      if (partialInput) partialInput.value = '';
+
+      const modal = document.getElementById('payDebtModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePayDebtModal() {
+      const modal = document.getElementById('payDebtModal');
+      if (modal) modal.classList.add('hidden');
+      currentPayingDebtId = null;
+    }
+
+    // 1. To'liq to'lov (qarzni 100% yopish)
+    function submitFullDebtPayment() {
+      if (!currentPayingDebtId) return;
+      const d = debts.find(x => x.id === currentPayingDebtId);
+      if (!d) return;
+
+      const remaining = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+      if (remaining <= 0) {
+        closePayDebtModal();
+        return;
+      }
+
+      d.paid = d.total;
+      d.status = "PAID";
+
+      transactions.unshift({
+        id: Date.now(),
+        type: "KIRIM",
+        category: "Nasiya to'lovi",
+        amount: remaining,
+        date: new Date().toISOString().split('T')[0],
+        desc: `${d.shop} nasiyani to'liq to'ladi (yopildi)`
+      });
+
+      if (Array.isArray(shops)) {
+        const sObj = shops.find(s => s.name === d.shop || s.id === d.shopId);
+        if (sObj) {
+          sObj.debt = Math.max(0, (parseFloat(sObj.debt) || 0) - remaining);
+          saveStorage('shops', shops);
+          renderShops();
+        }
+      }
+
+      saveStorage('debts', debts);
+      saveStorage('transactions', transactions);
+      renderDebts();
+      updateDashboardStats();
+      closePayDebtModal();
+      showToast(`${d.shop} nasiyasi to'liq yopildi va ro'yxatdan olindi!`, "success");
+    }
+
+    // 2. Qisman to'lov
+    function submitPartialDebtPayment() {
+      if (!currentPayingDebtId) return;
+      const d = debts.find(x => x.id === currentPayingDebtId);
+      if (!d) return;
+
+      const input = document.getElementById('payDebtPartialInput');
+      const val = parseFloat(input?.value) || 0;
+      if (val <= 0) {
+        alert("To'lov summasini kiriting!");
+        return;
+      }
+
+      const remaining = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+      const payAmount = Math.min(val, remaining);
+
+      d.paid = (parseFloat(d.paid) || 0) + payAmount;
+      if (d.paid >= d.total) {
+        d.status = "PAID";
+      }
+
+      transactions.unshift({
+        id: Date.now(),
+        type: "KIRIM",
+        category: "Nasiya to'lovi",
+        amount: payAmount,
+        date: new Date().toISOString().split('T')[0],
+        desc: `${d.shop} qarzidan qisman ${fmtCur(payAmount)} to'ladi`
+      });
+
+      if (Array.isArray(shops)) {
+        const sObj = shops.find(s => s.name === d.shop || s.id === d.shopId);
+        if (sObj) {
+          sObj.debt = Math.max(0, (parseFloat(sObj.debt) || 0) - payAmount);
+          saveStorage('shops', shops);
+          renderShops();
+        }
+      }
+
+      saveStorage('debts', debts);
+      saveStorage('transactions', transactions);
+      renderDebts();
+      updateDashboardStats();
+      closePayDebtModal();
+      showToast(`${d.shop} dan ${fmtCur(payAmount)} to'lov qabul qilindi!`, "success");
+    }
+
+    // 3. Nasiyani butunlay o'chirish (to'lov oynasidan)
+    function deleteCurrentDebtFromPayModal() {
+      if (!currentPayingDebtId) return;
+      const d = debts.find(x => x.id === currentPayingDebtId);
+      if (!d) return;
+
+      if (confirm(`"${d.shop}" do'konining ushbu nasiyasini butunlay o'chirishni xohlaysizmi?`)) {
+        const remaining = Math.max(0, (parseFloat(d.total) || 0) - (parseFloat(d.paid) || 0));
+        debts = debts.filter(x => x.id !== currentPayingDebtId);
+        
+        if (Array.isArray(shops) && remaining > 0) {
+          const sObj = shops.find(s => s.name === d.shop || s.id === d.shopId);
+          if (sObj) {
+            sObj.debt = Math.max(0, (parseFloat(sObj.debt) || 0) - remaining);
             saveStorage('shops', shops);
             renderShops();
           }
         }
 
         saveStorage('debts', debts);
-        saveStorage('transactions', transactions);
         renderDebts();
         updateDashboardStats();
-        showToast(`${d.shop} dan ${fmtCur(amt)} to'lov qabul qilindi!`, "success");
+        closePayDebtModal();
+        showToast("Nasiya yozuvi o'chirildi!", "info");
       }
+    }
+
+    function quickPayDebt(id) {
+      openPayDebtModal(id);
     }
 
     // Render Shops
@@ -6660,7 +6893,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=48').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=49').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
