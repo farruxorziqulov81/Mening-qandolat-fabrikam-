@@ -1,16 +1,19 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T12:00:00.000Z",
+  "updated_at": "2026-11-05T12:30:00.000Z",
   "blocked_devices": [],
   "clients": [
     {
       "id": "CLI-001",
-      "name": "Farrux Qandolat Fabrikasi (Muallif)",
+      "name": "Farrux (Asosiy qurilma)",
       "phone": "+998 95 797 27 97",
       "deviceId": "DEV-FARRUX",
+      "deviceModel": "Asosiy Qurilma (Farrux)",
+      "deviceType": "Telefon",
       "status": "active",
       "plan": "Muddatsiz (Muallif)",
-      "createdAt": "2026-10-26"
+      "createdAt": "2026-10-26",
+      "lastSeen": "Bugun"
     }
   ]
 }
