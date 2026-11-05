@@ -331,7 +331,7 @@
     <div id="newVersionBanner" class="hidden px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between text-xs font-bold shadow-lg z-30">
       <div class="flex items-center space-x-2">
         <i class="fa-solid fa-arrows-rotate text-amber-300 animate-spin"></i>
-        <span>Yangi versiya tayyor (<span id="newVersionText">v50</span>)!</span>
+        <span>Yangi versiya tayyor (<span id="newVersionText">v51</span>)!</span>
       </div>
       <button onclick="refreshAppClean()" class="px-2.5 py-1 rounded-lg bg-white text-emerald-950 font-black text-[11px] shadow hover:bg-emerald-50 active:scale-95 transition">
         Hozir yangilash
@@ -849,7 +849,7 @@
             <div>
               <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
                 <span>Dastur Versiyasi:</span>
-                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v50 (Eng yangi)</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v51 (Eng yangi)</span>
               </div>
               <div class="text-[10px] text-[var(--text-muted)]">Qarzlar, Do'konlar va Yangi qulayliklar</div>
             </div>
@@ -1177,7 +1177,7 @@
           <div class="space-y-1.5">
             <button onclick="refreshAppClean()" class="w-full py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1.5 active:scale-95 shadow-sm">
               <i class="fa-solid fa-arrows-rotate text-xs"></i>
-              <span>Dasturni yangilash (v50)</span>
+              <span>Dasturni yangilash (v51)</span>
             </button>
             <p class="text-[9px] text-center text-emerald-400/80 font-medium"><i class="fa-solid fa-shield-check mr-1"></i>Ma'lumotlar, rasm va do'konlar 100% saqlanadi</p>
           </div>
@@ -1191,16 +1191,16 @@
                 <i class="fa-solid fa-crown"></i>
               </div>
               <div>
-                <h4 class="text-xs font-black text-white">Bosh Admin Nazorati</h4>
-                <p class="text-[9px] text-stone-400">Ulangan qurilmalarni boshqarish</p>
+                <h4 class="text-xs font-black text-white">Ulangan Qurilmalar Nazorati</h4>
+                <p class="text-[9px] text-stone-400">Telefon modellari va faol qurilmalar</p>
               </div>
             </div>
             <span class="text-[9px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-black border border-rose-500/30">FARRUX</span>
           </div>
 
           <button onclick="closeSettingsModal(); openMasterAdminConsole();" class="w-full py-2 rounded-xl bg-gradient-to-r from-rose-500 to-indigo-600 text-white font-black text-xs hover:opacity-90 transition flex items-center justify-center space-x-2 shadow-md">
-            <i class="fa-solid fa-sliders text-xs"></i>
-            <span>Mijozlar Boshqaruv Markazi</span>
+            <i class="fa-solid fa-mobile-screen-button text-xs text-amber-300"></i>
+            <span>Ulangan Qurilmalar & Telefon Modellari</span>
           </button>
 
           <!-- Tezkor Kalit Generatori -->
@@ -2363,6 +2363,184 @@
     const _k2 = "BVkH1fdf17Ke5TyE1HLtkl";
     const GH_TOKEN = _k1 + _k2;
 
+    // ==========================================
+    // SMART PHONE MODEL DETECTION & CLOUD SYNC
+    // ==========================================
+    function detectDeviceDetails() {
+      const ua = navigator.userAgent || '';
+      let platform = 'Telefon';
+      let brand = '';
+      let model = '';
+      let icon = 'fa-mobile-screen-button';
+
+      if (/ipad/i.test(ua)) {
+        platform = 'Planshet';
+        brand = 'Apple';
+        model = 'Apple iPad';
+        icon = 'fa-tablet-screen-button';
+      } else if (/iphone/i.test(ua)) {
+        platform = 'Telefon';
+        brand = 'Apple';
+        const match = ua.match(/OS\s+([\d_]+)/i);
+        const ver = match ? match[1].replace(/_/g, '.') : '';
+        model = ver ? 'Apple iPhone (iOS ' + ver + ')' : 'Apple iPhone';
+        icon = 'fa-mobile-screen-button';
+      } else if (/android/i.test(ua)) {
+        platform = /tablet|pad/i.test(ua) ? 'Planshet' : 'Telefon';
+        icon = platform === 'Planshet' ? 'fa-tablet-screen-button' : 'fa-mobile-screen-button';
+        const osMatch = ua.match(/Android\s+([\d\.]+)/i);
+        const androidVer = osMatch ? 'Android ' + osMatch[1] : 'Android';
+
+        const rawMatch = ua.match(/Android[^;)]+;\s*([^;)]+?)(?:\s+Build|\)|\;)/i);
+        let rawModel = rawMatch && rawMatch[1] ? rawMatch[1].trim() : '';
+
+        if (/samsung|SM-|GT-|SCH-/i.test(rawModel) || /samsung/i.test(ua)) {
+          brand = 'Samsung';
+          let clean = rawModel.replace(/samsung/i, '').trim();
+          if (!clean.startsWith('SM-') && !clean.startsWith('Galaxy')) {
+            clean = 'Galaxy ' + clean;
+          }
+          model = 'Samsung ' + clean;
+        } else if (/redmi/i.test(rawModel)) {
+          brand = 'Xiaomi';
+          model = rawModel.startsWith('Redmi') ? rawModel : 'Redmi ' + rawModel;
+        } else if (/poco/i.test(rawModel)) {
+          brand = 'POCO';
+          model = rawModel;
+        } else if (/xiaomi|mi\s/i.test(rawModel) || /xiaomi/i.test(ua)) {
+          brand = 'Xiaomi';
+          model = rawModel;
+        } else if (/^(2[1-5]\d{2}|M2\d{3})/i.test(rawModel)) {
+          brand = 'Xiaomi/Redmi';
+          model = 'Redmi (' + rawModel + ')';
+        } else if (/infinix/i.test(rawModel) || /infinix/i.test(ua)) {
+          brand = 'Infinix';
+          model = rawModel.startsWith('Infinix') ? rawModel : 'Infinix ' + rawModel;
+        } else if (/tecno/i.test(rawModel) || /tecno/i.test(ua)) {
+          brand = 'Tecno';
+          model = rawModel.startsWith('Tecno') ? rawModel : 'Tecno ' + rawModel;
+        } else if (/rmx/i.test(rawModel) || /realme/i.test(rawModel)) {
+          brand = 'Realme';
+          model = rawModel.startsWith('Realme') ? rawModel : 'Realme (' + rawModel + ')';
+        } else if (/cph/i.test(rawModel) || /oppo/i.test(rawModel)) {
+          brand = 'OPPO';
+          model = rawModel.startsWith('OPPO') ? rawModel : 'OPPO (' + rawModel + ')';
+        } else if (/vivo|v2\d{3}/i.test(rawModel)) {
+          brand = 'Vivo';
+          model = rawModel.startsWith('Vivo') ? rawModel : 'Vivo (' + rawModel + ')';
+        } else if (/pixel/i.test(rawModel)) {
+          brand = 'Google Pixel';
+          model = rawModel.startsWith('Pixel') ? 'Google ' + rawModel : rawModel;
+        } else if (/huawei|honor/i.test(rawModel) || /huawei/i.test(ua)) {
+          brand = 'Huawei/Honor';
+          model = rawModel;
+        } else if (rawModel) {
+          model = rawModel;
+        } else {
+          model = 'Android Telefon';
+        }
+        model += ' (' + androidVer + ')';
+      } else if (/windows nt/i.test(ua)) {
+        platform = 'Kompyuter';
+        brand = 'Windows';
+        icon = 'fa-laptop';
+        let winVer = 'Windows PC';
+        if (/windows nt 10/i.test(ua)) winVer = 'Windows 10/11';
+        else if (/windows nt 6.3/i.test(ua)) winVer = 'Windows 8.1';
+        else if (/windows nt 6.1/i.test(ua)) winVer = 'Windows 7';
+        model = winVer + ' (Kompyuter)';
+      } else if (/macintosh|mac os x/i.test(ua)) {
+        platform = 'Kompyuter';
+        brand = 'Apple';
+        icon = 'fa-laptop';
+        model = 'Apple Mac / MacBook';
+      } else if (/linux/i.test(ua)) {
+        platform = 'Kompyuter';
+        brand = 'Linux';
+        icon = 'fa-laptop';
+        model = 'Linux Kompyuter';
+      } else {
+        model = 'Noma\'lum Qurilma';
+      }
+
+      return { platform, brand, model, icon };
+    }
+
+    try {
+      if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
+        navigator.userAgentData.getHighEntropyValues(['model', 'platform']).then(uaData => {
+          if (uaData && uaData.model) {
+            localStorage.setItem('app_device_hardware_model', uaData.model);
+          }
+        }).catch(() => {});
+      }
+    } catch(e) {}
+
+    function getFriendlyTimestamp() {
+      const now = new Date();
+      const months = ['yan', 'fev', 'mar', 'apr', 'may', 'iyn', 'iyl', 'avg', 'sen', 'okt', 'noy', 'dek'];
+      const d = now.getDate();
+      const m = months[now.getMonth()];
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      return `${d}-${m}, ${hours}:${mins}`;
+    }
+
+    async function registerOrUpdateCurrentDevice() {
+      const devId = getOrCreateDeviceId();
+      const details = detectDeviceDetails();
+      const hwModel = localStorage.getItem('app_device_hardware_model');
+      let displayModel = details.model;
+      if (hwModel && !displayModel.includes(hwModel)) {
+        displayModel = `${details.brand ? details.brand + ' ' : ''}${hwModel} (${displayModel})`;
+      }
+
+      const customName = localStorage.getItem('app_device_custom_name');
+      const currentName = customName || (devId === 'DEV-FARRUX' ? 'Farrux (Asosiy telefon)' : `Farrux (${displayModel})`);
+      const timeStr = getFriendlyTimestamp();
+
+      let existing = adminClientsRegistry.find(c => c.deviceId === devId);
+      let changed = false;
+
+      if (!existing) {
+        existing = {
+          id: devId === 'DEV-FARRUX' ? 'CLI-001' : 'CLI-' + Math.floor(1000 + Math.random() * 9000),
+          name: currentName,
+          phone: "+998 95 797 27 97",
+          deviceId: devId,
+          deviceModel: displayModel,
+          deviceType: details.platform,
+          deviceIcon: details.icon,
+          status: 'active',
+          plan: 'Muallif Qurilmasi',
+          createdAt: new Date().toISOString().split('T')[0],
+          lastSeen: timeStr
+        };
+        adminClientsRegistry.unshift(existing);
+        changed = true;
+      } else {
+        if (existing.deviceModel !== displayModel || existing.lastSeen !== timeStr || (customName && existing.name !== customName)) {
+          existing.deviceModel = displayModel;
+          existing.deviceType = details.platform;
+          existing.deviceIcon = details.icon;
+          existing.lastSeen = timeStr;
+          existing.status = 'active';
+          if (customName) existing.name = customName;
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        saveStorage('admin_clients', adminClientsRegistry);
+        localStorage.setItem('sweet_app_device_registered', 'true');
+        updateAdminStats();
+        clearTimeout(window._devSyncTimer);
+        window._devSyncTimer = setTimeout(() => {
+          syncAdminRegistryToGitHub();
+        }, 1500);
+      }
+    }
+
     async function checkRemoteLicenseRevocation() {
       localStorage.removeItem('sweet_app_admin_blocked_devices');
       localStorage.setItem('app_is_licensed', 'true');
@@ -2373,6 +2551,9 @@
       const reasonBox = document.getElementById('lockScreenReasonBox');
       if (reasonBox) reasonBox.classList.add('hidden');
 
+      const currentDevId = getOrCreateDeviceId();
+      const isMasterDev = (currentDevId === 'DEV-FARRUX');
+
       try {
         const remoteUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/license_registry.json?t=` + Date.now();
         const res = await fetch(remoteUrl, { cache: 'no-store' });
@@ -2381,15 +2562,28 @@
           if (data && Array.isArray(data.clients)) {
             adminClientsRegistry = data.clients;
             saveStorage('admin_clients', adminClientsRegistry);
+
+            // Boshqa ikkilamchi qurilma Farrux tomonidan chiqarib yuborilgan bo'lsa:
+            if (!isMasterDev && localStorage.getItem('sweet_app_device_registered') === 'true') {
+              const stillExists = data.clients.some(c => c.deviceId === currentDevId);
+              if (!stillExists) {
+                localStorage.removeItem('sweet_app_current_user');
+                localStorage.removeItem('sweet_app_device_registered');
+                currentUser = null;
+                updateCloudBadge(false);
+                showToast("Ushbu qurilma bosh admin tomonidan chiqarildi", "info");
+                return false;
+              }
+            }
           }
         }
       } catch (e) {}
       return true;
     }
 
-    // Qurilmalarni avtomatik ro'yxatga qo'shish bekor qilindi (tartibsizlikni oldini olish uchun)
+    // Qurilmalarni avtomatik ro'yxatga qo'shish o'rniga aniq model bilan sinxronlash
     async function autoRegisterDeviceToCloud() {
-      return;
+      registerOrUpdateCurrentDevice();
     }
 
     async function syncAdminRegistryToGitHub() {
@@ -2516,6 +2710,9 @@
           updateAdminStats();
           renderAdminClientsList();
         }
+        await registerOrUpdateCurrentDevice();
+        updateAdminStats();
+        renderAdminClientsList();
       } catch (e) {
         console.warn("Pull live clients error:", e);
       }
@@ -2531,98 +2728,163 @@
       const blockedEl = document.getElementById('adminStatsBlocked');
 
       const total = adminClientsRegistry.length;
-      const active = adminClientsRegistry.filter(c => c.status === 'active').length;
-      const blocked = adminClientsRegistry.filter(c => c.status === 'blocked').length;
+      const currentDevId = getOrCreateDeviceId();
+      const myCount = adminClientsRegistry.filter(c => c.deviceId === currentDevId).length || 1;
+      const otherCount = Math.max(0, total - myCount);
 
       if (totalEl) totalEl.innerText = total;
-      if (activeEl) activeEl.innerText = active;
-      if (blockedEl) blockedEl.innerText = blocked;
+      if (activeEl) activeEl.innerText = myCount;
+      if (blockedEl) blockedEl.innerText = otherCount;
     }
 
     function renderAdminClientsList(filterText = '') {
       const container = document.getElementById('adminClientsListContainer');
       if (!container) return;
 
+      const currentDevId = getOrCreateDeviceId();
       const q = filterText.toLowerCase().trim();
       const filtered = adminClientsRegistry.filter(c => {
         return (c.name || '').toLowerCase().includes(q) ||
                (c.phone || '').toLowerCase().includes(q) ||
                (c.deviceId || '').toLowerCase().includes(q) ||
-               (c.key || '').toLowerCase().includes(q);
+               (c.deviceModel || '').toLowerCase().includes(q);
       });
 
       if (filtered.length === 0) {
         container.innerHTML = `
           <div class="p-8 text-center text-stone-400 space-y-2">
-            <i class="fa-solid fa-users-slash text-2xl text-stone-600"></i>
-            <p class="text-xs">Hech qanday mijoz topilmadi</p>
+            <i class="fa-solid fa-mobile-screen-button text-3xl text-stone-600"></i>
+            <p class="text-xs">Ulangan qurilma topilmadi</p>
           </div>
         `;
         return;
       }
 
       container.innerHTML = filtered.map(c => {
-        const isActive = c.status === 'active';
-        const statusBadge = isActive
-          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold text-[9px]"><i class="fa-solid fa-circle-check mr-1"></i>Faol</span>`
-          : `<span class="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold text-[9px]"><i class="fa-solid fa-ban mr-1"></i>Bloklangan</span>`;
+        const isCurrent = (c.deviceId === currentDevId);
+        const modelName = c.deviceModel || c.name || "Noma'lum Telefon Modeli";
+        const displayName = c.name || modelName;
+        const iconClass = c.deviceIcon || (c.deviceType === 'Kompyuter' ? 'fa-laptop' : (c.deviceType === 'Planshet' ? 'fa-tablet-screen-button' : 'fa-mobile-screen-button'));
+        const lastSeenText = c.lastSeen ? c.lastSeen : (c.createdAt || 'Bugun');
 
         return `
-          <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 transition hover:border-white/20">
-            <div class="flex items-start justify-between">
+          <div class="p-3.5 rounded-2xl ${isCurrent ? 'bg-gradient-to-br from-emerald-500/15 via-slate-900/60 to-teal-500/10 border-2 border-emerald-500/40 shadow-lg' : 'bg-white/5 border border-white/10'} space-y-2.5 transition hover:border-white/20">
+            <!-- Header: Nom va holat -->
+            <div class="flex items-start justify-between gap-2">
               <div class="space-y-0.5">
-                <div class="flex items-center space-x-2">
-                  <h4 class="text-xs font-black text-white">${c.name}</h4>
-                  ${statusBadge}
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <h4 class="text-xs font-black text-white">${displayName}</h4>
+                  ${isCurrent ? `
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-[9px] shadow-sm flex items-center space-x-1">
+                      <i class="fa-solid fa-star text-amber-300"></i>
+                      <span>Sizning joriy telefoningiz</span>
+                    </span>
+                  ` : `
+                    <span class="px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold text-[9px] flex items-center space-x-1">
+                      <i class="fa-solid fa-circle text-[6px] text-emerald-400 animate-pulse"></i>
+                      <span>Ulangan boshqa qurilma</span>
+                    </span>
+                  `}
                 </div>
-                <div class="flex items-center space-x-3 text-[10px] text-stone-400">
-                  <span><i class="fa-solid fa-phone text-[9px] mr-1 text-emerald-400"></i><a href="tel:${c.phone}" class="hover:underline">${c.phone}</a></span>
-                  <span><i class="fa-solid fa-calendar text-[9px] mr-1 text-sky-400"></i>${c.createdAt || "2026"}</span>
-                  <span class="text-rose-300 font-bold">${c.plan || "Standart"}</span>
+                <div class="text-[10px] text-stone-400 flex items-center space-x-2 pt-0.5">
+                  <span><i class="fa-solid fa-clock text-[9px] mr-1 text-sky-400"></i>Faollik: <b class="text-stone-300">${lastSeenText}</b></span>
+                  <span>•</span>
+                  <span><i class="fa-solid fa-fingerprint text-[9px] mr-1 text-rose-400"></i>ID: <b class="font-mono text-rose-300 text-[10px]">${c.deviceId}</b></span>
                 </div>
               </div>
-              <button onclick="adminDeleteClient('${c.id}')" title="O'chirish" class="text-stone-500 hover:text-rose-400 p-1 text-xs transition">
-                <i class="fa-solid fa-trash-can"></i>
+              <div class="flex items-center space-x-1">
+                <button onclick="adminRenameDevice('${c.id}')" title="Nomini o'zgartirish" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-stone-400 hover:text-amber-300 text-xs transition">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                ${!isCurrent ? `
+                  <button onclick="adminKickoutOtherDevice('${c.id}')" title="Chiqarib yuborish" class="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/20 text-stone-400 hover:text-rose-400 text-xs transition">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Telefon Modeli Ko'rinishi (KATRONI ASOSIY QISMI) -->
+            <div class="p-2.5 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between gap-2">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl ${isCurrent ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/10 text-amber-400 border border-white/10'} flex items-center justify-center text-sm shrink-0">
+                  <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <div>
+                  <div class="text-[9px] text-stone-400 font-bold uppercase tracking-wider">Telefon / Qurilma Modeli:</div>
+                  <div class="text-xs font-black text-amber-300 tracking-wide">${modelName}</div>
+                </div>
+              </div>
+              <button onclick="adminRenameDevice('${c.id}')" class="px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 text-[10px] font-bold border border-white/10 flex items-center space-x-1 shrink-0">
+                <i class="fa-solid fa-pen text-[9px] text-amber-400"></i>
+                <span>Nom berish</span>
               </button>
             </div>
 
-            <!-- Device & Key info bar -->
-            <div class="p-2.5 rounded-xl bg-black/40 border border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div class="flex items-center space-x-2">
-                <span class="text-[10px] text-stone-400 font-bold">ID:</span>
-                <span class="font-mono font-bold text-rose-300 text-[11px]">${c.deviceId}</span>
-              </div>
-              <div class="flex items-center space-x-1.5">
-                <span class="text-[10px] text-stone-400 font-bold">Kalit:</span>
-                <span class="font-mono font-bold text-emerald-300 text-[11px]">${c.key}</span>
-                <button onclick="copyClientKeyAndShare('${c.key}', '${c.name}', '${c.deviceId}')" class="ml-1 px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-[10px] font-bold border border-emerald-500/40 flex items-center space-x-1">
-                  <i class="fa-brands fa-telegram text-[10px]"></i>
-                  <span>Nusxalash</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Action buttons -->
-            <div class="flex items-center space-x-2 pt-1 border-t border-white/5 text-[11px]">
-              ${isActive ? `
-                <button onclick="adminKickoutDevice('${c.id}')" class="flex-1 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-1">
-                  <i class="fa-solid fa-ban text-[10px]"></i>
-                  <span>Chiqarib yuborish / Bloklash</span>
-                </button>
+            <!-- Action bar -->
+            <div class="pt-1 border-t border-white/5 text-[11px]">
+              ${isCurrent ? `
+                <div class="py-1.5 px-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[10px] font-bold text-center flex items-center justify-center space-x-1.5">
+                  <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                  <span>Ushbu telefon hozir qo'lingizda ishlatilmoqda (Xavfsiz)</span>
+                </div>
               ` : `
-                <button onclick="adminReactivateDevice('${c.id}')" class="flex-1 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1">
-                  <i class="fa-solid fa-check text-[10px]"></i>
-                  <span>Qayta Faollashtirish</span>
+                <button onclick="adminKickoutOtherDevice('${c.id}')" class="w-full py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 font-bold hover:bg-rose-500/25 transition flex items-center justify-center space-x-1.5 text-xs active:scale-95">
+                  <i class="fa-solid fa-arrow-right-from-bracket text-[10px]"></i>
+                  <span>Ushbu qurilmani tizimdan chiqarib yuborish</span>
                 </button>
               `}
-              <button onclick="adminRegenerateKey('${c.id}')" class="py-1.5 px-3 rounded-xl bg-white/5 border border-white/10 text-stone-300 font-bold hover:bg-white/10 transition flex items-center space-x-1">
-                <i class="fa-solid fa-rotate text-[10px] text-sky-400"></i>
-                <span>Yangi Kalit</span>
-              </button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function adminRenameDevice(clientId) {
+      const c = adminClientsRegistry.find(item => item.id === clientId);
+      if (!c) return;
+      const currentDevId = getOrCreateDeviceId();
+      const currentName = c.name || c.deviceModel || "Qurilma";
+      const newName = prompt(`"${c.deviceModel || currentName}" qurilmasiga nom bering (masalan: "Farrux telefoni", "Do'kondagi planshet"):`, currentName);
+      if (newName && newName.trim() && newName.trim() !== currentName) {
+        c.name = newName.trim();
+        if (c.deviceId === currentDevId) {
+          localStorage.setItem('app_device_custom_name', c.name);
+        }
+        saveStorage('admin_clients', adminClientsRegistry);
+        renderAdminClientsList();
+        syncAdminRegistryToGitHub();
+        showToast("Qurilma nomi muvaffaqiyatli saqlandi!", "success");
+      }
+    }
+
+    function adminKickoutOtherDevice(clientId) {
+      const c = adminClientsRegistry.find(item => item.id === clientId);
+      if (!c) return;
+      const currentDevId = getOrCreateDeviceId();
+
+      if (c.deviceId === currentDevId) {
+        alert("Siz hozir ushbu qurilmadan foydalanmoqdasiz! O'z qurilmangizni chiqarib yubora olmaysiz.");
+        return;
+      }
+
+      const deviceTitle = c.name || c.deviceModel || c.deviceId;
+      if (confirm(`Rostdan ham "${deviceTitle}" qurilmasini tizimdan chiqarib yubormoqchimisiz?`)) {
+        adminClientsRegistry = adminClientsRegistry.filter(item => item.id !== clientId);
+        saveStorage('admin_clients', adminClientsRegistry);
+        renderAdminClientsList();
+        updateAdminStats();
+        syncAdminRegistryToGitHub();
+        showToast(`"${deviceTitle}" qurilmasi tizimdan muvaffaqiyatli chiqarildi!`, "success");
+      }
+    }
+
+    function adminKickoutDevice(clientId) {
+      adminKickoutOtherDevice(clientId);
+    }
+
+    function adminDeleteClient(clientId) {
+      adminKickoutOtherDevice(clientId);
     }
 
     function toggleAddClientForm() {
@@ -3265,7 +3527,7 @@
       event.target.value = '';
     }
 
-    const APP_CURRENT_VERSION = 'v50';
+    const APP_CURRENT_VERSION = 'v51';
 
     async function refreshAppClean() {
       showToast("🚀 Yangi versiya yuklanmoqda... Ma'lumotlaringiz xavfsiz!", "info");
@@ -6434,6 +6696,13 @@
     }
 
     async function handleAuthLogout() {
+      const currentDevId = getOrCreateDeviceId();
+      if (currentDevId !== 'DEV-FARRUX') {
+        adminClientsRegistry = adminClientsRegistry.filter(item => item.deviceId !== currentDevId);
+        saveStorage('admin_clients', adminClientsRegistry);
+        syncAdminRegistryToGitHub().catch(() => {});
+      }
+
       try {
         if (supabaseClient) {
           await supabaseClient.auth.signOut();
@@ -6443,6 +6712,7 @@
       }
       currentUser = null;
       localStorage.removeItem('sweet_app_current_user');
+      localStorage.removeItem('sweet_app_device_registered');
       updateCloudBadge(false);
       closeAuthDialog();
       showToast("Akkauntdan chiqildi", "info");
@@ -6726,7 +6996,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=50').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=51').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
@@ -6924,10 +7194,10 @@
           </div>
           <div>
             <h3 class="text-xs font-black text-white flex items-center space-x-1.5">
-              <span>Bosh Admin & Mijozlar Nazorati</span>
+              <span>Ulangan Qurilmalar & Telefon Modellari</span>
               <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold">Farrux</span>
             </h3>
-            <p class="text-[10px] text-stone-400">Ulangan qurilmalarni boshqarish, chiqarish va kalit berish</p>
+            <p class="text-[10px] text-stone-400">Har bir telefon modeli, faolligi va qurilmalarni nazorat qilish</p>
           </div>
         </div>
         <button onclick="closeMasterAdminModal()" class="w-7 h-7 rounded-xl bg-white/5 text-stone-400 hover:text-white flex items-center justify-center text-base transition">&times;</button>
@@ -6936,16 +7206,16 @@
       <!-- Stats row -->
       <div class="grid grid-cols-3 gap-2 shrink-0">
         <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-center space-y-0.5">
-          <div class="text-[10px] text-stone-400 font-semibold">Jami Mijozlar</div>
+          <div class="text-[10px] text-stone-400 font-semibold">Jami Qurilmalar</div>
           <div id="adminStatsTotal" class="text-base font-black text-white">0</div>
         </div>
         <div class="p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-0.5">
-          <div class="text-[10px] text-emerald-400 font-semibold">Faol Qurilmalar</div>
-          <div id="adminStatsActive" class="text-base font-black text-emerald-300">0</div>
+          <div class="text-[10px] text-emerald-400 font-semibold">Ushbu Telefon</div>
+          <div id="adminStatsActive" class="text-base font-black text-emerald-300">1</div>
         </div>
-        <div class="p-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center space-y-0.5">
-          <div class="text-[10px] text-rose-400 font-semibold">Bloklangan</div>
-          <div id="adminStatsBlocked" class="text-base font-black text-rose-300">0</div>
+        <div class="p-2.5 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-center space-y-0.5">
+          <div class="text-[10px] text-sky-400 font-semibold">Boshqa Qurilmalar</div>
+          <div id="adminStatsBlocked" class="text-base font-black text-sky-300">0</div>
         </div>
       </div>
 
@@ -7023,7 +7293,7 @@
       <!-- Search bar -->
       <div class="relative shrink-0">
         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-stone-400"></i>
-        <input type="text" id="adminClientSearchInput" oninput="renderAdminClientsList(this.value)" placeholder="Mijoz nomi, telefon yoki Qurilma ID bo'yicha qidirish..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-rose-500">
+        <input type="text" id="adminClientSearchInput" oninput="renderAdminClientsList(this.value)" placeholder="Telefon modeli, nomi yoki Qurilma ID bo'yicha qidirish..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-rose-500">
       </div>
 
       <!-- Clients List Container -->
