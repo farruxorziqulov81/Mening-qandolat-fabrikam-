@@ -331,7 +331,7 @@
     <div id="newVersionBanner" class="hidden px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between text-xs font-bold shadow-lg z-30">
       <div class="flex items-center space-x-2">
         <i class="fa-solid fa-arrows-rotate text-amber-300 animate-spin"></i>
-        <span>Yangi versiya tayyor (<span id="newVersionText">v47</span>)!</span>
+        <span>Yangi versiya tayyor (<span id="newVersionText">v48</span>)!</span>
       </div>
       <button onclick="refreshAppClean()" class="px-2.5 py-1 rounded-lg bg-white text-emerald-950 font-black text-[11px] shadow hover:bg-emerald-50 active:scale-95 transition">
         Hozir yangilash
@@ -837,7 +837,7 @@
             <div>
               <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
                 <span>Dastur Versiyasi:</span>
-                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v47 (Eng yangi)</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v48 (Eng yangi)</span>
               </div>
               <div class="text-[10px] text-[var(--text-muted)]">Qarzlar, Do'konlar va Yangi qulayliklar</div>
             </div>
@@ -1165,7 +1165,7 @@
           <div class="space-y-1.5">
             <button onclick="refreshAppClean()" class="w-full py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1.5 active:scale-95 shadow-sm">
               <i class="fa-solid fa-arrows-rotate text-xs"></i>
-              <span>Dasturni yangilash (v47)</span>
+              <span>Dasturni yangilash (v48)</span>
             </button>
             <p class="text-[9px] text-center text-emerald-400/80 font-medium"><i class="fa-solid fa-shield-check mr-1"></i>Ma'lumotlar, rasm va do'konlar 100% saqlanadi</p>
             <button onclick="exportAllDataJson()" class="w-full py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--text-main)] hover:bg-white/10 transition flex items-center justify-center space-x-1.5">
@@ -1667,15 +1667,24 @@
       <div class="space-y-2 text-xs">
         <div>
           <label class="block text-stone-500 mb-1">Do'kon nomi:</label>
-          <input type="text" id="newDebtShop" placeholder="Do'kon nomini kiriting" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
+          <input type="text" id="newDebtShop" list="debtShopsDataList" placeholder="Do'kon nomini kiriting yoki tanlang" autocomplete="off" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
+          <datalist id="debtShopsDataList"></datalist>
         </div>
         <div>
           <label class="block text-stone-500 mb-1">Nasiya summasi (so'm):</label>
-          <input type="number" id="newDebtAmount" placeholder="Masalan: 1500000" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
+          <input type="number" id="newDebtAmount" placeholder="Masalan: 1500000" autocomplete="off" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
         </div>
         <div>
-          <label class="block text-stone-500 mb-1">To'lov muddati (necha kun):</label>
-          <input type="text" id="newDebtDueDays" value="7 kundan keyin" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
+          <label class="block text-stone-500 mb-1">To'lov muddati:</label>
+          <input type="text" id="newDebtDueDays" placeholder="Masalan: 7 kun" value="7 kun" autocomplete="off" class="w-full p-2.5 border rounded-xl bg-transparent font-medium">
+          <div class="flex items-center space-x-1.5 pt-1.5 flex-wrap gap-y-1">
+            <span class="text-[10px] text-stone-400">Tezkor:</span>
+            <button type="button" onclick="setDebtDuePreset('3 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">3 kun</button>
+            <button type="button" onclick="setDebtDuePreset('7 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">7 kun</button>
+            <button type="button" onclick="setDebtDuePreset('10 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">10 kun</button>
+            <button type="button" onclick="setDebtDuePreset('15 kun')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">15 kun</button>
+            <button type="button" onclick="setDebtDuePreset('1 oy')" class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:bg-rose-500/20 text-[10px] font-bold text-stone-300 active:scale-95">1 oy</button>
+          </div>
         </div>
       </div>
       <div class="flex space-x-2 pt-2">
@@ -3318,7 +3327,7 @@
       event.target.value = '';
     }
 
-    const APP_CURRENT_VERSION = 'v47';
+    const APP_CURRENT_VERSION = 'v48';
 
     async function refreshAppClean() {
       showToast("🚀 Yangi versiya yuklanmoqda... Ma'lumotlaringiz xavfsiz!", "info");
@@ -4948,8 +4957,20 @@
       }
     }
 
+    function setDebtDuePreset(val) {
+      const el = document.getElementById('newDebtDueDays');
+      if (el) el.value = val;
+    }
+
     // Add Debt
     function openAddDebtDialog() {
+      const dl = document.getElementById('debtShopsDataList');
+      if (dl && Array.isArray(shops)) {
+        dl.innerHTML = shops.map(s => `<option value="${s.name}">`).join('');
+      }
+      document.getElementById('newDebtShop').value = '';
+      document.getElementById('newDebtAmount').value = '';
+      document.getElementById('newDebtDueDays').value = '7 kun';
       document.getElementById('addDebtModal').classList.remove('hidden');
     }
     function closeAddDebtModal() {
@@ -4958,7 +4979,7 @@
     function confirmAddDebt() {
       const shop = document.getElementById('newDebtShop').value.trim();
       const amt = parseFloat(document.getElementById('newDebtAmount').value) || 0;
-      const due = document.getElementById('newDebtDueDays').value.trim() || "7 kundan keyin";
+      const due = document.getElementById('newDebtDueDays').value.trim() || "7 kun";
       if (!shop || amt <= 0) {
         alert("Do'kon nomi va qarz summasini kiriting!");
         return;
@@ -6639,7 +6660,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=47').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=48').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
