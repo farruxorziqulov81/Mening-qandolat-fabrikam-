@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sweet-factory-v49';
+const CACHE_NAME = 'sweet-factory-v50';
 const urlsToCache = [
   './manifest.json',
   './icon-192.png',
