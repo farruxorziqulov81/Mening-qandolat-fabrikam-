@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sweet-factory-v45';
+const CACHE_NAME = 'sweet-factory-v46';
 const urlsToCache = [
   './manifest.json',
   './icon-192.png',
@@ -18,6 +18,12 @@ self.addEventListener('activate', event => {
       keys.map(k => caches.delete(k))
     )).then(() => self.clients.claim())
   );
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', event => {
