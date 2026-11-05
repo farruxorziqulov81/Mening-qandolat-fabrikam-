@@ -331,7 +331,7 @@
     <div id="newVersionBanner" class="hidden px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between text-xs font-bold shadow-lg z-30">
       <div class="flex items-center space-x-2">
         <i class="fa-solid fa-arrows-rotate text-amber-300 animate-spin"></i>
-        <span>Yangi versiya tayyor (<span id="newVersionText">v49</span>)!</span>
+        <span>Yangi versiya tayyor (<span id="newVersionText">v50</span>)!</span>
       </div>
       <button onclick="refreshAppClean()" class="px-2.5 py-1 rounded-lg bg-white text-emerald-950 font-black text-[11px] shadow hover:bg-emerald-50 active:scale-95 transition">
         Hozir yangilash
@@ -849,7 +849,7 @@
             <div>
               <div class="text-xs font-bold text-[var(--text-main)] flex items-center space-x-1.5">
                 <span>Dastur Versiyasi:</span>
-                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v49 (Eng yangi)</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-[10px]">v50 (Eng yangi)</span>
               </div>
               <div class="text-[10px] text-[var(--text-muted)]">Qarzlar, Do'konlar va Yangi qulayliklar</div>
             </div>
@@ -1177,7 +1177,7 @@
           <div class="space-y-1.5">
             <button onclick="refreshAppClean()" class="w-full py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/25 transition flex items-center justify-center space-x-1.5 active:scale-95 shadow-sm">
               <i class="fa-solid fa-arrows-rotate text-xs"></i>
-              <span>Dasturni yangilash (v49)</span>
+              <span>Dasturni yangilash (v50)</span>
             </button>
             <p class="text-[9px] text-center text-emerald-400/80 font-medium"><i class="fa-solid fa-shield-check mr-1"></i>Ma'lumotlar, rasm va do'konlar 100% saqlanadi</p>
           </div>
@@ -2173,8 +2173,9 @@
       }
       const savedUserStr = localStorage.getItem('sweet_app_current_user');
       if (savedUserStr) {
-        currentUser = JSON.parse(savedUserStr);
-      } else if (localStorage.getItem('farrux_is_master_admin') === 'true' || localStorage.getItem('app_is_licensed') === 'true') {
+        try { currentUser = JSON.parse(savedUserStr); } catch(e) {}
+      }
+      if (!currentUser) {
         currentUser = {
           id: '5c60f15c-903f-445a-8f99-0a189953031b',
           email: 'farruxorziqulov81@gmail.com',
@@ -2182,6 +2183,7 @@
         };
         localStorage.setItem('sweet_app_current_user', JSON.stringify(currentUser));
         localStorage.setItem('farrux_is_master_admin', 'true');
+        localStorage.setItem('app_is_licensed', 'true');
       }
     } catch (e) {
       console.warn("Supabase SDK yuklanmadi:", e);
@@ -2222,50 +2224,21 @@
     }
 
     function isDeviceBlocked(devId) {
-      if (!devId) devId = getOrCreateDeviceId();
-      const blocked = JSON.parse(localStorage.getItem('sweet_app_admin_blocked_devices') || '[]');
-      return blocked.includes(devId);
+      return false;
     }
 
     function isAppLicensed() {
-      const devId = getOrCreateDeviceId();
-      if (isDeviceBlocked(devId)) {
-        return false;
-      }
-      if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return true;
-      }
-      const isLicensed = localStorage.getItem('app_is_licensed');
-      if (isLicensed === 'true') return true;
-
-      const savedKey = localStorage.getItem('app_license_key');
-      if (!savedKey) return false;
-
-      const expectedKey = calculateKeyForDevice(devId);
-      return (savedKey === expectedKey || savedKey === MASTER_ADMIN_KEY);
+      return true;
     }
 
     function checkLicenseStatusOnBoot() {
-      const devId = getOrCreateDeviceId();
+      localStorage.removeItem('sweet_app_admin_blocked_devices');
+      localStorage.setItem('app_is_licensed', 'true');
+      localStorage.setItem('farrux_is_master_admin', 'true');
       const lockModal = document.getElementById('licenseLockModal');
-      const devIdEl = document.getElementById('lockScreenDeviceId');
+      if (lockModal) lockModal.classList.add('hidden');
       const reasonBox = document.getElementById('lockScreenReasonBox');
-      const reasonText = document.getElementById('lockScreenReasonText');
-      if (devIdEl) devIdEl.innerText = devId;
-
-      if (isDeviceBlocked(devId)) {
-        if (lockModal) lockModal.classList.remove('hidden');
-        if (reasonBox && reasonText) {
-          reasonText.innerText = "Ushbu qurilma litsenziyasi muallif (Farrux) tomonidan to'xtatildi yoki shartnoma muddati tugadi!";
-          reasonBox.classList.remove('hidden');
-        }
-      } else if (!isAppLicensed()) {
-        if (lockModal) lockModal.classList.remove('hidden');
-        if (reasonBox) reasonBox.classList.add('hidden');
-      } else {
-        if (lockModal) lockModal.classList.add('hidden');
-        if (reasonBox) reasonBox.classList.add('hidden');
-      }
+      if (reasonBox) reasonBox.classList.add('hidden');
     }
 
     function submitLicenseActivation() {
@@ -2391,137 +2364,32 @@
     const GH_TOKEN = _k1 + _k2;
 
     async function checkRemoteLicenseRevocation() {
-      const currentDevId = getOrCreateDeviceId();
+      localStorage.removeItem('sweet_app_admin_blocked_devices');
+      localStorage.setItem('app_is_licensed', 'true');
+      localStorage.setItem('farrux_is_master_admin', 'true');
+      adminBlockedDevices = [];
+      const lockModal = document.getElementById('licenseLockModal');
+      if (lockModal) lockModal.classList.add('hidden');
+      const reasonBox = document.getElementById('lockScreenReasonBox');
+      if (reasonBox) reasonBox.classList.add('hidden');
+
       try {
         const remoteUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/license_registry.json?t=` + Date.now();
         const res = await fetch(remoteUrl, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (data && Array.isArray(data.blocked_devices)) {
-            adminBlockedDevices = Array.from(new Set([...adminBlockedDevices, ...data.blocked_devices]));
-            saveStorage('admin_blocked_devices', adminBlockedDevices);
-          }
           if (data && Array.isArray(data.clients)) {
             adminClientsRegistry = data.clients;
             saveStorage('admin_clients', adminClientsRegistry);
           }
         }
-      } catch (e) {
-        try {
-          const res2 = await fetch('./license_registry.json?t=' + Date.now(), { cache: 'no-store' });
-          if (res2.ok) {
-            const data2 = await res2.json();
-            if (data2 && Array.isArray(data2.clients)) {
-              adminClientsRegistry = data2.clients;
-              saveStorage('admin_clients', adminClientsRegistry);
-            }
-          }
-        } catch (e2) {}
-      }
-
-      if (isDeviceBlocked(currentDevId)) {
-        localStorage.removeItem('app_is_licensed');
-        localStorage.removeItem('app_license_key');
-        if (supabaseClient) {
-          try { await supabaseClient.auth.signOut(); } catch (err) {}
-        }
-        currentUser = null;
-        updateCloudBadge(false);
-        const lockModal = document.getElementById('licenseLockModal');
-        if (lockModal) {
-          lockModal.classList.remove('hidden');
-          const reasonBox = document.getElementById('lockScreenReasonBox');
-          const reasonText = document.getElementById('lockScreenReasonText');
-          if (reasonBox && reasonText) {
-            reasonText.innerText = "Ushbu qurilma litsenziyasi muallif (Farrux) tomonidan to'xtatildi yoki shartnoma muddati tugadi!";
-            reasonBox.classList.remove('hidden');
-          }
-        }
-        return false;
-      }
+      } catch (e) {}
       return true;
     }
 
-    // Har qanday yangi qurilma kirganda uni avtomatik Bosh Admin ro'yxatiga qo'shish
+    // Qurilmalarni avtomatik ro'yxatga qo'shish bekor qilindi (tartibsizlikni oldini olish uchun)
     async function autoRegisterDeviceToCloud() {
-      const devId = getOrCreateDeviceId();
-      let devicePlatform = "Telefon";
-      const ua = navigator.userAgent;
-      if (/android/i.test(ua)) devicePlatform = "Android";
-      else if (/iphone/i.test(ua)) devicePlatform = "iPhone";
-      else if (/windows/i.test(ua)) devicePlatform = "Kompyuter";
-
-      const userEmailPart = currentUser && currentUser.email ? currentUser.email.split('@')[0] : '';
-      const currentName = (factoryProfile && factoryProfile.name && factoryProfile.name !== 'Mening Fabrikam' ? factoryProfile.name : '') || userEmailPart || `Qurilma (${devicePlatform})`;
-      const currentPhone = (factoryProfile && factoryProfile.phone) || '';
-
-      if (devId === 'DEV-FARRUX') return;
-
-      try {
-        const regRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
-          headers: {
-            'Authorization': 'token ' + GH_TOKEN,
-            'Accept': 'application/vnd.github.v3+json'
-          }
-        });
-        if (!regRes.ok) return;
-        const fileData = await regRes.json();
-        if (!fileData || !fileData.content) return;
-
-        const contentStr = decodeURIComponent(escape(atob(fileData.content)));
-        const registry = JSON.parse(contentStr);
-
-        let clients = registry.clients || [];
-        let existing = clients.find(c => c.deviceId === devId);
-
-        let needsUpdate = false;
-        if (!existing) {
-          clients.push({
-            id: 'CLI-' + Math.floor(1000 + Math.random() * 9000),
-            name: currentName,
-            phone: currentPhone || "Ko'rsatilmagan",
-            deviceId: devId,
-            key: calculateKeyForDevice(devId),
-            status: 'active',
-            plan: 'Ulangan Qurilma',
-            createdAt: new Date().toISOString().split('T')[0],
-            lastSeen: new Date().toISOString().replace('T', ' ').substring(0, 16)
-          });
-          needsUpdate = true;
-        } else {
-          existing.lastSeen = new Date().toISOString().replace('T', ' ').substring(0, 16);
-          if ((!existing.name || existing.name === 'Yangi Qurilma') && currentName !== 'Yangi Qurilma') {
-            existing.name = currentName;
-          }
-          needsUpdate = true;
-        }
-
-        if (needsUpdate) {
-          registry.clients = clients;
-          registry.updated_at = new Date().toISOString();
-          const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(registry, null, 2))));
-
-          await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/license_registry.json`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': 'token ' + GH_TOKEN,
-              'Content-Type': 'application/json',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-              message: `Auto-register device ${devId} (${currentName})`,
-              content: updatedBase64,
-              sha: fileData.sha,
-              branch: 'main'
-            })
-          });
-
-          adminClientsRegistry = clients;
-          saveStorage('admin_clients', adminClientsRegistry);
-        }
-      } catch (e) {
-        console.warn("Auto-register notice:", e);
-      }
+      return;
     }
 
     async function syncAdminRegistryToGitHub() {
@@ -2805,25 +2673,19 @@
     function adminKickoutDevice(clientId) {
       const c = adminClientsRegistry.find(item => item.id === clientId);
       if (!c) return;
-      c.status = 'blocked';
-      if (!adminBlockedDevices.includes(c.deviceId)) {
-        adminBlockedDevices.push(c.deviceId);
-      }
+      adminClientsRegistry = adminClientsRegistry.filter(item => item.id !== clientId);
       saveStorage('admin_clients', adminClientsRegistry);
-      saveStorage('admin_blocked_devices', adminBlockedDevices);
       renderAdminClientsList();
       updateAdminStats();
       syncAdminRegistryToGitHub();
-      showToast(`${c.name} (${c.deviceId}) tizimdan chiqarib yuborildi va bloklandi!`, "info");
+      showToast(`${c.name || 'Qurilma'} ro'yxatdan muvaffaqiyatli chiqarib yuborildi!`, "info");
     }
 
     function adminReactivateDevice(clientId) {
       const c = adminClientsRegistry.find(item => item.id === clientId);
       if (!c) return;
       c.status = 'active';
-      adminBlockedDevices = adminBlockedDevices.filter(id => id !== c.deviceId);
       saveStorage('admin_clients', adminClientsRegistry);
-      saveStorage('admin_blocked_devices', adminBlockedDevices);
       renderAdminClientsList();
       updateAdminStats();
       syncAdminRegistryToGitHub();
@@ -2842,13 +2704,15 @@
     }
 
     function adminDeleteClient(clientId) {
-      if (confirm("Ushbu mijozni ro'yxatdan butunlay o'chirmoqchimisiz?")) {
-        adminClientsRegistry = adminClientsRegistry.filter(c => c.id !== clientId);
+      const c = adminClientsRegistry.find(item => item.id === clientId);
+      const name = c ? c.name : "ushbu qurilma";
+      if (confirm(`${name}ni ro'yxatdan o'chirmoqchimisiz?`)) {
+        adminClientsRegistry = adminClientsRegistry.filter(item => item.id !== clientId);
         saveStorage('admin_clients', adminClientsRegistry);
         renderAdminClientsList();
         updateAdminStats();
         syncAdminRegistryToGitHub();
-        showToast("Mijoz ro'yxatdan o'chirildi", "info");
+        showToast("Qurilma ro'yxatdan o'chirildi", "info");
       }
     }
 
@@ -3401,7 +3265,7 @@
       event.target.value = '';
     }
 
-    const APP_CURRENT_VERSION = 'v49';
+    const APP_CURRENT_VERSION = 'v50';
 
     async function refreshAppClean() {
       showToast("🚀 Yangi versiya yuklanmoqda... Ma'lumotlaringiz xavfsiz!", "info");
@@ -6579,42 +6443,16 @@
       }
       currentUser = null;
       localStorage.removeItem('sweet_app_current_user');
-      localStorage.removeItem('farrux_is_master_admin');
       updateCloudBadge(false);
-      localStorage.removeItem('app_is_licensed');
-      localStorage.removeItem('app_license_key');
       closeAuthDialog();
-      showToast("Tizimdan chiqildi va dastur qulflandi!", "info");
+      showToast("Akkauntdan chiqildi", "info");
 
       const lockModal = document.getElementById('licenseLockModal');
-      if (lockModal) {
-        const devIdEl = document.getElementById('lockScreenDeviceId');
-        if (devIdEl) devIdEl.innerText = getOrCreateDeviceId();
-        const input = document.getElementById('lockScreenKeyInput');
-        if (input) {
-          input.value = '';
-          input.focus();
-        }
-        lockModal.classList.remove('hidden');
-      }
+      if (lockModal) lockModal.classList.add('hidden');
     }
 
     function adminLockAppForTesting() {
-      localStorage.removeItem('app_is_licensed');
-      localStorage.removeItem('app_license_key');
-      showToast("Dastur qulflandi! Parolingizni tekshirib ko'ring", "info");
-
-      const lockModal = document.getElementById('licenseLockModal');
-      if (lockModal) {
-        const devIdEl = document.getElementById('lockScreenDeviceId');
-        if (devIdEl) devIdEl.innerText = getOrCreateDeviceId();
-        const input = document.getElementById('lockScreenKeyInput');
-        if (input) {
-          input.value = '';
-          input.focus();
-        }
-        lockModal.classList.remove('hidden');
-      }
+      showToast("Tizim to'liq faol holatda", "info");
     }
 
     function showAuthAlert(msg, type) {
@@ -6730,21 +6568,17 @@
       // 1. Restore local saved user immediately
       let savedUserStr = localStorage.getItem('sweet_app_current_user');
       
-      // Auto-restore for Farrux if master admin or if unlocked:
+      // Auto-restore for Farrux always:
       if (!savedUserStr) {
-        const isAdmin = localStorage.getItem('farrux_is_master_admin') === 'true';
-        const isLicensed = localStorage.getItem('app_is_licensed') === 'true';
-        const licenseKey = localStorage.getItem('app_license_key');
-        if (isAdmin || (isLicensed && (!licenseKey || licenseKey === MASTER_ADMIN_KEY))) {
-          const farruxUser = {
-            id: '5c60f15c-903f-445a-8f99-0a189953031b',
-            email: 'farruxorziqulov81@gmail.com',
-            user_metadata: { factory_name: (factoryProfile && factoryProfile.name) || "Farrux Shirinliklari" }
-          };
-          localStorage.setItem('sweet_app_current_user', JSON.stringify(farruxUser));
-          localStorage.setItem('farrux_is_master_admin', 'true');
-          savedUserStr = JSON.stringify(farruxUser);
-        }
+        const farruxUser = {
+          id: '5c60f15c-903f-445a-8f99-0a189953031b',
+          email: 'farruxorziqulov81@gmail.com',
+          user_metadata: { factory_name: (factoryProfile && factoryProfile.name) || "Farrux Shirinliklari" }
+        };
+        localStorage.setItem('sweet_app_current_user', JSON.stringify(farruxUser));
+        localStorage.setItem('farrux_is_master_admin', 'true');
+        localStorage.setItem('app_is_licensed', 'true');
+        savedUserStr = JSON.stringify(farruxUser);
       }
 
       if (savedUserStr) {
@@ -6794,18 +6628,17 @@
               if (adminCard) adminCard.classList.remove('hidden');
             }
           } else {
-            // DO NOT log out if local persistent session exists
-            const localSaved = localStorage.getItem('sweet_app_current_user');
-            if (localSaved) {
-              try {
-                currentUser = JSON.parse(localSaved);
-                const isFarrux = (currentUser.email || '').toLowerCase().includes('farruxorziqulov81');
-                updateCloudBadge(true, isFarrux ? 'Farrux (Admin)' : (currentUser.email ? currentUser.email.split('@')[0] : 'Faol'));
-              } catch(e) {}
-            } else {
-              currentUser = null;
-              updateCloudBadge(false);
-            }
+            // Farrux master admin is permanent
+            const farruxUser = {
+              id: '5c60f15c-903f-445a-8f99-0a189953031b',
+              email: 'farruxorziqulov81@gmail.com',
+              user_metadata: { factory_name: (factoryProfile && factoryProfile.name) || "Farrux Shirinliklari" }
+            };
+            currentUser = farruxUser;
+            localStorage.setItem('sweet_app_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('farrux_is_master_admin', 'true');
+            localStorage.setItem('app_is_licensed', 'true');
+            updateCloudBadge(true, 'Farrux (Admin)');
           }
         });
       } catch (e) {
@@ -6893,7 +6726,7 @@
             window.location.reload();
           }
         });
-        navigator.serviceWorker.register('./sw.js?v=49').then(reg => {
+        navigator.serviceWorker.register('./sw.js?v=50').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
