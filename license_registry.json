@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T11:57:30.330Z",
+  "updated_at": "2026-11-05T12:02:25.573Z",
   "blocked_devices": [],
   "clients": [
     {
@@ -21,7 +21,7 @@
       "status": "active",
       "plan": "Ulangan Qurilma",
       "createdAt": "2026-11-05",
-      "lastSeen": "2026-11-05 11:57"
+      "lastSeen": "2026-11-05 12:02"
     },
     {
       "id": "CLI-6208",
